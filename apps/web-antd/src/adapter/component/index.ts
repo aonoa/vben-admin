@@ -51,6 +51,7 @@ export type ComponentType =
   | 'ApiSelect'
   | 'ApiTreeSelect'
   | 'AutoComplete'
+  | 'Button'
   | 'Checkbox'
   | 'CheckboxGroup'
   | 'DatePicker'
@@ -113,6 +114,7 @@ async function initComponentAdapter() {
       );
     },
     AutoComplete,
+    Button,
     Checkbox,
     CheckboxGroup,
     DatePicker,
