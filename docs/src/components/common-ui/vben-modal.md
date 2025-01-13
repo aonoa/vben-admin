@@ -60,6 +60,7 @@ Modal 内的内容一般业务中，会比较复杂，所以我们可以将 moda
 
 - `VbenModal` 组件对与参数的处理优先级是 `slot` > `props` > `state`(通过api更新的状态以及useVbenModal参数)。如果你已经传入了 `slot` 或者 `props`，那么 `setState` 将不会生效，这种情况下你可以通过 `slot` 或者 `props` 来更新状态。
 - 如果你使用到了 `connectedComponent` 参数，那么会存在 2 个`useVbenModal`, 此时，如果同时设置了相同的参数，那么以内部为准（也就是没有设置 connectedComponent 的代码）。比如 同时设置了 `onConfirm`，那么以内部的 `onConfirm` 为准。`onOpenChange`事件除外，内外都会触发。
+- 使用了`connectedComponent`参数时，可以配置`destroyOnClose`属性来决定当关闭弹窗时，是否要销毁`connectedComponent`组件（重新创建`connectedComponent`组件，这将会把其内部所有的变量、状态、数据等恢复到初始状态。）。
 
 :::
 
@@ -81,6 +82,8 @@ const [Modal, modalApi] = useVbenModal({
 | 属性名 | 描述 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | appendToMain | 是否挂载到内容区域（默认挂载到body） | `boolean` | `false` |
+| connectedComponent | 连接另一个Modal组件 | `Component` | - |
+| destroyOnClose | 关闭时销毁`connectedComponent` | `boolean` | `false` |
 | title | 标题 | `string\|slot` | - |
 | titleTooltip | 标题提示信息 | `string\|slot` | - |
 | description | 描述信息 | `string\|slot` | - |
@@ -108,6 +111,7 @@ const [Modal, modalApi] = useVbenModal({
 | headerClass | modal顶部区域的class | `string` | - |
 | bordered | 是否显示border | `boolean` | `false` |
 | zIndex | 弹窗的ZIndex层级 | `number` | `1000` |
+| overlayBlur | 遮罩模糊度 | `number` | - |
 
 ::: info appendToMain
 
@@ -140,11 +144,11 @@ const [Modal, modalApi] = useVbenModal({
 
 ### modalApi
 
-| 事件名 | 描述 | 类型 |
+| 方法 | 描述 | 类型 |
 | --- | --- | --- |
-| setState | 动态设置弹窗状态属性 | `setState(props) \| setState((prev)=>(props))` |
+| setState | 动态设置弹窗状态属性 | `(((prev: ModalState) => Partial<ModalState>)\| Partial<ModalState>)=>modalApi` |
 | open | 打开弹窗 | `()=>void` |
 | close | 关闭弹窗 | `()=>void` |
-| setData | 设置共享数据 | `<T>(data:T)=>void` |
+| setData | 设置共享数据 | `<T>(data:T)=>modalApi` |
 | getData | 获取共享数据 | `<T>()=>T` |
 | useStore | 获取可响应式状态 | - |

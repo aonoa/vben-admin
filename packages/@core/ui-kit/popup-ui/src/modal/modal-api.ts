@@ -4,6 +4,12 @@ import { Store } from '@vben-core/shared/store';
 import { bindMethods, isFunction } from '@vben-core/shared/utils';
 
 export class ModalApi {
+  // 共享数据
+  public sharedData: Record<'payload', any> = {
+    payload: {},
+  };
+  public store: Store<ModalState>;
+
   private api: Pick<
     ModalApiOptions,
     | 'onBeforeClose'
@@ -13,15 +19,9 @@ export class ModalApi {
     | 'onOpenChange'
     | 'onOpened'
   >;
+
   // private prevState!: ModalState;
   private state!: ModalState;
-
-  // 共享数据
-  public sharedData: Record<'payload', any> = {
-    payload: {},
-  };
-
-  public store: Store<ModalState>;
 
   constructor(options: ModalApiOptions = {}) {
     const {
@@ -93,11 +93,6 @@ export class ModalApi {
     bindMethods(this);
   }
 
-  // 如果需要多次更新状态，可以使用 batch 方法
-  batchStore(cb: () => void) {
-    this.store.batch(cb);
-  }
-
   /**
    * 关闭弹窗
    */
@@ -156,6 +151,7 @@ export class ModalApi {
 
   setData<T>(payload: T) {
     this.sharedData.payload = payload;
+    return this;
   }
 
   setState(
@@ -168,5 +164,6 @@ export class ModalApi {
     } else {
       this.store.setState((prev) => ({ ...prev, ...stateOrFn }));
     }
+    return this;
   }
 }

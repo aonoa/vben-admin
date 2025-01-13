@@ -237,6 +237,26 @@ const routes: RouteRecordRaw[] = [
           title: $t('examples.resize.title'),
         },
       },
+      {
+        name: 'ColPageDemo',
+        path: '/examples/layout/col-page',
+        component: () => import('#/views/examples/layout/col-page.vue'),
+        meta: {
+          badge: 'Alpha',
+          badgeVariants: 'destructive',
+          icon: 'material-symbols:horizontal-distribute',
+          title: $t('examples.layout.col-page'),
+        },
+      },
+      {
+        name: 'TippyDemo',
+        path: '/examples/tippy',
+        component: () => import('#/views/examples/tippy/index.vue'),
+        meta: {
+          icon: 'mdi:message-settings-outline',
+          title: 'Tippy',
+        },
+      },
     ],
   },
 ];
