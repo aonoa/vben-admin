@@ -49,9 +49,10 @@ function createRequestClient(baseURL: string) {
   async function doRefreshToken() {
     const accessStore = useAccessStore();
     const resp = await refreshTokenApi();
-    const newToken = resp.data;
-    accessStore.setAccessToken(newToken);
-    return newToken;
+    const { accessToken, refreshToken } = resp;
+    accessStore.setAccessToken(accessToken);
+    accessStore.setRefreshToken(refreshToken);
+    return accessToken;
   }
 
   function formatToken(token: null | string) {
@@ -62,9 +63,12 @@ function createRequestClient(baseURL: string) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
-
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+      // 根据自定义http请求头判断是否使用refreshToken
+      if (config.headers['X-Action'] === 'refreshToken') {
+        config.headers.Authorization = formatToken(accessStore.refreshToken);
+      }
       return config;
     },
   });
