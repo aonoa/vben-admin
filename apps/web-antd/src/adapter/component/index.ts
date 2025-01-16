@@ -34,8 +34,11 @@ import {
   Textarea,
   TimePicker,
   TreeSelect,
-  Upload,
+  // Upload,
 } from 'ant-design-vue';
+
+import { Image } from './image';
+import { Upload } from './upload';
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -149,7 +152,24 @@ async function initComponentAdapter() {
     Textarea: withDefaultPlaceholder(Textarea, 'input'),
     TimePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
-    Upload,
+    Upload: (props, { attrs, slots }) => {
+      return h(
+        ApiComponent,
+        {
+          placeholder: $t('ui.placeholder.select'),
+          ...props,
+          ...attrs,
+          component: Upload,
+          fieldNames: { label: 'label', value: 'value' },
+          loadingSlot: 'suffixIcon',
+          modelPropName: 'value',
+        },
+        slots,
+      );
+    },
+    Image: (props, { slots }) => {
+      return h(Image, { ...props }, slots);
+    },
   };
 
   // 将组件注册到全局共享状态中
