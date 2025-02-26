@@ -8,6 +8,7 @@ import '@vben/styles';
 import '@vben/styles/antd';
 
 import { useTitle } from '@vueuse/core';
+import Antd from 'ant-design-vue';
 
 import { $t, setupI18n } from '#/locales';
 
@@ -44,6 +45,9 @@ async function bootstrap(namespace: string) {
 
   // 配置路由及路由守卫
   app.use(router);
+
+  // 全局引入Antd组件
+  app.use(Antd);
 
   // 动态更新标题
   watchEffect(() => {
