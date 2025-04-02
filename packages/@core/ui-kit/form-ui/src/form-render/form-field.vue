@@ -290,6 +290,7 @@ onUnmounted(() => {
       v-show="isShow"
       :class="{
         'form-valid-error': isInValid,
+        'form-is-required': shouldRequired,
         'flex-col': isVertical,
         'flex-row items-center': !isVertical,
         'pb-6': !compact,
@@ -320,44 +321,41 @@ onUnmounted(() => {
           <VbenRenderContent :content="label" />
         </template>
       </FormLabel>
-      <div class="w-full overflow-hidden">
+      <div class="flex-auto overflow-hidden p-[1px]">
         <div :class="cn('relative flex w-full items-center', wrapperClass)">
-          <div class="flex-auto overflow-hidden p-[2px]">
-            <FormControl :class="cn(controlClass)">
-              <slot
-                v-bind="{
-                  ...slotProps,
-                  ...createComponentProps(slotProps),
-                  disabled: shouldDisabled,
-                  isInValid,
+          <FormControl :class="cn(controlClass)">
+            <slot
+              v-bind="{
+                ...slotProps,
+                ...createComponentProps(slotProps),
+                disabled: shouldDisabled,
+                isInValid,
+              }"
+            >
+              <component
+                :is="FieldComponent"
+                ref="fieldComponentRef"
+                :class="{
+                  'border-destructive focus:border-destructive hover:border-destructive/80 focus:shadow-[0_0_0_2px_rgba(255,38,5,0.06)]':
+                    isInValid,
                 }"
+                v-bind="createComponentProps(slotProps)"
+                :disabled="shouldDisabled"
               >
-                <component
-                  :is="FieldComponent"
-                  ref="fieldComponentRef"
-                  :class="{
-                    'border-destructive focus:border-destructive hover:border-destructive/80 focus:shadow-[0_0_0_2px_rgba(255,38,5,0.06)]':
-                      isInValid,
-                  }"
-                  v-bind="createComponentProps(slotProps)"
-                  :disabled="shouldDisabled"
+                <template
+                  v-for="name in renderContentKey"
+                  :key="name"
+                  #[name]="renderSlotProps"
                 >
-                  <template
-                    v-for="name in renderContentKey"
-                    :key="name"
-                    #[name]="renderSlotProps"
-                  >
-                    <VbenRenderContent
-                      :content="customContentRender[name]"
-                      v-bind="{ ...renderSlotProps, formContext: slotProps }"
-                    />
-                  </template>
-                  <!-- <slot></slot> -->
-                </component>
-              </slot>
-            </FormControl>
-          </div>
-
+                  <VbenRenderContent
+                    :content="customContentRender[name]"
+                    v-bind="{ ...renderSlotProps, formContext: slotProps }"
+                  />
+                </template>
+                <!-- <slot></slot> -->
+              </component>
+            </slot>
+          </FormControl>
           <!-- 自定义后缀 -->
           <div v-if="suffix" class="ml-1">
             <VbenRenderContent :content="suffix" />
