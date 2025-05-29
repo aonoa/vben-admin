@@ -19,7 +19,7 @@ async function initSetupVbenForm() {
         Checkbox: 'checked',
         Radio: 'checked',
         Switch: 'checked',
-        Upload: 'fileList',
+        // Upload: 'fileList',
       },
     },
     defineRules: {

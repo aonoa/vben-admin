@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
-          title: $t('demo.upload'),
+          title: $t('demos.upload'),
         },
         name: 'Upload',
         path: '/demos/upload',
