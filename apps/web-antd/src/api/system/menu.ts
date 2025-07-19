@@ -1,4 +1,4 @@
-import type {Recordable, RouteRecordStringComponent} from '@vben/types';
+import type { Recordable } from '@vben/types';
 
 import { requestClient } from '#/api/request';
 

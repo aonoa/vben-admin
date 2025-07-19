@@ -2,6 +2,17 @@
   "title": "系统管理",
   "user": "用户管理",
   "role": "角色管理",
+  "dept": {
+    "list": "部门列表",
+    "createTime": "创建时间",
+    "deptName": "部门名称",
+    "name": "部门",
+    "operation": "操作",
+    "parentDept": "上级部门",
+    "remark": "备注",
+    "status": "状态",
+    "title": "部门管理"
+  },
   "menu": {
     "list": "菜单列表",
     "activeIcon": "激活图标",
