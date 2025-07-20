@@ -85,18 +85,18 @@ export function useColumns(
       fixed: 'left',
       title: $t('system.dept.deptName'),
       treeNode: true,
-      width: 150,
+      // width: 150,
     },
     {
       cellRender: { name: 'CellTag' },
       field: 'status',
       title: $t('system.dept.status'),
-      width: 100,
+      // width: 120,
     },
     {
       field: 'createTime',
       title: $t('system.dept.createTime'),
-      width: 180,
+      minWidth: 180,
     },
     {
       field: 'remark',

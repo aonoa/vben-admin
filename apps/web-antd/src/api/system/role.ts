@@ -1,32 +1,55 @@
-import { urlToRestful } from '#/api';
+import type { Recordable } from '@vben/types';
+
 import { requestClient } from '#/api/request';
 
-export interface RolePageParams {
-  currentPage: number;
-  pageSize: number;
-  roleNme?: string; // 角色名
-  status?: number; // 状态
-  deptId?: string; // 部门
+export namespace SystemRoleApi {
+  export interface SystemRole {
+    [key: string]: any;
+    id: string;
+    name: string;
+    permissions: string[];
+    remark?: string;
+    status: 0 | 1;
+  }
 }
 
-export interface RoleListItem {
-  id: string;
-  roleName: string; // 角色名
-  roleValue: string; // 角色值
-  status: number; // 状态
-  orderNo: string; // 排序
-  createTime: string; // 创建时间
-  remark?: string; // 备注
-  dept?: string; // 部门
-  menu?: string[]; // 菜单列表
+/**
+ * 获取角色列表数据
+ */
+async function getRoleList(params: Recordable<any>) {
+  return requestClient.get<Array<SystemRoleApi.SystemRole>>(
+    '/system/role/list',
+    { params },
+  );
 }
 
-export interface GetRoleListByPageReply {
-  items: RoleListItem[];
-  total: number;
+/**
+ * 创建角色
+ * @param data 角色数据
+ */
+async function createRole(data: Omit<SystemRoleApi.SystemRole, 'id'>) {
+  return requestClient.post('/system/role', data);
 }
 
-export async function GetRoleListByPage(params: RolePageParams) {
-  const newUrl: string = urlToRestful(`/system/getRoleListByPage`, params);
-  return requestClient.get<GetRoleListByPageReply>(newUrl);
+/**
+ * 更新角色
+ *
+ * @param id 角色 ID
+ * @param data 角色数据
+ */
+async function updateRole(
+  id: string,
+  data: Omit<SystemRoleApi.SystemRole, 'id'>,
+) {
+  return requestClient.put(`/system/role/${id}`, data);
 }
+
+/**
+ * 删除角色
+ * @param id 角色 ID
+ */
+async function deleteRole(id: string) {
+  return requestClient.delete(`/system/role/${id}`);
+}
+
+export { createRole, deleteRole, getRoleList, updateRole };
