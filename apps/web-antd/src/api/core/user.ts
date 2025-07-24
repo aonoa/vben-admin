@@ -1,6 +1,5 @@
 import type { UserInfo } from '@vben/types';
 
-import { urlToRestful } from '#/api';
 import { requestClient } from '#/api/request';
 
 /**
@@ -10,17 +9,17 @@ export async function getUserInfoApi() {
   return requestClient.get<UserInfo>('/user/info');
 }
 
-export interface GetAccountParamsRequest {
+export interface GetUserParams {
   currentPage: number;
   pageSize: number;
-  account?: string; // 账号
+  username?: string; // 账号
   nickname?: string; // 昵称
   deptId?: string; // 部门
 }
 
-export interface AccountListItem {
+export interface UserListItem {
   id: string;
-  account: string; // 账号
+  username: string; // 账号
   password?: string; // 密码
   email: string; // 邮箱
   nickname: string; // 昵称
@@ -31,21 +30,23 @@ export interface AccountListItem {
   dept?: string; // 部门
 }
 
-export interface GetAccountListReply {
-  items: AccountListItem[];
+export interface GetUserListReply {
+  items: UserListItem[];
   total: number;
 }
 
-export async function GetAccountList(params: GetAccountParamsRequest) {
-  const newUrl: string = urlToRestful(`/system/getAccountList`, params);
-  return requestClient.get<GetAccountListReply>(newUrl);
+export async function GetUserList(params: GetUserParams) {
+  return requestClient.get<GetUserListReply>('/system/user/list', { params });
 }
 
-export async function AddUser(params: AccountListItem) {
-  return requestClient.post<AccountListItem>('/system/addUser', params);
+export async function AddUser(data: Omit<UserListItem, 'id'>) {
+  return requestClient.post('/system/user', data);
 }
 
-export async function DelUser(params: { id: string }) {
-  const newUrl: string = urlToRestful(`/system/delUser/{id}`, params);
-  return requestClient.delete<any>(newUrl);
+export async function UpdateUser(id: string, data: Omit<UserListItem, 'id'>) {
+  return requestClient.put(`/system/user/${id}`, data);
+}
+
+export async function DelUser(id: string) {
+  return requestClient.delete(`/system/user/${id}`);
 }

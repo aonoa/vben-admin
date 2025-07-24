@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import type { AccountListItem } from '#/api';
+import type { UserListItem } from '#/api';
+
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { AddUser } from '#/api';
+import { AddUser, UpdateUser } from '#/api';
 
 import { formSchemas } from './schemas';
 
@@ -12,52 +14,59 @@ defineOptions({
   name: 'FormModelDemo',
 });
 
-const emit = defineEmits(['addUser']);
+const emit = defineEmits(['success']);
+const id = ref();
 
 const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
-  handleSubmit: onSubmit,
   ...formSchemas,
 });
 
+function isPlainEmptyObject(obj: unknown): obj is Record<string, never> {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    !Array.isArray(obj) &&
+    Object.keys(obj).length === 0
+  );
+}
+
 const [Modal, modalApi] = useVbenModal({
   fullscreenButton: false,
+  destroyOnClose: true,
   onCancel() {
     modalApi.close();
   },
-  onConfirm: async () => {
-    await formApi.validateAndSubmitForm();
-    // modalApi.close();
+  async onConfirm() {
+    const { valid } = await formApi.validate();
+    if (valid) {
+      modalApi.lock();
+      const data = await formApi.getValues();
+      try {
+        await (id.value ? UpdateUser(id.value, data) : AddUser(data));
+        modalApi.close();
+        emit('success');
+      } finally {
+        modalApi.lock(false);
+      }
+    }
   },
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      const { values } = modalApi.getData<Record<string, any>>();
-      if (values) {
-        formApi.setValues(values);
+      const data = modalApi.getData<UserListItem>();
+      if (isPlainEmptyObject(data)) {
+        modalApi.setState({ title: '添加用户' });
+      } else {
+        modalApi.setState({ title: '编辑用户' });
+        // 这里可能需要过滤
+
+        formApi.setValues(data, false);
+        id.value = data.id;
       }
     }
   },
   title: '新增用户',
 });
-
-function onSubmit(values: AccountListItem) {
-  setTimeout(async () => {
-    await AddUser({
-      account: values.account,
-      password: values.password,
-      createTime: '',
-      dept: '',
-      email: values.email,
-      id: '',
-      nickname: values.nickname,
-      remark: values.remark,
-      role: values.role,
-      status: 1,
-    });
-    emit('addUser');
-    modalApi.close();
-  }, 1000);
-}
 </script>
 <template>
   <Modal>

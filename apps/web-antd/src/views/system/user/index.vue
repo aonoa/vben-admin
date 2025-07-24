@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { UserListItem } from '#/api';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -7,7 +8,7 @@ import { Button, Image } from 'ant-design-vue';
 
 import Icon from '#/adapter/component/icon/icon.vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { DelUser, GetAccountList } from '#/api';
+import { DelUser, GetUserList } from '#/api';
 
 import FormModalDemo from './add_modal.vue';
 import { gridSchemas } from './schemas';
@@ -30,7 +31,7 @@ const gridOptions: VxeGridProps<any> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }) => {
-        return await GetAccountList({
+        return await GetUserList({
           currentPage: page.currentPage,
           pageSize: page.pageSize,
         });
@@ -51,9 +52,13 @@ const handleAdd = () => {
   formModalApi.open();
 };
 
-const handleDel = (row) => {
+const handleUpdate = (row: UserListItem) => {
+  formModalApi.setData(row).open();
+};
+
+const handleDel = (row: UserListItem) => {
   setTimeout(async () => {
-    await DelUser({ id: row.id });
+    await DelUser(row.id);
     await gridApi.reload();
   }, 1000);
 };
@@ -77,6 +82,7 @@ function addUser() {
         <Image :src="row.avatar" />
       </template>
       <template #action="{ row }">
+        <Button type="link" @click="handleUpdate(row)"> 编辑 </Button>
         <a-popconfirm
           title="确定删除吗?"
           ok-text="确定"
@@ -87,6 +93,6 @@ function addUser() {
         </a-popconfirm>
       </template>
     </Grid>
-    <FormModal @add-user="addUser" />
+    <FormModal @success="addUser" />
   </Page>
 </template>

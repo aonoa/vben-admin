@@ -1,7 +1,11 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { SystemRoleApi } from '#/api';
+
+import { $t } from '@vben/locales';
 
 import { z } from '#/adapter/form';
+import { getRoleList } from '#/api';
 
 export const gridSchemas: VxeGridProps<any> = {
   checkboxConfig: {
@@ -31,9 +35,15 @@ export const gridSchemas: VxeGridProps<any> = {
     //   width: 130,
     // },
     // { field: 'avatar', title: '头像' },
-    { field: 'account', title: '用户名' },
+    { field: 'username', title: '用户名' },
     { field: 'nickname', title: '昵称' },
     { field: 'email', title: '邮箱' },
+    {
+      cellRender: { name: 'CellTag' },
+      field: 'status',
+      title: '状态',
+      // width: 120,
+    },
     { field: 'createTime', title: '创建时间' },
     {
       field: 'action',
@@ -55,7 +65,7 @@ export const formSchemas: VbenFormProps = {
         placeholder: '请输入',
       },
       formItemClass: 'col-span-5',
-      fieldName: 'account',
+      fieldName: 'username',
       label: '账号',
       rules: 'required',
     },
@@ -78,7 +88,6 @@ export const formSchemas: VbenFormProps = {
         },
         triggerFields: ['id'],
       },
-      ifDetail: false,
     },
     {
       fieldName: 'confirmPassword',
@@ -114,7 +123,6 @@ export const formSchemas: VbenFormProps = {
             );
         },
       },
-      ifDetail: false,
     },
     {
       component: 'Input',
@@ -127,22 +135,23 @@ export const formSchemas: VbenFormProps = {
       rules: 'required',
     },
     {
-      component: 'Select',
+      // 组件需要在 #/adapter.ts内注册，并加上类型
+      component: 'ApiSelect',
+      // 对应组件的参数
       componentProps: {
         class: 'w-2/3',
         allowClear: true,
         filterOption: true,
-        options: [
-          {
-            label: '管理员',
-            value: 2,
-          },
-          {
-            label: '默认角色',
-            value: 0,
-          },
-        ],
         placeholder: '请选择',
+        // 菜单接口转options格式
+        afterFetch: (data: SystemRoleApi.GetRoleListByPageReply) => {
+          return data?.items.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        },
+        // 菜单接口
+        api: getRoleList,
       },
       formItemClass: 'col-span-5',
       fieldName: 'role',
@@ -157,6 +166,21 @@ export const formSchemas: VbenFormProps = {
       formItemClass: 'col-span-5',
       fieldName: 'nickname',
       label: '昵称',
+    },
+    {
+      component: 'RadioGroup',
+      componentProps: {
+        buttonStyle: 'solid',
+        options: [
+          { label: $t('common.enabled'), value: 1 },
+          { label: $t('common.disabled'), value: 0 },
+        ],
+        optionType: 'button',
+      },
+      defaultValue: 1,
+      formItemClass: 'col-span-5',
+      fieldName: 'status',
+      label: '状态',
     },
     {
       component: 'Input',
