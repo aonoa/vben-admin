@@ -14,6 +14,7 @@ import { Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
+import { GetResourceList } from '#/api/system/resource';
 import { createRole, updateRole } from '#/api/system/role';
 import { $t } from '#/locales';
 
@@ -30,6 +31,9 @@ const [Form, formApi] = useVbenForm({
 
 const permissions = ref<DataNode[]>([]);
 const loadingPermissions = ref(false);
+
+const api_permissions = ref<DataNode[]>([]);
+const api_loadingPermissions = ref(false);
 
 const id = ref();
 const [Drawer, drawerApi] = useVbenDrawer({
@@ -55,6 +59,9 @@ const [Drawer, drawerApi] = useVbenDrawer({
       if (permissions.value.length === 0) {
         loadPermissions();
       }
+      if (api_permissions.value.length === 0) {
+        api_loadPermissions();
+      }
 
       if (data) {
         formData.value = data;
@@ -77,6 +84,16 @@ async function loadPermissions() {
     permissions.value = res as unknown as DataNode[];
   } finally {
     loadingPermissions.value = false;
+  }
+}
+
+async function api_loadPermissions() {
+  api_loadingPermissions.value = true;
+  try {
+    const res = await GetResourceList({});
+    api_permissions.value = res?.items as unknown as DataNode[];
+  } finally {
+    api_loadingPermissions.value = false;
   }
 }
 
@@ -117,6 +134,24 @@ function getNodeClass(node: Recordable<any>) {
             <template #node="{ value }">
               <IconifyIcon v-if="value.meta.icon" :icon="value.meta.icon" />
               {{ $t(value.meta.title) }}
+            </template>
+          </VbenTree>
+        </Spin>
+      </template>
+      <template #api_permissions="slotProps">
+        <Spin :spinning="api_loadingPermissions" wrapper-class-name="w-full">
+          <VbenTree
+            :tree-data="api_permissions"
+            multiple
+            bordered
+            :default-expanded-level="2"
+            :get-node-class="getNodeClass"
+            v-bind="slotProps"
+            value-field="id"
+            label-field="name"
+          >
+            <template #node="{ value }">
+              {{ $t(value.name) }}
             </template>
           </VbenTree>
         </Spin>

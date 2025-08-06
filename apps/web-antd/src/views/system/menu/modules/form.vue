@@ -157,7 +157,7 @@ const schema: VbenFormSchema[] = [
       },
       triggerFields: ['type'],
     },
-    fieldName: 'activePath',
+    fieldName: 'meta.activePath',
     help: $t('system.menu.activePathHelp'),
     label: $t('system.menu.activePath'),
     rules: z
@@ -171,7 +171,7 @@ const schema: VbenFormSchema[] = [
         $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
       )
       .refine(async (value: string) => {
-        return await isMenuPathExists(value, formData.value?.id);
+        return await isMenuPathExists(value);
       }, $t('system.menu.activePathMustExist'))
       .optional(),
   },

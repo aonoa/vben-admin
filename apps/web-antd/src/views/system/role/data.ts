@@ -62,6 +62,13 @@ export function useFormSchema(): VbenFormSchema[] {
       label: $t('system.role.setPermissions'),
       modelPropName: 'modelValue',
     },
+    {
+      component: 'Input',
+      fieldName: 'api_permissions',
+      formItemClass: 'items-start',
+      label: 'api授权',
+      modelPropName: 'modelValue',
+    },
   ];
 }
 
