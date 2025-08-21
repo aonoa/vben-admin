@@ -13,29 +13,35 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: 'Select',
-      componentProps: {
-        class: 'w-4/5',
-        options: [
-          {
-            label: '默认角色',
-            value: 'default',
-          },
-          {
-            label: '管理员',
-            value: 'admin',
-          },
-          {
-            label: '超级管理员',
-            value: 'root',
-          },
-        ],
-      },
-      defaultValue: 'default',
+      component: 'Input',
       fieldName: 'value',
       label: $t('system.role.value'),
       rules: 'required',
     },
+    // {
+    //   component: 'Select',
+    //   componentProps: {
+    //     class: 'w-4/5',
+    //     options: [
+    //       {
+    //         label: '默认角色',
+    //         value: 'default',
+    //       },
+    //       {
+    //         label: '管理员',
+    //         value: 'admin',
+    //       },
+    //       {
+    //         label: '超级管理员',
+    //         value: 'root',
+    //       },
+    //     ],
+    //   },
+    //   defaultValue: 'default',
+    //   fieldName: 'value',
+    //   label: $t('system.role.value'),
+    //   rules: 'required',
+    // },
     {
       component: 'RadioGroup',
       componentProps: {
