@@ -1,6 +1,65 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
+export const formOptions: VbenFormProps = {
+  wrapperClass: 'grid-cols-9',
+  compact: true,
+  // 默认展开
+  collapsed: false,
+  schema: [
+    {
+      component: 'Input',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+      },
+      formItemClass: 'col-span-2',
+      fieldName: 'name',
+      label: '资源名称',
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+      },
+      formItemClass: 'col-span-2',
+      fieldName: 'type',
+      label: '资源类型',
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+      },
+      formItemClass: 'col-span-2',
+      fieldName: 'value',
+      label: '资源值',
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+      },
+      formItemClass: 'col-span-2',
+      fieldName: 'method',
+      label: '操作',
+    },
+  ],
+
+  // 控制表单是否显示折叠按钮
+  showCollapseButton: false,
+  submitButtonOptions: {
+    content: '查询',
+  },
+  // 是否在字段值改变时提交表单
+  submitOnChange: false,
+  // 按下回车时是否提交表单
+  submitOnEnter: false,
+};
+
 export const gridSchemas: VxeGridProps<any> = {
   checkboxConfig: {
     highlight: true,
@@ -43,6 +102,7 @@ export const formSchemas: VbenFormProps = {
       formItemClass: 'col-span-5',
       fieldName: 'name',
       label: '资源名称',
+      rules: 'required',
     },
     {
       component: 'Input',

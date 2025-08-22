@@ -1,8 +1,11 @@
+import type { Recordable } from '@vben/types';
+
 import { requestClient } from '#/api/request';
 
 export interface GetResourcePageParams {
   currentPage: number;
   pageSize: number;
+  params: ResourceListItem;
 }
 
 export interface ResourceListItem {
@@ -19,7 +22,7 @@ export interface GetResourceListByPageReply {
   total: number;
 }
 
-export async function GetResourceList(params: GetResourcePageParams) {
+export async function GetResourceList(params: Recordable<any>) {
   return requestClient.get<GetResourceListByPageReply>(
     '/system/resource/list',
     { params },

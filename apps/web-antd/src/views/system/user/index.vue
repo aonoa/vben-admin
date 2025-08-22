@@ -11,7 +11,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { DelUser, GetUserList } from '#/api';
 
 import FormModalDemo from './add_modal.vue';
-import { gridSchemas } from './schemas';
+import { formOptions, gridSchemas } from './schemas';
 
 const gridOptions: VxeGridProps<any> = {
   ...gridSchemas,
@@ -20,20 +20,21 @@ const gridOptions: VxeGridProps<any> = {
     slots: {
       tools: 'toolbar-tools',
     },
-    // custom: {
-    //   // 自定义列-图标
-    //   icon: 'vxe-icon-menu',
-    // },
+    custom: {
+      // 自定义列-图标
+      icon: 'vxe-icon-menu',
+    },
   },
   border: false,
   keepSource: true,
   pagerConfig: {},
   proxyConfig: {
     ajax: {
-      query: async ({ page }) => {
+      query: async ({ page }, formValues) => {
         return await GetUserList({
           currentPage: page.currentPage,
           pageSize: page.pageSize,
+          ...formValues,
         });
       },
     },
@@ -41,6 +42,7 @@ const gridOptions: VxeGridProps<any> = {
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions,
   gridOptions,
 });
 

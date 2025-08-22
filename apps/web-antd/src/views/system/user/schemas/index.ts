@@ -7,6 +7,94 @@ import { $t } from '@vben/locales';
 import { z } from '#/adapter/form';
 import { getRoleList } from '#/api';
 
+export const formOptions: VbenFormProps = {
+  wrapperClass: 'grid-cols-9',
+  compact: true,
+  // 默认展开
+  collapsed: false,
+  schema: [
+    {
+      component: 'Input',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+      },
+      formItemClass: 'col-span-2',
+      fieldName: 'username',
+      label: '账号',
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+      },
+      formItemClass: 'col-span-2',
+      fieldName: 'nickname',
+      label: '昵称',
+    },
+    {
+      // 组件需要在 #/adapter.ts内注册，并加上类型
+      component: 'ApiSelect',
+      // 对应组件的参数
+      componentProps: {
+        class: 'w-2/3',
+        filterOption: true,
+        placeholder: '请选择',
+        // 菜单接口转options格式
+        afterFetch: (data: SystemRoleApi.GetRoleListByPageReply) => {
+          return [
+            {
+              label: '全部角色',
+              value: -1,
+            },
+            ...(data?.items?.map((item: any) => ({
+              label: item.name,
+              value: item.id,
+            })) || []),
+          ];
+        },
+        // 菜单接口
+        api: getRoleList,
+      },
+      defaultValue: -1,
+      formItemClass: 'col-span-2',
+      fieldName: 'role',
+      label: '角色',
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        class: 'w-full',
+        allowClear: true,
+        options: [
+          {
+            label: '已启用',
+            value: '1',
+          },
+          {
+            label: '已禁用',
+            value: '2',
+          },
+        ],
+      },
+      formItemClass: 'col-span-2',
+      fieldName: 'status',
+      label: '状态',
+    },
+  ],
+
+  // 控制表单是否显示折叠按钮
+  showCollapseButton: false,
+  submitButtonOptions: {
+    content: '查询',
+  },
+  // 是否在字段值改变时提交表单
+  submitOnChange: false,
+  // 按下回车时是否提交表单
+  submitOnEnter: false,
+};
+
 export const gridSchemas: VxeGridProps<any> = {
   checkboxConfig: {
     highlight: true,
@@ -26,7 +114,7 @@ export const gridSchemas: VxeGridProps<any> = {
       field: 'avatar',
       slots: { default: 'image-url' },
       title: '头像',
-      width: 100,
+      width: 50,
     },
     // {
     //   cellRender: { name: 'CellImage' },
@@ -34,7 +122,6 @@ export const gridSchemas: VxeGridProps<any> = {
     //   title: '头像',
     //   width: 130,
     // },
-    // { field: 'avatar', title: '头像' },
     { field: 'username', title: '用户名' },
     { field: 'nickname', title: '昵称' },
     { field: 'email', title: '邮箱' },
