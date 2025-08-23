@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { UserListItem } from '#/api';
+import type { ApiListItem } from '#/api/system/api';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, Image } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 
 import Icon from '#/adapter/component/icon/icon.vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -50,11 +50,11 @@ const handleAdd = () => {
   formModalApi.open();
 };
 
-const handleUpdate = (row: UserListItem) => {
+const handleUpdate = (row: ApiListItem) => {
   formModalApi.setData(row).open();
 };
 
-const handleDel = (row: UserListItem) => {
+const handleDel = (row: ApiListItem) => {
   setTimeout(async () => {
     await DelApi(row.id);
     await gridApi.reload();
@@ -62,7 +62,7 @@ const handleDel = (row: UserListItem) => {
 };
 
 // 信号
-function addUser() {
+function addApi() {
   gridApi.reload();
 }
 </script>
@@ -76,9 +76,6 @@ function addUser() {
           新增
         </Button>
       </template>
-      <template #image-url="{ row }">
-        <Image :src="row.avatar" />
-      </template>
       <template #action="{ row }">
         <Button type="link" @click="handleUpdate(row)"> 编辑 </Button>
         <a-popconfirm
@@ -91,6 +88,6 @@ function addUser() {
         </a-popconfirm>
       </template>
     </Grid>
-    <FormModal @success="addUser" />
+    <FormModal @success="addApi" />
   </Page>
 </template>
