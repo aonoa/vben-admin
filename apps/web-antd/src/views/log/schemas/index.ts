@@ -96,12 +96,12 @@ export const formOptions: VbenFormProps = {
       label: '访问IP',
     },
     {
-      component: 'Input',
+      component: 'RangePicker',
       componentProps: {
-        class: 'w-full',
+        showTime: true,
         allowClear: true,
       },
-      formItemClass: 'col-span-2',
+      formItemClass: 'col-span-3',
       fieldName: 'request_time',
       label: '操作时间',
     },
@@ -133,6 +133,14 @@ export const formOptions: VbenFormProps = {
       fieldName: 'latency',
       label: '请求耗时',
     },
+  ],
+
+  fieldMappingTime: [
+    [
+      'request_time',
+      ['request_time_start', 'request_time_end'],
+      'YYYY-MM-DD HH:mm:ss',
+    ],
   ],
 
   // 控制表单是否显示折叠按钮
@@ -173,15 +181,24 @@ export const loginFormOptions: VbenFormProps = {
       label: 'IP地址',
     },
     {
-      component: 'Input',
+      component: 'RangePicker',
       componentProps: {
         class: 'w-full',
+        showTime: true,
         allowClear: true,
       },
-      formItemClass: 'col-span-2',
+      formItemClass: 'col-span-3',
       fieldName: 'request_time',
       label: '登录时间',
     },
+  ],
+
+  fieldMappingTime: [
+    [
+      'request_time',
+      ['request_time_start', 'request_time_end'],
+      'YYYY-MM-DD HH:mm:ss',
+    ],
   ],
 
   // 控制表单是否显示折叠按钮

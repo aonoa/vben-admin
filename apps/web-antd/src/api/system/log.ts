@@ -9,7 +9,8 @@ export interface GetSysLogListParams {
   session_id: string;
   method: string;
   path: string;
-  request_time: string;
+  request_time_start: string;
+  request_time_end: string;
   ip_address: string;
   latency: number;
   res_code: number;
