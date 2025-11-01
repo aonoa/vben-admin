@@ -1,9 +1,11 @@
 import { defineConfig } from '@vben/vite-config';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig(async () => {
   return {
     application: {},
     vite: {
+      plugins: [react()],
       server: {
         proxy: {
           '/api': {

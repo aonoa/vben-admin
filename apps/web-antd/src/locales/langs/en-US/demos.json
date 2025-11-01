@@ -1,6 +1,8 @@
 {
   "title": "Demos",
   "antd": "Ant Design Vue",
+  "upload": "Upload",
+  "flowgram": "FlowGram",
   "vben": {
     "title": "Project",
     "about": "About",

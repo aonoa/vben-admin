@@ -29,6 +29,14 @@ const routes: RouteRecordRaw[] = [
         path: '/demos/upload',
         component: () => import('#/views/demos/upload/index.vue'),
       },
+      {
+        meta: {
+          title: $t('demos.flowgram'),
+        },
+        name: 'FlowGram',
+        path: '/demos/flowgram',
+        component: () => import('#/views/demos/flowgram/index.vue'),
+      },
     ],
   },
 ];
