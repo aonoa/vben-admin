@@ -20,7 +20,8 @@ const gridOptions: VxeGridProps<any> = {
     slots: {
       tools: 'toolbar-tools',
     },
-    custom: {
+    custom: true,
+    customOptions: {
       // 自定义列-图标
       icon: 'vxe-icon-menu',
     },
