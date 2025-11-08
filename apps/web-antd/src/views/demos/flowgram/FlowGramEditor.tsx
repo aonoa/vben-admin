@@ -1,14 +1,14 @@
+import {
+  EditorRenderer,
+  FreeLayoutEditorProvider,
+  useNodeRender,
+  usePlaygroundTools,
+  WorkflowNodeRenderer,
+} from '@flowgram.ai/free-layout-editor';
 // @jsxImportSource react
 import { createElement, useCallback } from 'react';
-import '@flowgram.ai/free-layout-editor/index.css';
 
-import {
-  FreeLayoutEditorProvider,
-  EditorRenderer,
-  useNodeRender,
-  WorkflowNodeRenderer,
-  usePlaygroundTools
-} from '@flowgram.ai/free-layout-editor';
+import '@flowgram.ai/free-layout-editor/index.css';
 
 // 自定义节点渲染
 function CustomNodeRender(props) {
@@ -30,11 +30,11 @@ function CustomNodeRender(props) {
         padding: 12,
         cursor: 'move',
         fontSize: '14px',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
       },
-      node: props.node
+      node: props.node,
     },
-    form?.render() || `节点 ${props.node.id}`
+    form?.render() || `节点 ${props.node.id}`,
   );
 }
 
@@ -53,8 +53,8 @@ function EditorWithToolbar() {
         height: '100%',
         width: '100%',
         display: 'flex',
-        flexDirection: 'column'
-      }
+        flexDirection: 'column',
+      },
     },
     // 工具栏
     createElement(
@@ -65,39 +65,51 @@ function EditorWithToolbar() {
           gap: '8px',
           padding: '12px 16px',
           borderBottom: '1px solid #e8e8e8',
-          backgroundColor: '#fafafa'
-        }
+          backgroundColor: '#fafafa',
+        },
       },
-      createElement('button', {
-        onClick: onZoomIn,
-        style: {
-          padding: '6px 12px',
-          border: '1px solid #d9d9d9',
-          borderRadius: '4px',
-          backgroundColor: '#fff',
-          cursor: 'pointer'
-        }
-      }, 'Zoom In'),
-      createElement('button', {
-        onClick: onZoomOut,
-        style: {
-          padding: '6px 12px',
-          border: '1px solid #d9d9d9',
-          borderRadius: '4px',
-          backgroundColor: '#fff',
-          cursor: 'pointer'
-        }
-      }, 'Zoom Out'),
-      createElement('button', {
-        onClick: onFitView,
-        style: {
-          padding: '6px 12px',
-          border: '1px solid #d9d9d9',
-          borderRadius: '4px',
-          backgroundColor: '#fff',
-          cursor: 'pointer'
-        }
-      }, 'Fit View')
+      createElement(
+        'button',
+        {
+          onClick: onZoomIn,
+          style: {
+            padding: '6px 12px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '4px',
+            backgroundColor: '#fff',
+            cursor: 'pointer',
+          },
+        },
+        'Zoom In',
+      ),
+      createElement(
+        'button',
+        {
+          onClick: onZoomOut,
+          style: {
+            padding: '6px 12px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '4px',
+            backgroundColor: '#fff',
+            cursor: 'pointer',
+          },
+        },
+        'Zoom Out',
+      ),
+      createElement(
+        'button',
+        {
+          onClick: onFitView,
+          style: {
+            padding: '6px 12px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '4px',
+            backgroundColor: '#fff',
+            cursor: 'pointer',
+          },
+        },
+        'Fit View',
+      ),
     ),
     // 编辑器内容
     createElement(
@@ -105,11 +117,11 @@ function EditorWithToolbar() {
       {
         style: {
           flex: 1,
-          minHeight: 0
-        }
+          minHeight: 0,
+        },
       },
-      createElement(EditorRenderer)
-    )
+      createElement(EditorRenderer),
+    ),
   );
 }
 
@@ -123,8 +135,8 @@ export default function FlowGramEditor() {
         backgroundColor: '#fff',
         border: '2px solid #1890ff',
         borderRadius: '8px',
-        overflow: 'hidden'
-      }
+        overflow: 'hidden',
+      },
     },
     createElement(
       FreeLayoutEditorProvider,
@@ -146,8 +158,8 @@ export default function FlowGramEditor() {
                 position: { x: 100, y: 100 },
               },
               data: {
-                label: '开始节点'
-              }
+                label: '开始节点',
+              },
             },
             {
               id: 'process',
@@ -156,8 +168,8 @@ export default function FlowGramEditor() {
                 position: { x: 350, y: 100 },
               },
               data: {
-                label: '处理节点'
-              }
+                label: '处理节点',
+              },
             },
             {
               id: 'end',
@@ -166,14 +178,14 @@ export default function FlowGramEditor() {
                 position: { x: 600, y: 100 },
               },
               data: {
-                label: '结束节点'
-              }
-            }
+                label: '结束节点',
+              },
+            },
           ],
           edges: [],
-        }
+        },
       },
-      createElement(EditorWithToolbar)
-    )
+      createElement(EditorWithToolbar),
+    ),
   );
 }

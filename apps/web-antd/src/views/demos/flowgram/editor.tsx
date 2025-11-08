@@ -41,6 +41,7 @@ function NodeRender(props) {
 }
 
 export default function Editor() {
+  // const editorProps = useEditorProps();
   return createElement(
     'div',
     {

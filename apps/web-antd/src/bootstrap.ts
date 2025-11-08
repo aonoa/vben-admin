@@ -7,11 +7,10 @@ import { initStores } from '@vben/stores';
 import '@vben/styles';
 import '@vben/styles/antd';
 
-import { setVeauryOptions } from 'veaury';
-import { createRoot } from 'react-dom/client';
-
 import { useTitle } from '@vueuse/core';
 import Antd from 'ant-design-vue';
+import { createRoot } from 'react-dom/client';
+import { setVeauryOptions } from 'veaury';
 
 import { $t, setupI18n } from '#/locales';
 
@@ -21,7 +20,6 @@ import App from './app.vue';
 import { router } from './router';
 
 async function bootstrap(namespace: string) {
-
   // Configure Veaury to use React 18/19 createRoot
   setVeauryOptions({ react: { createRoot } });
 

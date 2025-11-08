@@ -1,8 +1,9 @@
-import 'reflect-metadata';
 import { initPreferences } from '@vben/preferences';
 import { unmountGlobalLoading } from '@vben/utils';
 
 import { overridesPreferences } from './preferences';
+
+import 'reflect-metadata';
 
 /**
  * 应用初始化完成之后再进行页面加载渲染
