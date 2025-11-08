@@ -12,4 +12,7 @@ export const overridesPreferences = defineOverridesPreferences({
     accessMode: 'backend',
     enableRefreshToken: true,
   },
+  widget: {
+    timezone: false,
+  }
 });
