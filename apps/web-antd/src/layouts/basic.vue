@@ -18,6 +18,7 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
+import { FloatingButton } from '#/adapter/component/copilot/index';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
@@ -203,4 +204,7 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
+  <!-- 悬浮按钮 -->
+  <!-- 使用悬浮按钮组件 -->
+  <FloatingButton />
 </template>

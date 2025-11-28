@@ -16,7 +16,7 @@ onMounted(() => {
       right: '1%',
       top: '2 %',
       outerBounds: {
-        containLabel: true
+        containLabel: true,
       },
     },
     series: [
