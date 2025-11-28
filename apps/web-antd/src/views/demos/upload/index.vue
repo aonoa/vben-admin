@@ -2,7 +2,8 @@
 import { Card, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { uploadFileApi } from '#/api/core/upload';
+
+import { upload_file } from '#/api/core/upload';
 
 const [BaseForm] = useVbenForm({
   // 提交函数
@@ -36,10 +37,20 @@ const [BaseForm] = useVbenForm({
     {
       fieldName: 'image',
       label: '上传图片',
-      component: 'Image',
+      component: 'Upload',
       componentProps: {
-        placeholder: '请选择需要上传的图片',
-        uploadApi: uploadFileApi,
+        placeholder: '上传图片',
+        // uploadApi: uploadFileApi,
+        // 更多属性见：https://ant.design/components/upload-cn
+        accept: '.png,.jpg,.jpeg',
+        // 自动携带认证信息
+        customRequest: upload_file,
+        disabled: false,
+        maxCount: 1,
+        multiple: false,
+        showUploadList: true,
+        // 上传列表的内建样式，支持四种基本样式 text, picture, picture-card 和 picture-circle
+        listType: 'picture-card',
       },
       formItemClass: 'col-span-12',
     },
@@ -49,6 +60,8 @@ const [BaseForm] = useVbenForm({
       component: 'Upload',
       componentProps: {
         placeholder: '请选择文件',
+        // 自动携带认证信息
+        customRequest: upload_file,
       },
       formItemClass: 'col-span-12',
     },
