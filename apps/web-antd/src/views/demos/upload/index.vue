@@ -2,7 +2,6 @@
 import { Card, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-
 import { upload_file } from '#/api/core/upload';
 
 const [BaseForm] = useVbenForm({
