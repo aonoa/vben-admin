@@ -19,6 +19,7 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
 import { FloatingButton } from '#/adapter/component/copilot/index';
+import Live2D from '#/adapter/component/Live2D.vue';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
@@ -207,4 +208,5 @@ watch(
   <!-- 悬浮按钮 -->
   <!-- 使用悬浮按钮组件 -->
   <FloatingButton />
+  <Live2D />
 </template>

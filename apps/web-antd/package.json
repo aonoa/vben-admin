@@ -46,6 +46,8 @@
     "dayjs": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:"
+    "vue-router": "catalog:",
+    "pixi-live2d-display": "^0.4.0",
+    "pixi.js": "^6.5.10"
   }
 }
