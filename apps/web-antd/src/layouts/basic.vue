@@ -18,7 +18,7 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
-import { FloatingButton } from '#/adapter/component/copilot/index';
+import FloatingAICopilotWrapper from '#/adapter/component/copilot/FloatingAICopilotWrapper.vue';
 import Live2D from '#/adapter/component/Live2D.vue';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
@@ -169,6 +169,53 @@ watch(
     immediate: true,
   },
 );
+
+// ////////////////////////////
+// // 组件状态
+// const copilotOpen = ref(true);
+// const customTitle = ref('✨ 我的 AI 助手');
+// const copilotWidth = ref('450px');
+//
+// // 自定义快速操作
+// const customActions = reactive([
+//   {
+//     text: '升级信息',
+//     icon: ScheduleOutlined,
+//   },
+//   {
+//     text: '组件列表',
+//     icon: AppstoreOutlined,
+//   },
+//   {
+//     text: '代码示例',
+//     icon: CodeOutlined,
+//   },
+//   {
+//     text: '更多功能',
+//     icon: AppstoreAddOutlined,
+//   },
+// ]);
+//
+// // 自定义欢迎提示
+// const customPrompts = reactive([
+//   { key: '1', description: '如何使用这个组件？' },
+//   { key: '2', description: '组件有哪些配置选项？' },
+//   { key: '3', description: '如何自定义组件样式？' },
+// ]);
+//
+// // 自定义输入建议
+// const customSuggestions = reactive([
+//   { label: '创建报告', value: 'report' },
+//   { label: '生成代码', value: 'code' },
+//   {
+//     label: '查询知识',
+//     value: 'knowledge',
+//     children: [
+//       { label: '关于 Vue', value: 'vue' },
+//       { label: '关于 Ant Design', value: 'antd' },
+//     ],
+//   },
+// ]);
 </script>
 
 <template>
@@ -205,8 +252,15 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
-  <!-- 悬浮按钮 -->
-  <!-- 使用悬浮按钮组件 -->
-  <FloatingButton />
+  <!--  &lt;!&ndash; 悬浮按钮 &ndash;&gt;-->
+  <!--  &lt;!&ndash; 使用悬浮按钮组件 &ndash;&gt;-->
+  <!--  <FloatingButton />-->
+  <!--  <AiCopilot-->
+  <!--    v-model:open="copilotOpen"-->
+  <!--    :title="customTitle"-->
+  <!--    :width="copilotWidth"-->
+  <!--  />-->
+  <!-- 使用包装组件 -->
+  <FloatingAICopilotWrapper />
   <Live2D />
 </template>
