@@ -23,6 +23,8 @@ import { Button, Card } from 'ant-design-vue';
 import { message as antMessage } from 'ant-design-vue/es/components';
 import { BubbleList, Sender } from 'ant-design-x-vue';
 
+import { CopilotSSEStream } from '#/api/system/copilot';
+
 interface MessageItem {
   id: string;
   role: 'assistant' | 'user';
@@ -208,6 +210,7 @@ const sendMessage = async () => {
 };
 
 const generateAIResponse = async (question: string): Promise<void> => {
+  if (!question) return;
   const loadingMessageId = `msg_${Date.now()}_loading`;
   messages.value.push({
     id: loadingMessageId,
@@ -216,42 +219,76 @@ const generateAIResponse = async (question: string): Promise<void> => {
     timestamp: Date.now(),
   });
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      messages.value = messages.value.filter(
-        (msg) => msg.id !== loadingMessageId,
-      );
+  // let response = '';
+  let flag = true;
 
-      let response = '';
-      const lowerQuestion = question.toLowerCase();
+  // 使用方式
+  await CopilotSSEStream(
+    { id: '666', items: messages.value.slice(1, -1) },
+    {
+      onChunk: (chunk, isDone) => {
+        if (isDone) {
+          return;
+        }
+        // 更新UI显示
+        messages.value.forEach((msg) => {
+          if (msg.id === loadingMessageId) {
+            if (flag) {
+              msg.content = chunk;
+              flag = false;
+            }
+            if (chunk === '{}') {
+              return;
+            }
+            msg.content += chunk;
+          }
+        });
+      },
+      onComplete: () => {
+        // console.log('完整响应:', fullResponse);
+      },
+      onError: () => {
+        // console.error('请求失败:', error);
+      },
+    },
+  );
 
-      if (lowerQuestion.includes('update')) {
-        response =
-          'Ant Design X has recently updated with new AI-powered components, improved performance, and enhanced accessibility features.';
-      } else if (lowerQuestion.includes('component')) {
-        response =
-          'Ant Design X includes components like Smart Forms, AI-powered Tables, Adaptive Layouts, Intelligent Charts, and Interactive Dashboards.';
-      } else if (
-        lowerQuestion.includes('install') ||
-        lowerQuestion.includes('import')
-      ) {
-        response =
-          'To install: `npm install antdx-vue`. Import: `import { SmartForm } from "antdx-vue"`. Check docs for details.';
-      } else {
-        response =
-          'Thank you for your question! Ant Design X combines elegant design with AI capabilities. How else can I help?';
-      }
-
-      messages.value.push({
-        id: `msg_${Date.now()}_ai`,
-        role: 'assistant',
-        content: response,
-        timestamp: Date.now(),
-      });
-
-      resolve();
-    }, 800);
-  });
+  // return new Promise((resolve) => {
+  //   setTimeout(() => {
+  //     messages.value = messages.value.filter(
+  //       (msg) => msg.id !== loadingMessageId,
+  //     );
+  //
+  //     let response = '';
+  //     const lowerQuestion = question.toLowerCase();
+  //
+  //     if (lowerQuestion.includes('update')) {
+  //       response =
+  //         'Ant Design X has recently updated with new AI-powered components, improved performance, and enhanced accessibility features.';
+  //     } else if (lowerQuestion.includes('component')) {
+  //       response =
+  //         'Ant Design X includes components like Smart Forms, AI-powered Tables, Adaptive Layouts, Intelligent Charts, and Interactive Dashboards.';
+  //     } else if (
+  //       lowerQuestion.includes('install') ||
+  //       lowerQuestion.includes('import')
+  //     ) {
+  //       response =
+  //         'To install: `npm install antdx-vue`. Import: `import { SmartForm } from "antdx-vue"`. Check docs for details.';
+  //     } else {
+  //       response =
+  //         'Thank you for your question! Ant Design X combines elegant design with AI capabilities. How else can I help?';
+  //     }
+  //
+  //     messages.value.push({
+  //       id: `msg_${Date.now()}_ai`,
+  //       role: 'assistant',
+  //       content: response,
+  //       timestamp: Date.now(),
+  //     });
+  //
+  //     resolve();
+  //   }, 800);
+  // });
 };
 
 // 优化 scrollToBottom 方法
@@ -553,6 +590,11 @@ watch(isMaximized, () => {
 /* 拖拽时优化性能 */
 .dragging {
   transition: none !important;
+}
+
+/* 让内容换行 */
+:deep(.ant-bubble-content) {
+  white-space: pre-line;
 }
 
 :deep(.ant-card-body) {
