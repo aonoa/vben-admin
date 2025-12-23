@@ -23,7 +23,7 @@ import { Button, Card } from 'ant-design-vue';
 import { message as antMessage } from 'ant-design-vue/es/components';
 import { BubbleList, Sender } from 'ant-design-x-vue';
 
-import { CopilotSSEStream } from '#/api/system/copilot';
+import { CopilotSSE } from '#/api/system/copilot';
 
 interface MessageItem {
   id: string;
@@ -222,14 +222,10 @@ const generateAIResponse = async (question: string): Promise<void> => {
   // let response = '';
   let flag = true;
 
-  // 使用方式
-  await CopilotSSEStream(
+  await CopilotSSE(
     { id: '666', items: messages.value.slice(1, -1) },
     {
-      onChunk: (chunk, isDone) => {
-        if (isDone) {
-          return;
-        }
+      onMessage: (chunk) => {
         // 更新UI显示
         messages.value.forEach((msg) => {
           if (msg.id === loadingMessageId) {
@@ -244,14 +240,42 @@ const generateAIResponse = async (question: string): Promise<void> => {
           }
         });
       },
-      onComplete: () => {
-        // console.log('完整响应:', fullResponse);
-      },
-      onError: () => {
+      onEnd: () => {
         // console.error('请求失败:', error);
       },
     },
   );
+
+  // // 使用方式
+  // await CopilotSSEStream(
+  //   { id: '666', items: messages.value.slice(1, -1) },
+  //   {
+  //     onChunk: (chunk, isDone) => {
+  //       if (isDone) {
+  //         return;
+  //       }
+  //       // 更新UI显示
+  //       messages.value.forEach((msg) => {
+  //         if (msg.id === loadingMessageId) {
+  //           if (flag) {
+  //             msg.content = chunk;
+  //             flag = false;
+  //           }
+  //           if (chunk === '{}') {
+  //             return;
+  //           }
+  //           msg.content += chunk;
+  //         }
+  //       });
+  //     },
+  //     onComplete: () => {
+  //       // console.log('完整响应:', fullResponse);
+  //     },
+  //     onError: () => {
+  //       // console.error('请求失败:', error);
+  //     },
+  //   },
+  // );
 
   // return new Promise((resolve) => {
   //   setTimeout(() => {

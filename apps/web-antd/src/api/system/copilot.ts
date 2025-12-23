@@ -1,3 +1,20 @@
+import { requestClient } from '#/api/request';
+
+export async function CopilotSSE(
+  data: Msg,
+  options?: {
+    onEnd?: () => void;
+    onMessage?: (message: string) => void;
+  },
+): Promise<void> {
+  return requestClient.postSSE('/v1/copilot/sse', data, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    ...options,
+  });
+}
+
 export interface Message {
   role: string;
   content: string;
@@ -18,7 +35,7 @@ export async function CopilotSSEStream(
   },
 ): Promise<void> {
   try {
-    const response = await fetch('/api/v1/copilot/see', {
+    const response = await fetch('/api/v1/copilot/sse', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
