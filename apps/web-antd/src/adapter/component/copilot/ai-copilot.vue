@@ -223,20 +223,21 @@ const generateAIResponse = async (question: string): Promise<void> => {
   let flag = true;
 
   await CopilotSSE(
-    { id: '666', items: messages.value.slice(1, -1) },
+    { id: loadingMessageId, items: messages.value.slice(1, -1) },
     {
       onMessage: (chunk) => {
         // 更新UI显示
         messages.value.forEach((msg) => {
           if (msg.id === loadingMessageId) {
-            if (flag) {
-              msg.content = chunk;
-              flag = false;
-            }
             if (chunk === '{}') {
               return;
             }
-            msg.content += chunk;
+            if (flag) {
+              msg.content = chunk;
+              flag = false;
+            } else {
+              msg.content += chunk;
+            }
           }
         });
       },
