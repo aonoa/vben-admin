@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { BubbleListProps } from 'ant-design-x-vue';
+import {type BubbleListProps, Welcome} from 'ant-design-x-vue';
 
 import {
   computed,
@@ -54,6 +54,8 @@ const messages = ref<MessageItem[]>([
 const isMinimized = ref(false);
 const isMaximized = ref(false);
 const messagesContainer = ref<HTMLElement | null>(null);
+
+const isMessagesCount = computed(() => messages.value?.length > 1);
 
 // 拖拽相关状态
 const isDragging = ref(false);
@@ -246,74 +248,6 @@ const generateAIResponse = async (question: string): Promise<void> => {
       },
     },
   );
-
-  // // 使用方式
-  // await CopilotSSEStream(
-  //   { id: '666', items: messages.value.slice(1, -1) },
-  //   {
-  //     onChunk: (chunk, isDone) => {
-  //       if (isDone) {
-  //         return;
-  //       }
-  //       // 更新UI显示
-  //       messages.value.forEach((msg) => {
-  //         if (msg.id === loadingMessageId) {
-  //           if (flag) {
-  //             msg.content = chunk;
-  //             flag = false;
-  //           }
-  //           if (chunk === '{}') {
-  //             return;
-  //           }
-  //           msg.content += chunk;
-  //         }
-  //       });
-  //     },
-  //     onComplete: () => {
-  //       // console.log('完整响应:', fullResponse);
-  //     },
-  //     onError: () => {
-  //       // console.error('请求失败:', error);
-  //     },
-  //   },
-  // );
-
-  // return new Promise((resolve) => {
-  //   setTimeout(() => {
-  //     messages.value = messages.value.filter(
-  //       (msg) => msg.id !== loadingMessageId,
-  //     );
-  //
-  //     let response = '';
-  //     const lowerQuestion = question.toLowerCase();
-  //
-  //     if (lowerQuestion.includes('update')) {
-  //       response =
-  //         'Ant Design X has recently updated with new AI-powered components, improved performance, and enhanced accessibility features.';
-  //     } else if (lowerQuestion.includes('component')) {
-  //       response =
-  //         'Ant Design X includes components like Smart Forms, AI-powered Tables, Adaptive Layouts, Intelligent Charts, and Interactive Dashboards.';
-  //     } else if (
-  //       lowerQuestion.includes('install') ||
-  //       lowerQuestion.includes('import')
-  //     ) {
-  //       response =
-  //         'To install: `npm install antdx-vue`. Import: `import { SmartForm } from "antdx-vue"`. Check docs for details.';
-  //     } else {
-  //       response =
-  //         'Thank you for your question! Ant Design X combines elegant design with AI capabilities. How else can I help?';
-  //     }
-  //
-  //     messages.value.push({
-  //       id: `msg_${Date.now()}_ai`,
-  //       role: 'assistant',
-  //       content: response,
-  //       timestamp: Date.now(),
-  //     });
-  //
-  //     resolve();
-  //   }, 800);
-  // });
 };
 
 // 优化 scrollToBottom 方法
@@ -588,6 +522,12 @@ watch(isMaximized, () => {
             class="custom-scrollbar flex-1 overflow-y-auto p-6"
             :class="isMaximized ? 'px-8 py-8' : ''"
           >
+            <Welcome
+              v-if="!isMessagesCount"
+              icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
+              title="您好，我是您的AI助手"
+              description="您可以向我提问任何问题~"
+            />
             <BubbleList :roles="roles" :items="bubbleItems.slice(1)" />
           </div>
 
