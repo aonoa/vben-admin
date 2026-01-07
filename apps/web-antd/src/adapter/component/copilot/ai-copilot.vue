@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type BubbleListProps, Welcome} from 'ant-design-x-vue';
+import type { BubbleListProps } from 'ant-design-x-vue';
 
 import {
   computed,
@@ -21,7 +21,7 @@ import {
 } from '@ant-design/icons-vue';
 import { Button, Card } from 'ant-design-vue';
 import { message as antMessage } from 'ant-design-vue/es/components';
-import { BubbleList, Sender } from 'ant-design-x-vue';
+import { BubbleList, Sender, Welcome } from 'ant-design-x-vue';
 
 import { CopilotSSE } from '#/api/system/copilot';
 
@@ -62,7 +62,7 @@ const isDragging = ref(false);
 const offset = reactive({ x: 0, y: 0 });
 const position = reactive({
   x: window.innerWidth - 440,
-  y: window.innerHeight - 820,
+  y: window.innerHeight - window.innerHeight * 0.86,
 });
 
 const cardRef = ref<HTMLElement | null>(null);
@@ -95,7 +95,9 @@ const handleMouseMove = (e: MouseEvent) => {
 
     // 确保卡片不会超出视口
     const cardWidth = isMaximized.value ? viewportWidth : 400;
-    const cardHeight = isMaximized.value ? viewportHeight : 740;
+    const cardHeight = isMaximized.value
+      ? viewportHeight
+      : viewportHeight * 0.8;
 
     position.x = Math.max(0, Math.min(x, viewportWidth - cardWidth));
     position.y = Math.max(0, Math.min(y, viewportHeight - cardHeight));
@@ -124,7 +126,9 @@ const handleTouchMove = (e: TouchEvent) => {
 
     // 确保卡片不会超出视口
     const cardWidth = isMaximized.value ? viewportWidth : 400;
-    const cardHeight = isMaximized.value ? viewportHeight : 740;
+    const cardHeight = isMaximized.value
+      ? viewportHeight
+      : viewportHeight * 0.8;
 
     position.x = Math.max(0, Math.min(x, viewportWidth - cardWidth));
     position.y = Math.max(0, Math.min(y, viewportHeight - cardHeight));
@@ -386,6 +390,17 @@ const bubbleMaxWidth = computed(() => {
   return isMaximized.value ? 'calc(100vw - 80px)' : '600px';
 });
 
+// 或者固定几种百分比
+const responsiveHeight = computed(() => {
+  if (isMinimized.value) return 'h-[60px]';
+  if (isMaximized.value) return 'h-screen';
+
+  const screenHeight = window.innerHeight;
+  if (screenHeight < 600) return 'h-[85vh]'; // 小屏幕占80%
+  if (screenHeight < 800) return 'h-[75vh]'; // 中等屏幕占75%
+  return 'h-[80vh]'; // 大屏幕占70%
+});
+
 const roles = computed<BubbleListProps['roles']>(() => ({
   assistant: {
     placement: 'start',
@@ -470,7 +485,7 @@ watch(isMaximized, () => {
             : 'w-[400px] rounded-lg',
           // 只在非拖拽时应用高度过渡动画
           !isDragging ? 'transition-[height] duration-300' : '',
-          isMinimized ? 'h-[60px]' : 'h-[740px]',
+          isMinimized ? 'h-[60px]' : responsiveHeight,
         ]"
       >
         <!-- Header - 使用flex-shrink:0防止被压缩 -->
