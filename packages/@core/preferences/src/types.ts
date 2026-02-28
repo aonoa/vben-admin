@@ -170,6 +170,8 @@ interface SidebarPreferences {
   collapsedShowTitle: boolean;
   /** 侧边栏折叠宽度 */
   collapseWidth: number;
+  /** 侧边栏菜单拖拽 */
+  draggable: boolean;
   /** 侧边栏是否可见 */
   enable: boolean;
   /** 菜单自动展开状态 */
@@ -222,8 +224,12 @@ interface TabbarPreferences {
   showMaximize: boolean;
   /** 显示更多按钮 */
   showMore: boolean;
+  /** 显示刷新按钮 */
+  showRefresh: boolean;
   /** 标签页风格 */
   styleType: TabsStyleType;
+  /** 是否开启访问历史记录 */
+  visitHistory: boolean;
   /** 是否开启鼠标滚轮响应 */
   wheelable: boolean;
 }
@@ -249,6 +255,8 @@ interface ThemePreferences {
   semiDarkHeader: boolean;
   /** 是否开启半深色菜单（只在theme='light'时生效） */
   semiDarkSidebar: boolean;
+  /** 是否开启半深色子菜单（只在theme='light'时生效） */
+  semiDarkSidebarSub: boolean;
 }
 
 interface TransitionPreferences {

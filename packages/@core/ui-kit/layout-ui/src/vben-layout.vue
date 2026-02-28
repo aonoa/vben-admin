@@ -56,6 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
   sidebarHidden: false,
   sidebarMixedWidth: 80,
   sidebarTheme: 'dark',
+  sidebarThemeSub: 'dark',
   sidebarWidth: 180,
   sideCollapseWidth: 60,
   tabbarEnable: true,
@@ -63,7 +64,14 @@ const props = withDefaults(defineProps<Props>(), {
   zIndex: 200,
 });
 
-const emit = defineEmits<{ sideMouseLeave: []; toggleSidebar: [] }>();
+const emit = defineEmits<{
+  sideMouseLeave: [];
+  toggleSidebar: [];
+  'update:sidebar-width': [value: number];
+}>();
+const sidebarDraggable = defineModel<boolean>('sidebarDraggable', {
+  default: true,
+});
 const sidebarCollapse = defineModel<boolean>('sidebarCollapse', {
   default: false,
 });
@@ -119,13 +127,16 @@ const headerWrapperHeight = computed(() => {
 });
 
 const getSideCollapseWidth = computed(() => {
-  const { sidebarCollapseShowTitle, sidebarMixedWidth, sideCollapseWidth } =
-    props;
+  const {
+    sidebarCollapseShowTitle,
+    sidebarExtraCollapsedWidth,
+    sideCollapseWidth,
+  } = props;
 
   return sidebarCollapseShowTitle ||
     isSidebarMixedNav.value ||
     isHeaderMixedNav.value
-    ? sidebarMixedWidth
+    ? sidebarExtraCollapsedWidth
     : sideCollapseWidth;
 });
 
@@ -403,13 +414,10 @@ watch(
 );
 
 {
-  const mouseMove = () => {
-    mouseY.value > headerWrapperHeight.value
-      ? (headerIsHidden.value = true)
-      : (headerIsHidden.value = false);
-  };
+  const HEADER_TRIGGER_DISTANCE = 12;
+
   watch(
-    [() => props.headerMode, () => mouseY.value],
+    [() => props.headerMode, () => mouseY.value, () => headerIsHidden.value],
     () => {
       if (!isHeaderAutoMode.value || isMixedNav.value || isFullContent.value) {
         if (props.headerMode !== 'auto-scroll') {
@@ -417,8 +425,12 @@ watch(
         }
         return;
       }
-      headerIsHidden.value = true;
-      mouseMove();
+
+      const isInTriggerZone = mouseY.value <= HEADER_TRIGGER_DISTANCE;
+      const isInHeaderZone =
+        !headerIsHidden.value && mouseY.value <= headerWrapperHeight.value;
+
+      headerIsHidden.value = !(isInTriggerZone || isInHeaderZone);
     },
     {
       immediate: true,
@@ -484,6 +496,7 @@ const idMainContent = ELEMENT_ID_MAIN_CONTENT;
   <div class="relative flex min-h-full w-full">
     <LayoutSidebar
       v-if="sidebarEnableState"
+      v-model:draggable="sidebarDraggable"
       v-model:collapse="sidebarCollapse"
       v-model:expand-on-hover="sidebarExpandOnHover"
       v-model:expand-on-hovering="sidebarExpandOnHovering"
@@ -501,9 +514,11 @@ const idMainContent = ELEMENT_ID_MAIN_CONTENT;
       :mixed-width="sidebarMixedWidth"
       :show="showSidebar"
       :theme="sidebarTheme"
+      :theme-sub="sidebarThemeSub"
       :width="getSidebarWidth"
       :z-index="sidebarZIndex"
       @leave="() => emit('sideMouseLeave')"
+      @update:width="(val) => emit('update:sidebar-width', val)"
     >
       <template v-if="isSideMode && !isMixedNav" #logo>
         <slot name="logo"></slot>
