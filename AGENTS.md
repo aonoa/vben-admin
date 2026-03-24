@@ -1,8 +1,6 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-28
-**Commit:** a12147095
-**Branch:** (current)
+**Generated:** 2026-02-28 **Commit:** a12147095 **Branch:** (current)
 
 ## OVERVIEW
 
@@ -33,22 +31,22 @@ Vue 3 + Vite + TypeScript monorepo admin template. Supports 5 UI frameworks (Ant
 ## WHERE TO LOOK
 
 | Task | Location | Notes |
-|------|----------|-------|
-| Add new app | `apps/` | Copy from existing web-* app |
+| --- | --- | --- |
+| Add new app | `apps/` | Copy from existing web-\* app |
 | Add shared utility | `packages/utils/src/` | Follow barrel export pattern |
 | Add Pinia store | `packages/stores/src/modules/` | Follow `*.test.ts` pattern |
 | UI components | `packages/@core/ui-kit/` | Multiple UI framework support |
 | Router/Auth | `packages/effects/hooks/src/` | Composable functions |
-| Config change | `internal/` | @vben/* config packages |
+| Config change | `internal/` | @vben/\* config packages |
 | Tests | `__tests__/` | Co-located with source |
 
 ## CODE MAP
 
-| Symbol | Type | Location | Notes |
-|--------|------|----------|-------|
-| main.ts | entry | apps/*/src/ | App bootstrap |
-| bootstrap.ts | fn | apps/*/src/ | Vue init |
-| app.vue | component | apps/*/src/ | Root component |
+| Symbol       | Type      | Location     | Notes          |
+| ------------ | --------- | ------------ | -------------- |
+| main.ts      | entry     | apps/\*/src/ | App bootstrap  |
+| bootstrap.ts | fn        | apps/\*/src/ | Vue init       |
+| app.vue      | component | apps/\*/src/ | Root component |
 
 ## CONVENTIONS
 

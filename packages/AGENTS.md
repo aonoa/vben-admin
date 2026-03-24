@@ -32,13 +32,13 @@ packages/
 
 ## WHERE TO LOOK
 
-| Task | Location |
-|------|----------|
-| Add utility | `packages/utils/src/` |
-| Add store | `packages/stores/src/modules/` |
+| Task             | Location                       |
+| ---------------- | ------------------------------ |
+| Add utility      | `packages/utils/src/`          |
+| Add store        | `packages/stores/src/modules/` |
 | Add UI component | `packages/@core/ui-kit/*/src/` |
-| Add hook | `packages/effects/hooks/src/` |
-| Add types | `packages/types/src/` |
+| Add hook         | `packages/effects/hooks/src/`  |
+| Add types        | `packages/types/src/`          |
 
 ## CONVENTIONS
 

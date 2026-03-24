@@ -8,14 +8,14 @@
 
 ## APPS
 
-| App | UI Framework | Entry |
-|-----|--------------|-------|
-| web-antd | Ant Design Vue | apps/web-antd/src/main.ts |
+| App            | UI Framework        | Entry                           |
+| -------------- | ------------------- | ------------------------------- |
+| web-antd       | Ant Design Vue      | apps/web-antd/src/main.ts       |
 | web-antdv-next | Ant Design Vue Next | apps/web-antdv-next/src/main.ts |
-| web-naive | Naive UI | apps/web-naive/src/main.ts |
-| web-ele | Element Plus | apps/web-ele/src/main.ts |
-| web-tdesign | TDesign Vue | apps/web-tdesign/src/main.ts |
-| playground | Testing | playground/src/main.ts |
+| web-naive      | Naive UI            | apps/web-naive/src/main.ts      |
+| web-ele        | Element Plus        | apps/web-ele/src/main.ts        |
+| web-tdesign    | TDesign Vue         | apps/web-tdesign/src/main.ts    |
+| playground     | Testing             | playground/src/main.ts          |
 
 ## APP STRUCTURE
 
@@ -39,12 +39,12 @@ apps/{app-name}/
 
 ## WHERE TO LOOK
 
-| Task | Location |
-|------|----------|
-| App entry | `apps/{app}/src/main.ts` |
-| Vue setup | `apps/{app}/src/bootstrap.ts` |
-| App routes | `apps/{app}/src/router/` |
-| App views | `apps/{app}/src/views/` |
+| Task       | Location                      |
+| ---------- | ----------------------------- |
+| App entry  | `apps/{app}/src/main.ts`      |
+| Vue setup  | `apps/{app}/src/bootstrap.ts` |
+| App routes | `apps/{app}/src/router/`      |
+| App views  | `apps/{app}/src/views/`       |
 
 ## COMMANDS
 
