@@ -30,21 +30,21 @@ export interface GetWalkRouteReply {
 }
 
 export async function GetWalkRoute() {
-  return requestClient.get<GetWalkRouteReply>('/system/getWalkRoute');
+  return requestClient.get<GetWalkRouteReply>('/admin-api/v1/walk-routes');
 }
 
 export async function GetApiList(params: GetApiParams) {
-  return requestClient.get<GetApiListReply>('/system/api/list', { params });
+  return requestClient.get<GetApiListReply>('/auth-api/v1/apis', { params });
 }
 
 export async function AddApi(data: Omit<ApiListItem, 'id'>) {
-  return requestClient.post('/system/api', data);
+  return requestClient.post('/auth-api/v1/apis', data);
 }
 
 export async function UpdateApi(id: string, data: Omit<ApiListItem, 'id'>) {
-  return requestClient.put(`/system/api/${id}`, data);
+  return requestClient.put(`/auth-api/v1/apis/${id}`, data);
 }
 
 export async function DelApi(id: string) {
-  return requestClient.delete(`/system/api/${id}`);
+  return requestClient.delete(`/auth-api/v1/apis/${id}`);
 }

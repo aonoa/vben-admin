@@ -39,7 +39,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
       ajax: {
         query: async (_params) => {
-          return await getMenuList();
+          const data = await getMenuList();
+          return data?.items;
         },
       },
     },

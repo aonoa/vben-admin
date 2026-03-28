@@ -7,7 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { ProfileBaseSetting } from '@vben/common-ui';
 
-import { getUserInfoApi } from '#/api';
+import { getInfoApi } from '#/api';
 
 const profileBaseSettingRef = ref();
 
@@ -56,8 +56,8 @@ const formSchema = computed((): VbenFormSchema[] => {
 });
 
 onMounted(async () => {
-  const data = await getUserInfoApi();
-  profileBaseSettingRef.value.getFormApi().setValues(data);
+  const data = await getInfoApi();
+  await profileBaseSettingRef.value.getFormApi().setValues(data);
 });
 </script>
 <template>

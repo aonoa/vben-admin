@@ -5,8 +5,12 @@ import { requestClient } from '#/api/request';
 /**
  * 获取用户信息
  */
-export async function getUserInfoApi() {
-  return requestClient.get<UserInfo>('/user/info');
+export async function getUserInfoApi(id: string) {
+  return requestClient.get<UserInfo>(`/user-api/v1/users/${id}`);
+}
+
+export async function getInfoApi() {
+  return requestClient.get<UserInfo>(`/user-api/v1/users/info`);
 }
 
 export interface GetUserParams {
@@ -24,7 +28,7 @@ export interface UserListItem {
   email: string; // 邮箱
   nickname: string; // 昵称
   role: number; // 规则
-  createTime: string; // 创建时间
+  create_time: string; // 创建时间
   remark: string; // 备注
   status: number; // 状态
   dept?: string; // 部门
@@ -36,17 +40,17 @@ export interface GetUserListReply {
 }
 
 export async function GetUserList(params: GetUserParams) {
-  return requestClient.get<GetUserListReply>('/system/user/list', { params });
+  return requestClient.get<GetUserListReply>('/user-api/v1/users', { params });
 }
 
 export async function AddUser(data: Omit<UserListItem, 'id'>) {
-  return requestClient.post('/system/user', data);
+  return requestClient.post('/user-api/v1/users', data);
 }
 
 export async function UpdateUser(id: string, data: Omit<UserListItem, 'id'>) {
-  return requestClient.put(`/system/user/${id}`, data);
+  return requestClient.put(`/user-api/v1/users/${id}`, data);
 }
 
 export async function DelUser(id: string) {
-  return requestClient.delete(`/system/user/${id}`);
+  return requestClient.delete(`/user-api/v1/users/${id}`);
 }

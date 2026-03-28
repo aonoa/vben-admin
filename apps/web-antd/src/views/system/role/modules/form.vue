@@ -5,7 +5,7 @@ import type { Recordable } from '@vben/types';
 
 import type { SystemRoleApi } from '#/api/system/role';
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { Tree, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -51,28 +51,40 @@ const [Drawer, drawerApi] = useVbenDrawer({
         drawerApi.unlock();
       });
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (isOpen) {
       const data = drawerApi.getData<SystemRoleApi.SystemRole>();
       formApi.resetForm();
 
-      if (permissions.value.length === 0) {
-        loadPermissions();
-      }
-      if (api_permissions.value.length === 0) {
-        api_loadPermissions();
-      }
-
       if (data) {
         formData.value = data;
         id.value = data.id;
-        // 这里等待 https://github.com/vbenjs/vue-vben-admin/issues/6522 反馈
-        setTimeout(() => {
-          formApi.setValues(data);
-        }, 500);
       } else {
         id.value = undefined;
       }
+
+      if (permissions.value.length === 0) {
+        await loadPermissions();
+      }
+      if (api_permissions.value.length === 0) {
+        await api_loadPermissions();
+      }
+
+      await nextTick();
+      if (data) {
+        formApi.setValues(data);
+      }
+
+      // if (data) {
+      //   formData.value = data;
+      //   id.value = data.id;
+      //   // 这里等待 https://github.com/vbenjs/vue-vben-admin/issues/6522 反馈
+      //   setTimeout(() => {
+      //     formApi.setValues(data);
+      //   }, 500);
+      // } else {
+      //   id.value = undefined;
+      // }
     }
   },
 });
@@ -81,7 +93,7 @@ async function loadPermissions() {
   loadingPermissions.value = true;
   try {
     const res = await getMenuList();
-    permissions.value = res as unknown as DataNode[];
+    permissions.value = res?.items as unknown as DataNode[];
   } finally {
     loadingPermissions.value = false;
   }

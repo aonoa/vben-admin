@@ -131,7 +131,7 @@ export const gridSchemas: VxeGridProps<any> = {
       title: '状态',
       // width: 120,
     },
-    { field: 'createTime', title: '创建时间' },
+    { field: 'create_time', title: '创建时间' },
     {
       field: 'action',
       width: 200,

@@ -64,9 +64,11 @@ export interface GetSysLogInfoReply {
 }
 
 export async function GetSysLogList(params: GetSysLogListParams) {
-  return requestClient.get<GetSysLogListReply>('/system/log/list', { params });
+  return requestClient.get<GetSysLogListReply>('/admin-api/v1/logs', {
+    params,
+  });
 }
 
 export async function GetSysLogInfo(id: string) {
-  return requestClient.get<GetSysLogInfoReply>(`/system/log/${id}`);
+  return requestClient.get<GetSysLogInfoReply>(`/admin-api/v1/logs/${id}`);
 }
