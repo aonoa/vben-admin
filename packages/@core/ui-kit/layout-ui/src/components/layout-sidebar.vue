@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue';
 
-import { computed, shallowRef, useSlots, watchEffect } from 'vue';
+import { computed, onUnmounted, shallowRef, useSlots, watchEffect } from 'vue';
 
 import { VbenScrollbar } from '@vben-core/shadcn-ui';
 
@@ -157,9 +157,9 @@ const extraTitleStyle = computed((): CSSProperties => {
 });
 
 const contentWidthStyle = computed((): CSSProperties => {
-  const { collapseWidth, fixedExtra, isSidebarMixed, mixedWidth } = props;
+  const { fixedExtra, isSidebarMixed, mixedWidth } = props;
   if (isSidebarMixed && fixedExtra) {
-    return { width: `${collapse.value ? collapseWidth : mixedWidth}px` };
+    return { width: `${mixedWidth}px` };
   }
   return {};
 });
@@ -202,19 +202,24 @@ watchEffect(() => {
 });
 
 function calcMenuWidthStyle(isHiddenDom: boolean): CSSProperties {
-  const { extraWidth, fixedExtra, isSidebarMixed, show, width } = props;
+  const {
+    collapseWidth,
+    extraWidth,
+    mixedWidth,
+    fixedExtra,
+    isSidebarMixed,
+    show,
+    width,
+  } = props;
 
   let widthValue =
     width === 0
       ? '0px'
       : `${width + (isSidebarMixed && fixedExtra && extraVisible.value ? extraWidth : 0)}px`;
 
-  const { collapseWidth } = props;
-
   if (isHiddenDom && expandOnHovering.value && !expandOnHover.value) {
-    widthValue = `${collapseWidth}px`;
+    widthValue = isSidebarMixed ? `${mixedWidth}px` : `${collapseWidth}px`;
   }
-
   return {
     ...(widthValue === '0px' ? { overflow: 'hidden' } : {}),
     flex: `0 0 ${widthValue}`,
@@ -257,35 +262,39 @@ function handleMouseleave() {
   extraVisible.value = false;
 }
 
-const { startDrag } = useSidebarDrag();
+const { startDrag, endDrag } = useSidebarDrag();
 
 const handleDragSidebar = (e: MouseEvent) => {
-  const { isSidebarMixed, collapseWidth, extraWidth, width } = props;
-  const minLimit = collapseWidth;
-  const maxLimit = 320;
-  const startWidth = isSidebarMixed ? extraWidth : width;
+  const { isSidebarMixed, collapseWidth, width } = props;
+  const minLimit = isSidebarMixed ? width + collapseWidth : collapseWidth;
+  const maxLimit = isSidebarMixed ? width + 320 : 320;
 
   startDrag(
     e,
     {
       min: minLimit,
       max: maxLimit,
-      startWidth,
     },
     {
       target: asideRef.value,
       dragBar: dragBarRef.value,
     },
     (newWidth) => {
-      emit('update:width', newWidth);
       if (isSidebarMixed) {
-        extraCollapse.value = newWidth <= collapseWidth;
+        emit('update:width', newWidth - width);
+        extraCollapse.value = collapse.value =
+          newWidth - width <= collapseWidth;
       } else {
-        collapse.value = newWidth <= collapseWidth;
+        emit('update:width', newWidth);
+        collapse.value = extraCollapse.value = newWidth <= collapseWidth;
       }
     },
   );
 };
+
+onUnmounted(() => {
+  endDrag();
+});
 </script>
 
 <template>
@@ -299,13 +308,13 @@ const handleDragSidebar = (e: MouseEvent) => {
     ref="asideRef"
     :style="style"
     class="fixed left-0 top-0 h-full transition-all duration-150"
+    :class="theme"
     @mouseenter="handleMouseenter"
     @mouseleave="handleMouseleave"
   >
     <div
       class="h-full"
       :class="[
-        theme,
         {
           'bg-sidebar-deep': isSidebarMixed,
           'border-r border-border bg-sidebar': !isSidebarMixed,
@@ -365,7 +374,7 @@ const handleDragSidebar = (e: MouseEvent) => {
     <div
       v-if="draggable"
       ref="dragBarRef"
-      class="absolute inset-y-0 -right-[1px] z-1000 w-[2px] cursor-col-resize hover:bg-primary"
+      class="absolute inset-y-0 -right-px z-1000 w-0.5 cursor-col-resize hover:bg-primary"
       @mousedown="handleDragSidebar"
     ></div>
   </aside>
