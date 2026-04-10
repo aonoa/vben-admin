@@ -1,7 +1,7 @@
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 import type { Recordable } from '@vben/types';
 
-import type { ComponentType } from './component';
+import type { ComponentPropsMap, ComponentType } from './component';
 
 import { h } from 'vue';
 
@@ -29,12 +29,11 @@ setupVbenVxeTable({
         columnConfig: {
           resizable: true,
         },
-
+        minHeight: 180,
         formConfig: {
           // 全局禁用vxe-table的表单配置，使用formOptions
           enabled: false,
         },
-        minHeight: 180,
         proxyConfig: {
           autoLoad: true,
           response: {
@@ -135,7 +134,7 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
         const defaultProps = { size: 'small', type: 'link', ...props };
-        let align = 'end';
+        let align: string;
         switch (column.align) {
           case 'center': {
             align = 'center';
@@ -285,8 +284,8 @@ setupVbenVxeTable({
 });
 
 export const useVbenVxeGrid = <T extends Record<string, any>>(
-  ...rest: Parameters<typeof useGrid<T, ComponentType>>
-) => useGrid<T, ComponentType>(...rest);
+  ...rest: Parameters<typeof useGrid<T, ComponentType, ComponentPropsMap>>
+) => useGrid<T, ComponentType, ComponentPropsMap>(...rest);
 
 export type OnActionClickParams<T = Recordable<any>> = {
   code: string;
