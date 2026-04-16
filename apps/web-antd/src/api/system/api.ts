@@ -34,17 +34,17 @@ export async function GetWalkRoute() {
 }
 
 export async function GetApiList(params: GetApiParams) {
-  return requestClient.get<GetApiListReply>('/auth-api/v1/apis', { params });
+  return requestClient.get<GetApiListReply>('/admin-api/v1/apis', { params });
 }
 
 export async function AddApi(data: Omit<ApiListItem, 'id'>) {
-  return requestClient.post('/auth-api/v1/apis', data);
+  return requestClient.post('/admin-api/v1/apis', data);
 }
 
 export async function UpdateApi(id: string, data: Omit<ApiListItem, 'id'>) {
-  return requestClient.put(`/auth-api/v1/apis/${id}`, data);
+  return requestClient.put(`/admin-api/v1/apis/${id}`, data);
 }
 
 export async function DelApi(id: string) {
-  return requestClient.delete(`/auth-api/v1/apis/${id}`);
+  return requestClient.delete(`/admin-api/v1/apis/${id}`);
 }
