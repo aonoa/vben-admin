@@ -10,6 +10,7 @@ import '@vben/styles/antd';
 import { useTitle } from '@vueuse/core';
 import Antd from 'ant-design-vue';
 
+import { configureGeneratedApi } from '#/api/generated/configure';
 import { $t, setupI18n } from '#/locales';
 
 import { initComponentAdapter } from './adapter/component';
@@ -73,6 +74,8 @@ async function bootstrap(namespace: string) {
       useTitle(pageTitle);
     }
   });
+
+  configureGeneratedApi();
 
   app.mount('#app');
 }
