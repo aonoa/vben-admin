@@ -6,6 +6,7 @@
       "#/*": ["./src/*"]
     }
   },
+  "exclude": ["src/api/generated-templates"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
