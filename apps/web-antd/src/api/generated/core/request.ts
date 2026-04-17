@@ -301,20 +301,20 @@ const sendRequest = async <T>(
     // Check if interceptors already unwrapped the response
     return isAxiosResponse(result)
       ? {
-        // Interceptors didn't unwrap, return standard structure
-        data: result.data,
-        status: result.status,
-        statusText: result.statusText,
-        headers: result.headers,
-      }
+          // Interceptors didn't unwrap, return standard structure
+          data: result.data,
+          status: result.status,
+          statusText: result.statusText,
+          headers: result.headers,
+        }
       : {
-        // Interceptors already unwrapped (responseReturn: 'body')
-        // Return the data with a fake 200 status
-        data: result as T,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-      };
+          // Interceptors already unwrapped (responseReturn: 'body')
+          // Return the data with a fake 200 status
+          data: result as T,
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+        };
   } catch (error) {
     const axiosError = error as AxiosError<T>;
     if (axiosError.response) {
