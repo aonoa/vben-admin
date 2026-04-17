@@ -34,7 +34,9 @@ export async function GetWalkRoute() {
 }
 
 export async function GetApiList(params: GetApiParams) {
-  return requestClient.get<GetApiListReply>('/basic-api/system/api/list', { params });
+  return requestClient.get<GetApiListReply>('/basic-api/system/api/list', {
+    params,
+  });
 }
 
 export async function AddApi(data: Omit<ApiListItem, 'id'>) {

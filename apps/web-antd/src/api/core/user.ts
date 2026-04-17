@@ -36,7 +36,9 @@ export interface GetUserListReply {
 }
 
 export async function GetUserList(params: GetUserParams) {
-  return requestClient.get<GetUserListReply>('/basic-api/system/user/list', { params });
+  return requestClient.get<GetUserListReply>('/basic-api/system/user/list', {
+    params,
+  });
 }
 
 export async function AddUser(data: Omit<UserListItem, 'id'>) {
