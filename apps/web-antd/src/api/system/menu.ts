@@ -97,7 +97,7 @@ export namespace SystemMenuApi {
  */
 async function getMenuList() {
   return requestClient.get<Array<SystemMenuApi.SystemMenu>>(
-    '/system/menu/list',
+    '/basic-api/system/menu/list',
   );
 }
 
@@ -105,7 +105,7 @@ async function isMenuNameExists(
   name: string,
   id?: SystemMenuApi.SystemMenu['id'],
 ) {
-  return requestClient.get<boolean>('/system/menu/name-exists', {
+  return requestClient.get<boolean>('/basic-api/system/menu/name-exists', {
     params: { id, name },
   });
 }
@@ -114,7 +114,7 @@ async function isMenuPathExists(
   path: string,
   id?: SystemMenuApi.SystemMenu['id'],
 ) {
-  return requestClient.get<boolean>('/system/menu/path-exists', {
+  return requestClient.get<boolean>('/basic-api/system/menu/path-exists', {
     params: { id, path },
   });
 }
@@ -126,7 +126,7 @@ async function isMenuPathExists(
 async function createMenu(
   data: Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>,
 ) {
-  return requestClient.post('/system/menu', data);
+  return requestClient.post('/basic-api/system/menu', data);
 }
 
 /**
@@ -139,7 +139,7 @@ async function updateMenu(
   id: string,
   data: Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>,
 ) {
-  return requestClient.put(`/system/menu/${id}`, data);
+  return requestClient.put(`/basic-api/system/menu/${id}`, data);
 }
 
 /**
@@ -147,7 +147,7 @@ async function updateMenu(
  * @param id 菜单 ID
  */
 async function deleteMenu(id: string) {
-  return requestClient.delete(`/system/menu/${id}`);
+  return requestClient.delete(`/basic-api/system/menu/${id}`);
 }
 
 export {

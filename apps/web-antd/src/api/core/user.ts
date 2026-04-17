@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
  * 获取用户信息
  */
 export async function getUserInfoApi() {
-  return requestClient.get<UserInfo>('/user/info');
+  return requestClient.get<UserInfo>('/basic-api/user/info');
 }
 
 export interface GetUserParams {
@@ -36,17 +36,17 @@ export interface GetUserListReply {
 }
 
 export async function GetUserList(params: GetUserParams) {
-  return requestClient.get<GetUserListReply>('/system/user/list', { params });
+  return requestClient.get<GetUserListReply>('/basic-api/system/user/list', { params });
 }
 
 export async function AddUser(data: Omit<UserListItem, 'id'>) {
-  return requestClient.post('/system/user', data);
+  return requestClient.post('/basic-api/system/user', data);
 }
 
 export async function UpdateUser(id: string, data: Omit<UserListItem, 'id'>) {
-  return requestClient.put(`/system/user/${id}`, data);
+  return requestClient.put(`/basic-api/system/user/${id}`, data);
 }
 
 export async function DelUser(id: string) {
-  return requestClient.delete(`/system/user/${id}`);
+  return requestClient.delete(`/basic-api/system/user/${id}`);
 }

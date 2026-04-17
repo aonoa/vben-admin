@@ -7,7 +7,7 @@ export async function CopilotSSE(
     onMessage?: (message: string) => void;
   },
 ): Promise<void> {
-  return requestClient.postSSE('/v1/copilot/sse', data, {
+  return requestClient.postSSE('/basic-api/v1/copilot/sse', data, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -35,7 +35,7 @@ export async function CopilotSSEStream(
   },
 ): Promise<void> {
   try {
-    const response = await fetch('/api/v1/copilot/sse', {
+    const response = await fetch('/basic-api/api/v1/copilot/sse', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

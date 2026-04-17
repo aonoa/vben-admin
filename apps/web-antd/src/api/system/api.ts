@@ -30,21 +30,21 @@ export interface GetWalkRouteReply {
 }
 
 export async function GetWalkRoute() {
-  return requestClient.get<GetWalkRouteReply>('/system/getWalkRoute');
+  return requestClient.get<GetWalkRouteReply>('/basic-api/system/getWalkRoute');
 }
 
 export async function GetApiList(params: GetApiParams) {
-  return requestClient.get<GetApiListReply>('/system/api/list', { params });
+  return requestClient.get<GetApiListReply>('/basic-api/system/api/list', { params });
 }
 
 export async function AddApi(data: Omit<ApiListItem, 'id'>) {
-  return requestClient.post('/system/api', data);
+  return requestClient.post('/basic-api/system/api', data);
 }
 
 export async function UpdateApi(id: string, data: Omit<ApiListItem, 'id'>) {
-  return requestClient.put(`/system/api/${id}`, data);
+  return requestClient.put(`/basic-api/system/api/${id}`, data);
 }
 
 export async function DelApi(id: string) {
-  return requestClient.delete(`/system/api/${id}`);
+  return requestClient.delete(`/basic-api/system/api/${id}`);
 }

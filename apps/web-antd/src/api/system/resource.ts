@@ -24,22 +24,22 @@ export interface GetResourceListByPageReply {
 
 export async function GetResourceList(params: Recordable<any>) {
   return requestClient.get<GetResourceListByPageReply>(
-    '/system/resource/list',
+    '/basic-api/system/resource/list',
     { params },
   );
 }
 
 export async function AddResource(data: Omit<ResourceListItem, 'id'>) {
-  return requestClient.post('/system/resource', data);
+  return requestClient.post('/basic-api/system/resource', data);
 }
 
 export async function UpdateResource(
   id: string,
   data: Omit<ResourceListItem, 'id'>,
 ) {
-  return requestClient.put(`/system/resource/${id}`, data);
+  return requestClient.put(`/basic-api/system/resource/${id}`, data);
 }
 
 export async function DelResource(id: string) {
-  return requestClient.delete(`/system/resource/${id}`);
+  return requestClient.delete(`/basic-api/system/resource/${id}`);
 }

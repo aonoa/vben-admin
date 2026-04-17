@@ -25,7 +25,7 @@ export namespace AuthApi {
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
+  return requestClient.post<AuthApi.LoginResult>('/basic-api/auth/login', data);
 }
 
 /**
@@ -33,7 +33,7 @@ export async function loginApi(data: AuthApi.LoginParams) {
  */
 export async function refreshTokenApi() {
   return requestClient.post<AuthApi.RefreshTokenResult>(
-    '/auth/refresh',
+    '/basic-api/auth/refresh',
     {
       withCredentials: true,
     },
@@ -49,7 +49,7 @@ export async function refreshTokenApi() {
  * 退出登录
  */
 export async function logoutApi() {
-  return requestClient.post('/auth/logout', {
+  return requestClient.post('/basic-api/auth/logout', {
     withCredentials: true,
   });
 }
@@ -58,5 +58,5 @@ export async function logoutApi() {
  * 获取用户权限码
  */
 export async function getAccessCodesApi() {
-  return requestClient.get<string[]>('/auth/codes');
+  return requestClient.get<string[]>('/basic-api/auth/codes');
 }
