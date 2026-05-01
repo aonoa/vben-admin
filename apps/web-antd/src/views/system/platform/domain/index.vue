@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { ApiListItem } from '#/api/system/api';
+import type { BusinessDomainItem } from '#/api/system/platform';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -8,10 +8,13 @@ import { Button } from 'ant-design-vue';
 
 import Icon from '#/adapter/component/icon/icon.vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { DelApi, GetApiList } from '#/api/system/api';
+import {
+  deleteBusinessDomain,
+  getBusinessDomainList,
+} from '#/api/system/platform';
 
-import FormModalDemo from './add_modal.vue';
-import { formOptions, gridSchemas } from './schemas';
+import FormModal from './add_modal.vue';
+import { gridSchemas } from './schemas';
 
 const gridOptions: VxeGridProps<any> = {
   ...gridSchemas,
@@ -23,57 +26,50 @@ const gridOptions: VxeGridProps<any> = {
   },
   border: false,
   keepSource: true,
-  pagerConfig: {},
+  pagerConfig: {
+    enabled: false,
+  },
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
-        return await GetApiList({
-          currentPage: page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+      query: async () => {
+        return await getBusinessDomainList();
       },
     },
   },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions,
   gridOptions,
 });
 
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: FormModalDemo,
+const [BusinessDomainModal, businessDomainModalApi] = useVbenModal({
+  connectedComponent: FormModal,
 });
 
-const handleAdd = () => {
-  formModalApi.open();
-};
+function handleAdd() {
+  businessDomainModalApi.open();
+}
 
-const handleUpdate = (row: ApiListItem) => {
-  formModalApi.setData(row).open();
-};
+function handleUpdate(row: BusinessDomainItem) {
+  businessDomainModalApi.setData(row).open();
+}
 
-const handleDel = (row: ApiListItem) => {
-  const id = row.id;
-  if (!id) {
+async function handleDel(row: BusinessDomainItem) {
+  if (!row.id) {
     return;
   }
-  setTimeout(async () => {
-    await DelApi(id);
-    await gridApi.reload();
-  }, 1000);
-};
+  await deleteBusinessDomain(row.id);
+  await gridApi.reload();
+}
 
-// 信号
-function addApi() {
+function refreshGrid() {
   gridApi.reload();
 }
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid table-title="API资源列表">
+    <Grid table-title="业务域管理">
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click="handleAdd">
           <template #icon><Icon icon="ant-design:plus-outlined" /></template>
@@ -92,6 +88,6 @@ function addApi() {
         </a-popconfirm>
       </template>
     </Grid>
-    <FormModal @success="addApi" />
+    <BusinessDomainModal @success="refreshGrid" />
   </Page>
 </template>

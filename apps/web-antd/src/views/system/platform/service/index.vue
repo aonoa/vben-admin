@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { ApiListItem } from '#/api/system/api';
+import type { ServiceRegistryItem } from '#/api/system/platform';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -8,10 +8,13 @@ import { Button } from 'ant-design-vue';
 
 import Icon from '#/adapter/component/icon/icon.vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { DelApi, GetApiList } from '#/api/system/api';
+import {
+  deleteServiceRegistry,
+  getServiceRegistryList,
+} from '#/api/system/platform';
 
-import FormModalDemo from './add_modal.vue';
-import { formOptions, gridSchemas } from './schemas';
+import FormModal from './add_modal.vue';
+import { gridSchemas } from './schemas';
 
 const gridOptions: VxeGridProps<any> = {
   ...gridSchemas,
@@ -23,57 +26,50 @@ const gridOptions: VxeGridProps<any> = {
   },
   border: false,
   keepSource: true,
-  pagerConfig: {},
+  pagerConfig: {
+    enabled: false,
+  },
   proxyConfig: {
     ajax: {
-      query: async ({ page }, formValues) => {
-        return await GetApiList({
-          currentPage: page.currentPage,
-          pageSize: page.pageSize,
-          ...formValues,
-        });
+      query: async () => {
+        return await getServiceRegistryList();
       },
     },
   },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions,
   gridOptions,
 });
 
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: FormModalDemo,
+const [ServiceRegistryModal, serviceRegistryModalApi] = useVbenModal({
+  connectedComponent: FormModal,
 });
 
-const handleAdd = () => {
-  formModalApi.open();
-};
+function handleAdd() {
+  serviceRegistryModalApi.open();
+}
 
-const handleUpdate = (row: ApiListItem) => {
-  formModalApi.setData(row).open();
-};
+function handleUpdate(row: ServiceRegistryItem) {
+  serviceRegistryModalApi.setData(row).open();
+}
 
-const handleDel = (row: ApiListItem) => {
-  const id = row.id;
-  if (!id) {
+async function handleDel(row: ServiceRegistryItem) {
+  if (!row.id) {
     return;
   }
-  setTimeout(async () => {
-    await DelApi(id);
-    await gridApi.reload();
-  }, 1000);
-};
+  await deleteServiceRegistry(row.id);
+  await gridApi.reload();
+}
 
-// 信号
-function addApi() {
+function refreshGrid() {
   gridApi.reload();
 }
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid table-title="API资源列表">
+    <Grid table-title="服务注册">
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click="handleAdd">
           <template #icon><Icon icon="ant-design:plus-outlined" /></template>
@@ -92,6 +88,6 @@ function addApi() {
         </a-popconfirm>
       </template>
     </Grid>
-    <FormModal @success="addApi" />
+    <ServiceRegistryModal @success="refreshGrid" />
   </Page>
 </template>

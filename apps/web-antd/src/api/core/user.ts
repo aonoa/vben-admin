@@ -19,6 +19,7 @@ export interface GetUserParams {
   username?: string; // 账号
   nickname?: string; // 昵称
   deptId?: string; // 部门
+  role?: number | string; // 前端按 admin 角色绑定过滤
 }
 
 export interface UserListItem {
@@ -27,7 +28,9 @@ export interface UserListItem {
   password?: string; // 密码
   email: string; // 邮箱
   nickname: string; // 昵称
-  role: number; // 规则
+  role?: number | number[]; // 角色绑定由 admin 服务维护
+  roleIds?: number[];
+  roleNames?: string[];
   create_time: string; // 创建时间
   remark: string; // 备注
   status: number; // 状态

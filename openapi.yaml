@@ -6,125 +6,11 @@ info:
     title: ""
     version: 0.0.1
 paths:
-    /basic-api/auth/codes:
+    /admin-api/v1/apis:
         get:
             tags:
-                - Base
-            description: 获取权限code
-            operationId: Base_GetAccessCodes
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetAccessCodesReply'
-    /basic-api/auth/login:
-        post:
-            tags:
-                - Base
-            description: 用户登陆
-            operationId: Base_Login
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.LoginRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.LoginReply'
-    /basic-api/auth/logout:
-        post:
-            tags:
-                - Base
-            description: 注销登陆 (仅靠jwt无法实现退出功能)(未实现，主要靠前端删凭证)
-            operationId: Base_Logout
-            requestBody:
-                content:
-                    application/json: {}
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /basic-api/auth/refresh:
-        post:
-            tags:
-                - Base
-            description: 使用refreshToken换取accessToken
-            operationId: Base_RefreshToken
-            requestBody:
-                content:
-                    application/json: {}
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.LoginReply'
-    /basic-api/auth/reloadPolicy:
-        post:
-            tags:
-                - Base
-            description: ////////////////////////////////////////////////// (重新加载casbin权限数据)
-            operationId: Base_ReLoadPolicy
-            requestBody:
-                content:
-                    application/json: {}
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /basic-api/menu/all:
-        get:
-            tags:
-                - Base
-            description: |-
-                获取路由菜单列表
-                	rpc GetMenuList (google.protobuf.Empty) returns (GetMenuListReply) {
-            operationId: Base_GetMenuList
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetSysMenuListReply'
-    /basic-api/system/api:
-        post:
-            tags:
-                - Base
-            description: 添加api资源
-            operationId: Base_AddApi
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.ApiListItem'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.ApiListItem'
-    /basic-api/system/api/list:
-        get:
-            tags:
-                - Base
-            description: |-
-                //////////////////////////////// api资源管理
-                 获取api资源
-            operationId: Base_GetApiList
+                - AdminService
+            operationId: AdminService_GetApiList
             parameters:
                 - name: currentPage
                   in: query
@@ -150,80 +36,30 @@ paths:
                   in: query
                   schema:
                     type: string
+                - name: serviceCode
+                  in: query
+                  schema:
+                    type: string
+                - name: domainCode
+                  in: query
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetApiListByPageReply'
-    /basic-api/system/api/{id}:
-        put:
-            tags:
-                - Base
-            description: 修改api资源
-            operationId: Base_UpdateApi
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.ApiListItem'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.ApiListItem'
-        delete:
-            tags:
-                - Base
-            description: 删除api资源
-            operationId: Base_DelApi
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /basic-api/system/changePassword:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetApiListByPageReply'
         post:
             tags:
-                - Base
-            description: 改密码
-            operationId: Base_ChangePassword
+                - AdminService
+            operationId: AdminService_AddApi
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.ChangePasswordRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /basic-api/system/dept:
-        post:
-            tags:
-                - Base
-            description: 新增部门
-            operationId: Base_AddDept
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.DeptListItem'
+                            $ref: '#/components/schemas/api.admin.service.v1.ApiListItem'
                 required: true
             responses:
                 "200":
@@ -231,26 +67,12 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.DeptListItem'
-    /basic-api/system/dept/list:
-        get:
-            tags:
-                - Base
-            description: 获取部门列表
-            operationId: Base_GetDeptList
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetDeptListReply'
-    /basic-api/system/dept/{id}:
+                                $ref: '#/components/schemas/api.admin.service.v1.ApiListItem'
+    /admin-api/v1/apis/{id}:
         put:
             tags:
-                - Base
-            description: 修改部门
-            operationId: Base_UpdateDept
+                - AdminService
+            operationId: AdminService_UpdateApi
             parameters:
                 - name: id
                   in: path
@@ -261,7 +83,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.DeptListItem'
+                            $ref: '#/components/schemas/api.admin.service.v1.ApiListItem'
                 required: true
             responses:
                 "200":
@@ -269,12 +91,11 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.DeptListItem'
+                                $ref: '#/components/schemas/api.admin.service.v1.ApiListItem'
         delete:
             tags:
-                - Base
-            description: 删除部门
-            operationId: Base_DelDept
+                - AdminService
+            operationId: AdminService_DelApi
             parameters:
                 - name: id
                   in: path
@@ -285,29 +106,78 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /basic-api/system/getWalkRoute:
+    /admin-api/v1/depts:
         get:
             tags:
-                - Base
-            description: |-
-                /////////////////////////////////////////////////
-                 获取系统所有 api
-            operationId: Base_GetWalkRoute
+                - AdminService
+            operationId: AdminService_GetDeptList
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetWalkRouteReply'
-    /basic-api/system/log/list:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetDeptListReply'
+        post:
+            tags:
+                - AdminService
+            operationId: AdminService_AddDept
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.DeptListItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.DeptListItem'
+    /admin-api/v1/depts/{id}:
+        put:
+            tags:
+                - AdminService
+            operationId: AdminService_UpdateDept
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.DeptListItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.DeptListItem'
+        delete:
+            tags:
+                - AdminService
+            operationId: AdminService_DelDept
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /admin-api/v1/logs:
         get:
             tags:
-                - Base
-            description: |-
-                ////////////////////////////////////////////// 日志
-                 获取系统日志列表
-            operationId: Base_GetSysLogList
+                - AdminService
+            operationId: AdminService_GetSysLogList
             parameters:
                 - name: currentPage
                   in: query
@@ -372,13 +242,12 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetSysLogListReply'
-    /basic-api/system/log/{id}:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetSysLogListReply'
+    /admin-api/v1/logs/{id}:
         get:
             tags:
-                - Base
-            description: 获取单条日志详情
-            operationId: Base_GetSysLogInfo
+                - AdminService
+            operationId: AdminService_GetSysLogInfo
             parameters:
                 - name: id
                   in: path
@@ -391,31 +260,12 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetSysLogInfoReply'
-    /basic-api/system/menu:
-        post:
-            tags:
-                - Base
-            description: 创建菜单
-            operationId: Base_CreateMenu
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.SysMenuListItem'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /basic-api/system/menu/list:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetSysLogInfoReply'
+    /admin-api/v1/menus:
         get:
             tags:
-                - Base
-            description: |-
-                /////////////////////////////////////////////////// 系统菜单管理
-                 获取菜单列表
-            operationId: Base_GetSysMenuList
+                - AdminService
+            operationId: AdminService_GetSysMenuList
             parameters:
                 - name: menuName
                   in: query
@@ -431,13 +281,38 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetSysMenuListReply'
-    /basic-api/system/menu/name-exists:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetSysMenuListReply'
+        post:
+            tags:
+                - AdminService
+            operationId: AdminService_CreateMenu
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.SysMenuListItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /admin-api/v1/menus/current:
         get:
             tags:
-                - Base
-            description: 菜单名称是否存在
-            operationId: Base_IsMenuNameExists
+                - AdminService
+            operationId: AdminService_GetCurrentUserMenus
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetCurrentUserMenusReply'
+    /admin-api/v1/menus/name-exists:
+        get:
+            tags:
+                - AdminService
+            operationId: AdminService_IsMenuNameExists
             parameters:
                 - name: id
                   in: query
@@ -453,13 +328,12 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.IsMenuNameExistsReply'
-    /basic-api/system/menu/path-exists:
+                                $ref: '#/components/schemas/api.admin.service.v1.IsMenuNameExistsReply'
+    /admin-api/v1/menus/path-exists:
         get:
             tags:
-                - Base
-            description: 路由地址是否存在
-            operationId: Base_IsMenuPathExists
+                - AdminService
+            operationId: AdminService_IsMenuPathExists
             parameters:
                 - name: id
                   in: query
@@ -475,24 +349,24 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.IsMenuPathExistsReply'
-    /basic-api/system/menu/{id}:
+                                $ref: '#/components/schemas/api.admin.service.v1.IsMenuPathExistsReply'
+    /admin-api/v1/menus/{id}:
         put:
             tags:
-                - Base
-            description: 更新菜单
-            operationId: Base_UpdateMenu
+                - AdminService
+            operationId: AdminService_UpdateMenu
             parameters:
                 - name: id
                   in: path
                   required: true
                   schema:
-                    type: string
+                    type: integer
+                    format: int32
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.SysMenuListItem'
+                            $ref: '#/components/schemas/api.admin.service.v1.SysMenuListItem'
                 required: true
             responses:
                 "200":
@@ -500,9 +374,8 @@ paths:
                     content: {}
         delete:
             tags:
-                - Base
-            description: 删除菜单
-            operationId: Base_DeleteMenu
+                - AdminService
+            operationId: AdminService_DeleteMenu
             parameters:
                 - name: id
                   in: path
@@ -513,17 +386,27 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /basic-api/system/resource:
+    /admin-api/v1/platform/domains:
+        get:
+            tags:
+                - AdminService
+            operationId: AdminService_GetBusinessDomainList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetBusinessDomainListReply'
         post:
             tags:
-                - Base
-            description: 添加resource资源
-            operationId: Base_AddResource
+                - AdminService
+            operationId: AdminService_AddBusinessDomain
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.ResourceListItem'
+                            $ref: '#/components/schemas/api.admin.service.v1.BusinessDomainItem'
                 required: true
             responses:
                 "200":
@@ -531,15 +414,208 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.ResourceListItem'
-    /basic-api/system/resource/list:
+                                $ref: '#/components/schemas/api.admin.service.v1.BusinessDomainItem'
+    /admin-api/v1/platform/domains/{id}:
+        put:
+            tags:
+                - AdminService
+            operationId: AdminService_UpdateBusinessDomain
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.BusinessDomainItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.BusinessDomainItem'
+        delete:
+            tags:
+                - AdminService
+            operationId: AdminService_DeleteBusinessDomain
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /admin-api/v1/platform/projection-sources:
         get:
             tags:
-                - Base
-            description: |-
-                //////////////////////////////// resource 资源管理
-                 获取resource资源
-            operationId: Base_GetResourceList
+                - AdminService
+            operationId: AdminService_GetProjectionSourceStatusList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetProjectionSourceStatusListReply'
+        post:
+            tags:
+                - AdminService
+            operationId: AdminService_AddProjectionSourceStatus
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.ProjectionSourceStatusItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.ProjectionSourceStatusItem'
+    /admin-api/v1/platform/projection-sources/report/{sourceService}:
+        put:
+            tags:
+                - AdminService
+            operationId: AdminService_ReportProjectionSourceStatus
+            parameters:
+                - name: sourceService
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.ProjectionSourceStatusItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.ProjectionSourceStatusItem'
+    /admin-api/v1/platform/projection-sources/{id}:
+        put:
+            tags:
+                - AdminService
+            operationId: AdminService_UpdateProjectionSourceStatus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.ProjectionSourceStatusItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.ProjectionSourceStatusItem'
+        delete:
+            tags:
+                - AdminService
+            operationId: AdminService_DeleteProjectionSourceStatus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /admin-api/v1/platform/services:
+        get:
+            tags:
+                - AdminService
+            operationId: AdminService_GetServiceRegistryList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetServiceRegistryListReply'
+        post:
+            tags:
+                - AdminService
+            operationId: AdminService_AddServiceRegistry
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.ServiceRegistryItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.ServiceRegistryItem'
+    /admin-api/v1/platform/services/{id}:
+        put:
+            tags:
+                - AdminService
+            operationId: AdminService_UpdateServiceRegistry
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.ServiceRegistryItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.ServiceRegistryItem'
+        delete:
+            tags:
+                - AdminService
+            operationId: AdminService_DeleteServiceRegistry
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /admin-api/v1/resources:
+        get:
+            tags:
+                - AdminService
+            operationId: AdminService_GetResourceList
             parameters:
                 - name: currentPage
                   in: query
@@ -575,13 +651,29 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetResourceListByPageReply'
-    /basic-api/system/resource/{id}:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetResourceListByPageReply'
+        post:
+            tags:
+                - AdminService
+            operationId: AdminService_AddResource
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.ResourceListItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.ResourceListItem'
+    /admin-api/v1/resources/{id}:
         put:
             tags:
-                - Base
-            description: 修改resource资源
-            operationId: Base_UpdateResource
+                - AdminService
+            operationId: AdminService_UpdateResource
             parameters:
                 - name: id
                   in: path
@@ -592,7 +684,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.ResourceListItem'
+                            $ref: '#/components/schemas/api.admin.service.v1.ResourceListItem'
                 required: true
             responses:
                 "200":
@@ -600,12 +692,11 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.ResourceListItem'
+                                $ref: '#/components/schemas/api.admin.service.v1.ResourceListItem'
         delete:
             tags:
-                - Base
-            description: 删除resource资源
-            operationId: Base_DelResource
+                - AdminService
+            operationId: AdminService_DelResource
             parameters:
                 - name: id
                   in: path
@@ -616,31 +707,11 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /basic-api/system/role:
-        post:
-            tags:
-                - Base
-            description: 新增角色
-            operationId: Base_AddRole
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.RoleListItem'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.RoleListItem'
-    /basic-api/system/role/list:
+    /admin-api/v1/roles:
         get:
             tags:
-                - Base
-            description: 获取角色列表
-            operationId: Base_GetRoleList
+                - AdminService
+            operationId: AdminService_GetRoleList
             parameters:
                 - name: currentPage
                   in: query
@@ -668,13 +739,29 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetRoleListByPageReply'
-    /basic-api/system/role/{id}:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetRoleListByPageReply'
+        post:
+            tags:
+                - AdminService
+            operationId: AdminService_AddRole
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.admin.service.v1.RoleListItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.RoleListItem'
+    /admin-api/v1/roles/{id}:
         put:
             tags:
-                - Base
-            description: 修改角色
-            operationId: Base_UpdateRole
+                - AdminService
+            operationId: AdminService_UpdateRole
             parameters:
                 - name: id
                   in: path
@@ -685,7 +772,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.RoleListItem'
+                            $ref: '#/components/schemas/api.admin.service.v1.RoleListItem'
                 required: true
             responses:
                 "200":
@@ -693,12 +780,11 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.RoleListItem'
+                                $ref: '#/components/schemas/api.admin.service.v1.RoleListItem'
         delete:
             tags:
-                - Base
-            description: 删除角色
-            operationId: Base_DelRole
+                - AdminService
+            operationId: AdminService_DelRole
             parameters:
                 - name: id
                   in: path
@@ -709,33 +795,51 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /basic-api/system/setRoleStatus:
-        post:
+    /admin-api/v1/user-role-bindings:
+        get:
             tags:
-                - Base
-            description: 设置角色状态 (未使用)
-            operationId: Base_SetRoleStatus
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.SetRoleStatusRequest'
-                required: true
+                - AdminService
+            operationId: AdminService_ListUserRoleBindings
             responses:
                 "200":
                     description: OK
-                    content: {}
-    /basic-api/system/user:
-        post:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.ListUserRoleBindingsReply'
+    /admin-api/v1/user-role-bindings/{userId}:
+        get:
             tags:
-                - Base
-            description: 新增用户
-            operationId: Base_AddUser
+                - AdminService
+            operationId: AdminService_GetUserRoleBinding
+            parameters:
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.UserRoleBindingItem'
+        put:
+            tags:
+                - AdminService
+            operationId: AdminService_UpsertUserRoleBinding
+            parameters:
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.UserListItem'
+                            $ref: '#/components/schemas/api.admin.service.v1.UserRoleBindingItem'
                 required: true
             responses:
                 "200":
@@ -743,13 +847,133 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.UserListItem'
-    /basic-api/system/user/list:
+                                $ref: '#/components/schemas/api.admin.service.v1.UserRoleBindingItem'
+        delete:
+            tags:
+                - AdminService
+            operationId: AdminService_DeleteUserRoleBinding
+            parameters:
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /admin-api/v1/walk-routes:
         get:
             tags:
-                - Base
-            description: 获取账户列表
-            operationId: Base_GetUserList
+                - AdminService
+            operationId: AdminService_GetWalkRoute
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.admin.service.v1.GetWalkRouteReply'
+    /auth-api/v1/access-codes:
+        get:
+            tags:
+                - AuthService
+            operationId: AuthService_GetAccessCodes
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.auth.service.v1.GetAccessCodesReply'
+    /auth-api/v1/login:
+        post:
+            tags:
+                - AuthService
+            operationId: AuthService_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.auth.service.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.auth.service.v1.LoginReply'
+    /auth-api/v1/logout:
+        post:
+            tags:
+                - AuthService
+            operationId: AuthService_Logout
+            requestBody:
+                content:
+                    application/json: {}
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /auth-api/v1/refresh:
+        post:
+            tags:
+                - AuthService
+            operationId: AuthService_RefreshToken
+            requestBody:
+                content:
+                    application/json: {}
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.auth.service.v1.LoginReply'
+    /common-api/v1/copilot/sse:
+        post:
+            tags:
+                - SSEService
+            operationId: SSEService_Copilot
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.common.service.v1.Msg'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.common.service.v1.CopilotReply'
+    /common-api/v1/file/upload:
+        post:
+            tags:
+                - UploadService
+            operationId: UploadService_UploadFile
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.common.service.v1.File'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.common.service.v1.UploadResponse'
+    /user-api/v1/users:
+        get:
+            tags:
+                - UserService
+            operationId: UserService_GetUserList
             parameters:
                 - name: currentPage
                   in: query
@@ -771,10 +995,6 @@ paths:
                   in: query
                   schema:
                     type: string
-                - name: role
-                  in: query
-                  schema:
-                    type: string
                 - name: status
                   in: query
                   schema:
@@ -786,18 +1006,16 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetUserListReply'
-    /basic-api/system/user/user-exists:
+                                $ref: '#/components/schemas/api.user.service.v1.GetUserListReply'
         post:
             tags:
-                - Base
-            description: 检查用户是否存在
-            operationId: Base_IsUserExist
+                - UserService
+            operationId: UserService_AddUser
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.IsUserExistsRequest'
+                            $ref: '#/components/schemas/api.user.service.v1.UserListItem'
                 required: true
             responses:
                 "200":
@@ -805,98 +1023,108 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.IsUserExistsReply'
-    /basic-api/system/user/{id}:
-        put:
-            tags:
-                - Base
-            description: 更新用户
-            operationId: Base_UpdateUser
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.UserListItem'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.UserListItem'
-        delete:
-            tags:
-                - Base
-            description: 删除用户
-            operationId: Base_DelUser
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /basic-api/user/info:
+                                $ref: '#/components/schemas/api.user.service.v1.UserListItem'
+    /user-api/v1/users/check:
         get:
             tags:
-                - Base
-            description: 获取用户信息
-            operationId: Base_GetUserInfo
+                - UserService
+            operationId: UserService_IsUserExist
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+                - name: username
+                  in: query
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.base_api.v1.GetUserInfoReply'
-    /basic-api/v1/copilot/sse:
-        post:
+                                $ref: '#/components/schemas/api.user.service.v1.IsUserExistsReply'
+    /user-api/v1/users/{id}:
+        put:
             tags:
-                - SSEService
-            description: AI智能助手
-            operationId: SSEService_Copilot
+                - UserService
+            operationId: UserService_UpdateUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.base_api.v1.Msg'
+                            $ref: '#/components/schemas/api.user.service.v1.UserListItem'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.service.v1.UserListItem'
+        delete:
+            tags:
+                - UserService
+            operationId: UserService_DelUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /user-api/v1/users/{userId}:
+        get:
+            tags:
+                - UserService
+            operationId: UserService_GetUserInfo
+            parameters:
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.service.v1.GetUserInfoReply'
+    /user-api/v1/users/{userId}/password:
+        post:
+            tags:
+                - UserService
+            operationId: UserService_ChangePassword
+            parameters:
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.service.v1.ChangePasswordRequest'
                 required: true
             responses:
                 "200":
                     description: OK
                     content: {}
-    /basic-api/v1/server/file/upload:
-        post:
-            tags:
-                - UploadService
-            description: 上传文件
-            operationId: UploadService_UploadFile
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.base_api.v1.File'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.base_api.v1.UploadResponse'
 components:
     schemas:
-        api.base_api.v1.ApiListItem:
+        api.admin.service.v1.ApiListItem:
             type: object
             properties:
                 id:
@@ -913,14 +1141,66 @@ components:
                     type: string
                 resourcesGroup:
                     type: string
-        api.base_api.v1.ChangePasswordRequest:
+                serviceCode:
+                    type: string
+                domainCode:
+                    type: string
+        api.admin.service.v1.BusinessDomainItem:
             type: object
             properties:
-                passwordOld:
+                id:
                     type: string
-                passwordNew:
+                code:
                     type: string
-        api.base_api.v1.DeptListItem:
+                name:
+                    type: string
+                ownerService:
+                    type: string
+                orgModelType:
+                    type: string
+                authScopeType:
+                    type: string
+                status:
+                    type: integer
+                    format: int32
+                description:
+                    type: string
+                metaJson:
+                    type: string
+                createTime:
+                    type: string
+        api.admin.service.v1.CurrentUserMenuItem:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int32
+                component:
+                    type: string
+                status:
+                    type: integer
+                    format: int32
+                authCode:
+                    type: string
+                name:
+                    type: string
+                path:
+                    type: string
+                pid:
+                    type: string
+                redirect:
+                    type: string
+                type:
+                    type: string
+                meta:
+                    $ref: '#/components/schemas/api.admin.service.v1.Meta'
+                children:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.admin.service.v1.CurrentUserMenuItem'
+                createTime:
+                    type: string
+        api.admin.service.v1.DeptListItem:
             type: object
             properties:
                 id:
@@ -944,61 +1224,78 @@ components:
                 children:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.DeptListItem'
-        api.base_api.v1.File:
-            type: object
-            properties:
-                file:
-                    type: string
-                    format: bytes
-                fileName:
-                    type: string
-                fileSize:
-                    type: string
-        api.base_api.v1.GetAccessCodesReply:
-            type: object
-            properties:
-                accessCodeList:
-                    type: array
-                    items:
-                        type: string
-        api.base_api.v1.GetApiListByPageReply:
+                        $ref: '#/components/schemas/api.admin.service.v1.DeptListItem'
+        api.admin.service.v1.GetApiListByPageReply:
             type: object
             properties:
                 items:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.ApiListItem'
+                        $ref: '#/components/schemas/api.admin.service.v1.ApiListItem'
                 total:
                     type: string
-        api.base_api.v1.GetDeptListReply:
+        api.admin.service.v1.GetBusinessDomainListReply:
             type: object
             properties:
                 items:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.DeptListItem'
+                        $ref: '#/components/schemas/api.admin.service.v1.BusinessDomainItem'
                 total:
                     type: string
-        api.base_api.v1.GetResourceListByPageReply:
+        api.admin.service.v1.GetCurrentUserMenusReply:
             type: object
             properties:
                 items:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.ResourceListItem'
-                total:
-                    type: string
-        api.base_api.v1.GetRoleListByPageReply:
+                        $ref: '#/components/schemas/api.admin.service.v1.CurrentUserMenuItem'
+        api.admin.service.v1.GetDeptListReply:
             type: object
             properties:
                 items:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.RoleListItem'
+                        $ref: '#/components/schemas/api.admin.service.v1.DeptListItem'
                 total:
                     type: string
-        api.base_api.v1.GetSysLogInfoReply:
+        api.admin.service.v1.GetProjectionSourceStatusListReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.admin.service.v1.ProjectionSourceStatusItem'
+                total:
+                    type: string
+        api.admin.service.v1.GetResourceListByPageReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.admin.service.v1.ResourceListItem'
+                total:
+                    type: string
+        api.admin.service.v1.GetRoleListByPageReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.admin.service.v1.RoleListItem'
+                total:
+                    type: string
+        api.admin.service.v1.GetServiceRegistryListReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.admin.service.v1.ServiceRegistryItem'
+                total:
+                    type: string
+        api.admin.service.v1.GetSysLogInfoReply:
             type: object
             properties:
                 id:
@@ -1046,107 +1343,49 @@ components:
                     type: string
                 createTime:
                     type: string
-        api.base_api.v1.GetSysLogListReply:
+        api.admin.service.v1.GetSysLogListReply:
             type: object
             properties:
                 items:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.SysLogItem'
+                        $ref: '#/components/schemas/api.admin.service.v1.SysLogItem'
                 total:
                     type: string
-        api.base_api.v1.GetSysMenuListReply:
+        api.admin.service.v1.GetSysMenuListReply:
             type: object
             properties:
                 items:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.SysMenuListItem'
+                        $ref: '#/components/schemas/api.admin.service.v1.SysMenuListItem'
                 total:
                     type: string
-        api.base_api.v1.GetUserInfoReply:
-            type: object
-            properties:
-                userId:
-                    type: string
-                username:
-                    type: string
-                realName:
-                    type: string
-                avatar:
-                    type: string
-                desc:
-                    type: string
-                homePath:
-                    type: string
-                token:
-                    type: string
-                roles:
-                    $ref: '#/components/schemas/api.base_api.v1.RoleInfo'
-        api.base_api.v1.GetUserListReply:
+        api.admin.service.v1.GetWalkRouteReply:
             type: object
             properties:
                 items:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.UserListItem'
-                total:
-                    type: string
-        api.base_api.v1.GetWalkRouteReply:
-            type: object
-            properties:
-                items:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.base_api.v1.WalkRouteItem'
-        api.base_api.v1.IsMenuNameExistsReply:
+                        $ref: '#/components/schemas/api.admin.service.v1.WalkRouteItem'
+        api.admin.service.v1.IsMenuNameExistsReply:
             type: object
             properties:
                 data:
                     type: boolean
-        api.base_api.v1.IsMenuPathExistsReply:
+        api.admin.service.v1.IsMenuPathExistsReply:
             type: object
             properties:
                 data:
                     type: boolean
-        api.base_api.v1.IsUserExistsReply:
+        api.admin.service.v1.ListUserRoleBindingsReply:
             type: object
             properties:
-                data:
-                    type: boolean
-        api.base_api.v1.IsUserExistsRequest:
-            type: object
-            properties:
-                id:
-                    type: string
-                username:
-                    type: string
-        api.base_api.v1.LoginReply:
-            type: object
-            properties:
-                userId:
-                    type: string
-                accessToken:
-                    type: string
-                refreshToken:
-                    type: string
-                sessionID:
-                    type: string
-        api.base_api.v1.LoginRequest:
-            type: object
-            properties:
-                username:
-                    type: string
-                password:
-                    type: string
-        api.base_api.v1.Message:
-            type: object
-            properties:
-                role:
-                    type: string
-                content:
-                    type: string
-        api.base_api.v1.Meta:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.admin.service.v1.UserRoleBindingItem'
+        api.admin.service.v1.Meta:
             type: object
             properties:
                 order:
@@ -1195,14 +1434,30 @@ components:
                     type: array
                     items:
                         type: string
-        api.base_api.v1.Msg:
+        api.admin.service.v1.ProjectionSourceStatusItem:
             type: object
             properties:
-                items:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.base_api.v1.Message'
-        api.base_api.v1.ResourceListItem:
+                id:
+                    type: string
+                sourceService:
+                    type: string
+                domainCode:
+                    type: string
+                syncMode:
+                    type: string
+                state:
+                    type: string
+                lastSnapshotRevision:
+                    type: string
+                lastSyncTime:
+                    type: string
+                lastError:
+                    type: string
+                description:
+                    type: string
+                createTime:
+                    type: string
+        api.admin.service.v1.ResourceListItem:
             type: object
             properties:
                 id:
@@ -1217,14 +1472,7 @@ components:
                     type: string
                 description:
                     type: string
-        api.base_api.v1.RoleInfo:
-            type: object
-            properties:
-                roleName:
-                    type: string
-                value:
-                    type: string
-        api.base_api.v1.RoleListItem:
+        api.admin.service.v1.RoleListItem:
             type: object
             properties:
                 id:
@@ -1253,14 +1501,31 @@ components:
                     type: array
                     items:
                         type: string
-        api.base_api.v1.SetRoleStatusRequest:
+        api.admin.service.v1.ServiceRegistryItem:
             type: object
             properties:
                 id:
                     type: string
-                status:
+                serviceCode:
                     type: string
-        api.base_api.v1.SysLogItem:
+                serviceName:
+                    type: string
+                domainCode:
+                    type: string
+                httpPrefix:
+                    type: string
+                grpcService:
+                    type: string
+                status:
+                    type: integer
+                    format: int32
+                projectionEnabled:
+                    type: boolean
+                description:
+                    type: string
+                createTime:
+                    type: string
+        api.admin.service.v1.SysLogItem:
             type: object
             properties:
                 id:
@@ -1290,11 +1555,12 @@ components:
                     format: int32
                 resStatus:
                     type: boolean
-        api.base_api.v1.SysMenuListItem:
+        api.admin.service.v1.SysMenuListItem:
             type: object
             properties:
                 id:
-                    type: string
+                    type: integer
+                    format: int32
                 component:
                     type: string
                 status:
@@ -1313,14 +1579,92 @@ components:
                 type:
                     type: string
                 meta:
-                    $ref: '#/components/schemas/api.base_api.v1.Meta'
+                    $ref: '#/components/schemas/api.admin.service.v1.Meta'
                 children:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.base_api.v1.SysMenuListItem'
+                        $ref: '#/components/schemas/api.admin.service.v1.SysMenuListItem'
                 createTime:
                     type: string
-        api.base_api.v1.UploadResponse:
+        api.admin.service.v1.UserRoleBindingItem:
+            type: object
+            properties:
+                id:
+                    type: string
+                userId:
+                    type: string
+                roleId:
+                    type: string
+                createTime:
+                    type: string
+                updateTime:
+                    type: string
+                roleIds:
+                    type: array
+                    items:
+                        type: string
+        api.admin.service.v1.WalkRouteItem:
+            type: object
+            properties:
+                url:
+                    type: string
+                method:
+                    type: string
+        api.auth.service.v1.GetAccessCodesReply:
+            type: object
+            properties:
+                accessCodeList:
+                    type: array
+                    items:
+                        type: string
+        api.auth.service.v1.LoginReply:
+            type: object
+            properties:
+                userId:
+                    type: string
+                accessToken:
+                    type: string
+                refreshToken:
+                    type: string
+                sessionId:
+                    type: string
+        api.auth.service.v1.LoginRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+        api.common.service.v1.CopilotReply:
+            type: object
+            properties:
+                content:
+                    type: string
+        api.common.service.v1.File:
+            type: object
+            properties:
+                file:
+                    type: string
+                    format: bytes
+                fileName:
+                    type: string
+                fileSize:
+                    type: string
+        api.common.service.v1.Message:
+            type: object
+            properties:
+                role:
+                    type: string
+                content:
+                    type: string
+        api.common.service.v1.Msg:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.common.service.v1.Message'
+        api.common.service.v1.UploadResponse:
             type: object
             properties:
                 fileInfoId:
@@ -1329,20 +1673,57 @@ components:
                     type: string
                 url:
                     type: string
-        api.base_api.v1.UserListItem:
+        api.user.service.v1.ChangePasswordRequest:
+            type: object
+            properties:
+                userId:
+                    type: string
+                passwordOld:
+                    type: string
+                passwordNew:
+                    type: string
+        api.user.service.v1.GetUserInfoReply:
+            type: object
+            properties:
+                userId:
+                    type: string
+                username:
+                    type: string
+                nickname:
+                    type: string
+                avatar:
+                    type: string
+                email:
+                    type: string
+                remark:
+                    type: string
+                status:
+                    type: integer
+                    format: int32
+        api.user.service.v1.GetUserListReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.user.service.v1.UserListItem'
+                total:
+                    type: string
+        api.user.service.v1.IsUserExistsReply:
+            type: object
+            properties:
+                data:
+                    type: boolean
+        api.user.service.v1.UserListItem:
             type: object
             properties:
                 id:
                     type: string
                 username:
                     type: string
-                password:
-                    type: string
                 email:
                     type: string
                 nickname:
-                    type: string
-                role:
                     type: string
                 createTime:
                     type: string
@@ -1355,14 +1736,11 @@ components:
                     type: string
                 avatar:
                     type: string
-        api.base_api.v1.WalkRouteItem:
-            type: object
-            properties:
-                url:
-                    type: string
-                method:
+                password:
                     type: string
 tags:
-    - name: Base
+    - name: AdminService
+    - name: AuthService
     - name: SSEService
     - name: UploadService
+    - name: UserService

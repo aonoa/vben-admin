@@ -1,21 +1,20 @@
 <script lang="ts" setup>
-import type { ApiListItem } from '#/api/system/api';
+import type { ServiceRegistryItem } from '#/api/system/platform';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { AddApi, UpdateApi } from '#/api/system/api';
+import {
+  addServiceRegistry,
+  updateServiceRegistry,
+} from '#/api/system/platform';
 
 import { formSchemas } from './schemas';
 
-defineOptions({
-  name: 'FormModelDemo',
-});
-
 const emit = defineEmits(['success']);
-const id = ref();
+const id = ref<string>();
 
 const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
@@ -43,9 +42,9 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       const data = await formApi.getValues();
       try {
-        data.method = data.path.split(':')[0];
-        data.path = data.path.split(':')[1];
-        await (id.value ? UpdateApi(id.value, data) : AddApi(data));
+        await (id.value
+          ? updateServiceRegistry(id.value, data)
+          : addServiceRegistry(data));
         modalApi.close();
         emit('success');
       } finally {
@@ -56,26 +55,21 @@ const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
       formApi.resetForm();
-      const data = modalApi.getData<ApiListItem>();
+      const data = modalApi.getData<ServiceRegistryItem>();
       if (isPlainEmptyObject(data)) {
         id.value = undefined;
-        modalApi.setState({ title: '添加API' });
+        modalApi.setState({ title: '新增服务注册' });
       } else {
-        modalApi.setState({ title: '编辑API' });
-        formApi.setValues(
-          {
-            ...data,
-            path: `${data.method}:${data.path}`,
-          },
-          false,
-        );
+        modalApi.setState({ title: '编辑服务注册' });
+        formApi.setValues(data, false);
         id.value = data.id;
       }
     }
   },
-  title: '新增API',
+  title: '新增服务注册',
 });
 </script>
+
 <template>
   <Modal>
     <Form />

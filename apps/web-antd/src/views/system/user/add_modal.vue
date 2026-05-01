@@ -7,6 +7,11 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { AddUser, UpdateUser } from '#/api';
+import {
+  getBindingRoleIds,
+  getUserRoleBinding,
+  upsertUserRoleBinding,
+} from '#/api/system/user-role-binding';
 
 import { formSchemas } from './schemas';
 
@@ -16,6 +21,11 @@ defineOptions({
 
 const emit = defineEmits(['success']);
 const id = ref();
+type UserFormValues = Omit<UserListItem, 'id'> & {
+  role?: Array<number | string> | number | string;
+  roleIds?: Array<number | string>;
+  roleNames?: string[];
+};
 
 const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
@@ -41,9 +51,20 @@ const [Modal, modalApi] = useVbenModal({
     const { valid } = await formApi.validate();
     if (valid) {
       modalApi.lock();
-      const data = await formApi.getValues();
+      const data = (await formApi.getValues()) as UserFormValues;
+      const { role, roleIds, roleNames, ...userData } = data;
+      const selectedRoleIds =
+        roleIds ??
+        (Array.isArray(role) ? role : (role === undefined ? [] : [role]));
+      void roleNames;
       try {
-        await (id.value ? UpdateUser(id.value, data) : AddUser(data));
+        const savedUser = id.value
+          ? await UpdateUser(id.value, userData as Omit<UserListItem, 'id'>)
+          : await AddUser(userData as Omit<UserListItem, 'id'>);
+        const userId = id.value || savedUser?.id;
+        if (userId) {
+          await upsertUserRoleBinding(userId, selectedRoleIds);
+        }
         modalApi.close();
         emit('success');
       } finally {
@@ -53,15 +74,24 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
+      formApi.resetForm();
       const data = modalApi.getData<UserListItem>();
       if (isPlainEmptyObject(data)) {
         modalApi.setState({ title: '添加用户' });
+        id.value = undefined;
       } else {
         modalApi.setState({ title: '编辑用户' });
-        // 这里可能需要过滤
-
         formApi.setValues(data, false);
         id.value = data.id;
+        if (data.id) {
+          getUserRoleBinding(data.id).then((binding) => {
+            const roleIds =
+              data.roleIds && data.roleIds.length > 0
+                ? data.roleIds
+                : getBindingRoleIds(binding);
+            formApi.setFieldValue('roleIds', roleIds);
+          });
+        }
       }
     }
   },

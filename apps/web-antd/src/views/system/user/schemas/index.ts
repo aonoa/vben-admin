@@ -50,7 +50,7 @@ export const formOptions: VbenFormProps = {
             },
             ...(data?.items?.map((item: any) => ({
               label: item.name,
-              value: item.id,
+              value: Number(item.id),
             })) || []),
           ];
         },
@@ -125,6 +125,12 @@ export const gridSchemas: VxeGridProps<any> = {
     { field: 'username', title: '用户名' },
     { field: 'nickname', title: '昵称' },
     { field: 'email', title: '邮箱' },
+    {
+      field: 'roleNames',
+      minWidth: 160,
+      slots: { default: 'roles' },
+      title: '角色',
+    },
     {
       cellRender: { name: 'CellTag' },
       field: 'status',
@@ -226,22 +232,24 @@ export const formSchemas: VbenFormProps = {
       component: 'ApiSelect',
       // 对应组件的参数
       componentProps: {
-        class: 'w-2/3',
+        class: 'w-full',
         allowClear: true,
         filterOption: true,
+        mode: 'multiple',
+        optionFilterProp: 'label',
         placeholder: '请选择',
         // 菜单接口转options格式
         afterFetch: (data: SystemRoleApi.GetRoleListByPageReply) => {
           return data?.items.map((item: any) => ({
             label: item.name,
-            value: item.id,
+            value: Number(item.id),
           }));
         },
         // 菜单接口
         api: getRoleList,
       },
       formItemClass: 'col-span-5',
-      fieldName: 'role',
+      fieldName: 'roleIds',
       label: '角色',
       rules: 'required',
     },
