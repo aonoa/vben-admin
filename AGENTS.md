@@ -1,94 +1,112 @@
-# PROJECT KNOWLEDGE BASE
+# vben-admin — Agent Notes
 
-**Generated:** 2026-02-28 **Commit:** a12147095 **Branch:** (current)
+## Source Of Truth
 
-## OVERVIEW
+- Read `docs/project_profile.md`, `docs/architecture/current_architecture.md`, `docs/architecture/tech_stack.md`, `docs/planning/module_boundaries.md`, `docs/planning/verification.md`, `docs/planning/risk_register.md`, `docs/progress.md`, and `docs/worklog.md` before planning or editing.
+- Treat `docs/*.md` as durable project state.
+- Treat `docs/src` as the public VitePress docs site, not bootstrap state.
 
-Vue 3 + Vite + TypeScript monorepo admin template. Supports 5 UI frameworks (Antd, Naive UI, Element Plus, TDesign). pnpm workspaces + Turbo build.
+## Project Shape
 
-## STRUCTURE
+- These notes describe the frontend `main` branch paired with the monolithic backend. The microservice frontend is on the separate `monorepo` branch.
+- Read `../AGENTS.md` for cross-repository coordination and full-stack feature rules.
+- Read `../REPO_STRUCTURE.md` and `../STARTUP_AND_INTEGRATION.md` before switching branches or syncing backend OpenAPI output.
+- `apps/*`: independently runnable web apps plus `backend-mock`
+- `packages/*`: shared runtime libraries and framework layers
+- `internal/*`: build, lint, config, and tooling packages
+- `docs/src`: public documentation site
+- `playground`: integration and e2e surface
+- `scripts/*`: repo automation and release helpers
 
-```
-./
-├── apps/              # 6 web apps (@vben/web-*)
-├── packages/          # Shared packages
-│   ├── @core/         # Core framework (~12 packages)
-│   ├── effects/       # Side-effect packages (6)
-│   ├── constants/    # Constants
-│   ├── icons/        # Icon library
-│   ├── locales/      # i18n
-│   ├── preferences/  # Theme/preferences
-│   ├── stores/        # Pinia stores
-│   ├── styles/        # Global styles
-│   ├── types/         # TypeScript types
-│   └── utils/         # Utilities
-├── internal/          # Build tooling (lint, vite, tailwind configs)
-├── docs/              # Documentation (VitePress)
-├── playground/        # Testing playground
-└── scripts/           # Build/deploy scripts
-```
+## High-Conflict Files
 
-## WHERE TO LOOK
+- `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `openapi.yaml`
+- `turbo.json`, `.npmrc`, `lefthook.yml`, `eslint.config.mjs`, `stylelint.config.mjs`, `vitest.config.ts`
+- `apps/*/package.json`, `apps/backend-mock/**`, `apps/web-antd/**`
+- `packages/@core/**`, `packages/effects/**`
+- `docs/src/**`, `docs/project_profile.md`, `docs/architecture/**`, `docs/planning/**`, `docs/progress.md`, `docs/worklog.md`
+- `playground/playwright.config.ts`
+- `internal/**`
 
-| Task | Location | Notes |
-| --- | --- | --- |
-| Add new app | `apps/` | Copy from existing web-\* app |
-| Add shared utility | `packages/utils/src/` | Follow barrel export pattern |
-| Add Pinia store | `packages/stores/src/modules/` | Follow `*.test.ts` pattern |
-| UI components | `packages/@core/ui-kit/` | Multiple UI framework support |
-| Router/Auth | `packages/effects/hooks/src/` | Composable functions |
-| Config change | `internal/` | @vben/\* config packages |
-| Tests | `__tests__/` | Co-located with source |
+## Module Rules
 
-## CODE MAP
+- App code may depend on shared packages, but shared packages must not depend on app code.
+- Keep `packages/@core/*` low-level and framework-neutral.
+- Keep `packages/effects/*` free of app-specific imports.
+- Change `internal/*` only for workspace-wide tooling updates.
+- Never hand-edit generated artifacts when a generation command exists.
+- Active backend API prefix on this branch is `/basic-api/*`; do not mix in microservice prefixes unless the repo is on `monorepo`.
 
-| Symbol       | Type      | Location     | Notes          |
-| ------------ | --------- | ------------ | -------------- |
-| main.ts      | entry     | apps/\*/src/ | App bootstrap  |
-| bootstrap.ts | fn        | apps/\*/src/ | Vue init       |
-| app.vue      | component | apps/\*/src/ | Root component |
+## Full-Stack Feature Rule
 
-## CONVENTIONS
+- Treat `vben-admin/main` + `../base-server/master` as one complete monolithic product line for feature work.
+- When adding, modifying, or refactoring a feature, inspect the paired backend impact before editing: API/proto/OpenAPI contracts, service handlers, biz logic, data schema, auth/RBAC, upload/SSE, config, and runtime behavior.
+- If a frontend change affects routes, menus, permissions, request parameters, response fields, upload/SSE behavior, or generated client usage, plan the matching backend check or update in `../base-server` on the same version line.
+- If the backend does not need changes, state the reason in the completion report.
+- Do not apply microservice API prefixes or service-split assumptions unless both repos are on `monorepo`.
 
-- **2-space indent**, single quotes, max 100 chars
-- **ESM only**: `"type": "module"` in all packages
-- **Build**: `pnpm unbuild` for packages
-- **Naming**: `@vben/*` for packages, `@vben-core/*` for core
-- **Tests**: `*.test.ts` (unit), `*.spec.ts` (e2e)
-- **Barrel exports**: `*/index.ts` for public APIs
-- **pnpm catalog**: Centralized deps in `pnpm-workspace.yaml`
-
-## ANTI-PATTERNS (THIS PROJECT)
-
-- **DO NOT cache HTML** — Prevents cache issues after updates
-- **DO NOT modify default config** — Use `overridesPreferences()` instead
-- **DO NOT mix business i18n** — Keep business translations separate from `@vben/locales`
-- **DO NOT set props/slots** with `connectedComponent` in modal/drawer
-- **Avoid `as any`** — Type errors must be fixed properly
-
-## UNIQUE STYLES
-
-- Multi-UI framework support (antd, naive, ele, tdesign)
-- Connected component pattern for modal/drawer state sharing
-- Heavy barrel export usage (`*/index.ts`)
-- Preferences plugin for theme/config persistence
-- Dynamic router with permission system
-
-## COMMANDS
+## Verification
 
 ```bash
-pnpm dev              # Dev all apps
-pnpm dev:antd         # Specific app
-pnpm build            # Build all
-pnpm test:unit        # Vitest
-pnpm lint             # ESLint + Stylelint
-pnpm check            # Full check (types, deps, circular)
-pnpm commit           # Interactive commit (czg)
+corepack enable
+pnpm install
+pnpm build
+pnpm build:antd
+pnpm build:naive
+pnpm build:ele
+pnpm build:tdesign
+pnpm build:play
+pnpm build:docs
+pnpm test:unit
+pnpm test:e2e
+pnpm lint
+pnpm check:type
+pnpm check:dep
+pnpm check:circular
+pnpm check:cspell
+pnpm check
 ```
 
-## NOTES
+## Git Policy
 
-- Node >=20.19.0, pnpm >=10.0.0 required
-- Apps proxy `/api` to `http://localhost:8000/basic-api`
-- Uses `happy-dom` for unit tests (not jsdom)
-- Changesets for versioning
+- Check `git status --short --branch`, current branch/ref, and worktree list before editing.
+- Do not overwrite existing dirty files unless the task explicitly targets them.
+- Keep commits aligned with a single task boundary.
+- Do not commit generated artifacts, lockfile churn, or unrelated user work.
+- Push only when the user asks.
+- Verify after each merge or worktree integration.
+
+## Worktree And Parallelism
+
+- Use parallel work only for disjoint write paths.
+- Do not parallelize lockfile, workspace, API contract, or global config changes with feature work.
+- Reserve explicit paths before spawning workers.
+- Merge one child result at a time and re-run targeted verification after each merge.
+
+## Human Escalation
+
+Ask before changing:
+
+- Product scope
+- Public API shape or generated client contract
+- Package boundaries or ownership
+- UI framework choice
+- Build, release, or deployment posture
+- Security-sensitive configuration
+
+## Human Interrupts
+
+- Pause the affected work immediately.
+- Record the confirmed change in `docs/worklog.md` and any affected project docs.
+- Re-check task boundaries, parallelism, and verification before resuming.
+
+## Completion Report
+
+Report:
+
+- Goal result
+- Active version line and frontend/backend impact
+- Changed files
+- Verification run
+- Open risks
+- Next recommended action

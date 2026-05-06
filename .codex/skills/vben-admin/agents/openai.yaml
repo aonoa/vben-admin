@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vben Admin"
+  short_description: "Vben Admin frontend plus paired backend impact"
+  default_prompt: "Use $vben-admin to work on the Vben Admin frontend, starting with project docs and paired backend impact."
