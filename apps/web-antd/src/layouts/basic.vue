@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { NotificationItem } from '@vben/layouts';
 
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
@@ -16,66 +16,24 @@ import {
 } from '@vben/layouts';
 import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
-import { openWindow } from '@vben/utils';
+import { formatDateTime, openWindow } from '@vben/utils';
 
 import FloatingAICopilotWrapper from '#/adapter/component/copilot/FloatingAICopilotWrapper.vue';
+import {
+  SITE_MESSAGE_REFRESH_EVENT,
+  getMySiteMessageList,
+  getMySiteMessageUnreadCount,
+  markAllSiteMessagesRead,
+  markSiteMessageRead,
+} from '#/api/system/site-message';
 import Live2D from '#/adapter/component/Live2D.vue';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-const notifications = ref<NotificationItem[]>([
-  {
-    id: 1,
-    avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
-    date: '3小时前',
-    isRead: true,
-    message: '描述信息描述信息描述信息',
-    title: '收到了 14 份新周报',
-  },
-  {
-    id: 2,
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '刚刚',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '朱偏右 回复了你',
-  },
-  {
-    id: 3,
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '2024-01-01',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '曲丽丽 评论了你',
-  },
-  {
-    id: 4,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '代办提醒',
-  },
-  {
-    id: 5,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '跳转Workspace示例',
-    link: '/workspace',
-  },
-  {
-    id: 6,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '跳转外部链接示例',
-    link: 'https://doc.vben.pro',
-  },
-]);
+const notifications = ref<NotificationItem[]>([]);
+const unreadCount = ref(0);
+const notificationPageSize = 6;
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -83,9 +41,7 @@ const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
 const { isDark } = usePreferences();
-const showDot = computed(() =>
-  notifications.value.some((item) => !item.isRead),
-);
+const showDot = computed(() => unreadCount.value > 0);
 
 const menus = computed(() => [
   {
@@ -132,14 +88,42 @@ async function handleLogout() {
   await authStore.logout(false);
 }
 
-function handleNoticeClear() {
-  notifications.value = [];
+function mapNotificationItem(item: Record<string, any>): NotificationItem {
+  return {
+    avatar: preferences.app.defaultAvatar,
+    date: formatDateTime(item.createdTime),
+    id: item.id ?? '',
+    isRead: Boolean(item.isRead),
+    link: item.link || undefined,
+    message: item.summary || item.content || '暂无内容',
+    title: item.title || '站内信',
+  };
 }
 
-function markRead(id: number | string) {
-  const item = notifications.value.find((item) => item.id === id);
-  if (item) {
-    item.isRead = true;
+async function syncNotifications(silent = true) {
+  if (!accessStore.accessToken) {
+    notifications.value = [];
+    unreadCount.value = 0;
+    return;
+  }
+
+  try {
+    const [listReply, count] = await Promise.all([
+      getMySiteMessageList({
+        currentPage: 1,
+        pageSize: notificationPageSize,
+        readStatus: 'all',
+      }),
+      getMySiteMessageUnreadCount(),
+    ]);
+
+    notifications.value = listReply.items.map((item) => mapNotificationItem(item));
+    unreadCount.value = count;
+  } catch {
+    if (!silent) {
+      notifications.value = [];
+      unreadCount.value = 0;
+    }
   }
 }
 
@@ -147,17 +131,57 @@ function remove(id: number | string) {
   notifications.value = notifications.value.filter((item) => item.id !== id);
 }
 
-function handleMakeAll() {
-  notifications.value.forEach((item) => (item.isRead = true));
+async function markAllRead(refreshList = true, broadcast = true) {
+  await markAllSiteMessagesRead();
+  unreadCount.value = 0;
+  notifications.value = notifications.value.map((item) => ({
+    ...item,
+    isRead: true,
+  }));
+  if (broadcast) {
+    window.dispatchEvent(new Event(SITE_MESSAGE_REFRESH_EVENT));
+  }
+
+  if (refreshList) {
+    await syncNotifications();
+  }
 }
 
-const viewAll = () => {};
+async function handleNoticeClear() {
+  await markAllRead(false, false);
+  notifications.value = [];
+}
 
-const handleClick = (item: NotificationItem) => {
-  // 如果通知项有链接，点击时跳转
+async function markRead(id: number | string) {
+  const item = notifications.value.find((entry) => entry.id === id);
+  if (!item || item.isRead) {
+    return;
+  }
+
+  await markSiteMessageRead(String(id));
+  window.dispatchEvent(new Event(SITE_MESSAGE_REFRESH_EVENT));
+  await syncNotifications();
+}
+
+async function handleMakeAll() {
+  await markAllRead(true);
+}
+
+const viewAll = () => {
+  router.push({ path: '/messages' });
+};
+
+const handleClick = async (item: NotificationItem) => {
+  if (item.id && !item.isRead) {
+    await markRead(item.id);
+  }
+
   if (item.link) {
     navigateTo(item.link, item.query, item.state);
+    return;
   }
+
+  viewAll();
 };
 
 function navigateTo(
@@ -177,6 +201,44 @@ function navigateTo(
     });
   }
 }
+
+const handleSiteMessageRefresh = () => {
+  void syncNotifications();
+};
+
+const handleVisibilityChange = () => {
+  if (!document.hidden) {
+    void syncNotifications();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener(SITE_MESSAGE_REFRESH_EVENT, handleSiteMessageRefresh);
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener(
+    SITE_MESSAGE_REFRESH_EVENT,
+    handleSiteMessageRefresh,
+  );
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+});
+
+watch(
+  () => accessStore.accessToken,
+  (token) => {
+    if (token) {
+      void syncNotifications();
+      return;
+    }
+    notifications.value = [];
+    unreadCount.value = 0;
+  },
+  {
+    immediate: true,
+  },
+);
 
 watch(
   () => ({

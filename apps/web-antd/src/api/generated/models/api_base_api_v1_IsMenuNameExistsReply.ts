@@ -2,5 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_IsMenuNameExistsReply = {
-  data?: boolean;
+    data?: boolean;
 };
+

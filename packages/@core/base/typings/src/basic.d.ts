@@ -3,6 +3,12 @@ interface BasicOption {
   value: string;
 }
 
+interface BasicUserRole {
+  role?: string;
+  roleName?: string;
+  value?: string;
+}
+
 type SelectOption = BasicOption;
 
 type TabOption = BasicOption;
@@ -19,7 +25,7 @@ interface BasicUserInfo {
   /**
    * 用户角色
    */
-  roles?: string[];
+  roles?: Array<BasicUserRole | string>;
   /**
    * 用户id
    */

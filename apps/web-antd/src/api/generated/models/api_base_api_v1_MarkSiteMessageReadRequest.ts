@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-export type api_base_api_v1_IsMenuPathExistsReply = {
-    data?: boolean;
+export type api_base_api_v1_MarkSiteMessageReadRequest = {
+    messageId?: string;
 };
 

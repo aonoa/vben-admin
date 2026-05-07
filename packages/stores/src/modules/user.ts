@@ -1,5 +1,13 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
+interface RoleInfoLike {
+  role?: string;
+  roleName?: string;
+  value?: string;
+}
+
+type BasicUserRole = RoleInfoLike | string;
+
 interface BasicUserInfo {
   [key: string]: any;
   /**
@@ -13,7 +21,7 @@ interface BasicUserInfo {
   /**
    * 用户角色
    */
-  roles?: string[];
+  roles?: BasicUserRole[];
   /**
    * 用户id
    */
@@ -35,6 +43,20 @@ interface AccessState {
   userRoles: string[];
 }
 
+function normalizeUserRoles(roles?: BasicUserInfo['roles'] | BasicUserRole | null) {
+  const roleList = Array.isArray(roles) ? roles : roles ? [roles] : [];
+
+  return roleList
+    .map((role) =>
+      typeof role === 'string'
+        ? role.trim().toLowerCase()
+        : String(role?.value ?? role?.roleName ?? role?.role ?? '')
+            .trim()
+            .toLowerCase(),
+    )
+    .filter(Boolean);
+}
+
 /**
  * @zh_CN 用户信息相关
  */
@@ -44,7 +66,7 @@ export const useUserStore = defineStore('core-user', {
       // 设置用户信息
       this.userInfo = userInfo;
       // 设置角色信息
-      const roles = userInfo?.roles ?? [];
+      const roles = normalizeUserRoles(userInfo?.roles);
       this.setUserRoles(roles);
     },
     setUserRoles(roles: string[]) {

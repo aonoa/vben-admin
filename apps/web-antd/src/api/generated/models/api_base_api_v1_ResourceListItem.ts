@@ -2,10 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_ResourceListItem = {
-  id?: string;
-  name?: string;
-  type?: string;
-  value?: string;
-  method?: string;
-  description?: string;
+    id?: string;
+    name?: string;
+    type?: string;
+    value?: string;
+    method?: string;
+    description?: string;
 };
+

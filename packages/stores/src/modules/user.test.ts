@@ -13,6 +13,7 @@ describe('useUserStore', () => {
     const userInfo: any = { name: 'Jane Doe', roles: [{ value: 'user' }] };
     store.setUserInfo(userInfo);
     expect(store.userInfo).toEqual(userInfo);
+    expect(store.userRoles).toEqual(['user']);
   });
 
   // 测试重置用户信息时的行为
@@ -33,5 +34,14 @@ describe('useUserStore', () => {
   it('returns an empty array for userRoles if not set', () => {
     const store = useUserStore();
     expect(store.userRoles).toEqual([]);
+  });
+
+  it('normalizes legacy string roles and role objects', () => {
+    const store = useUserStore();
+    store.setUserInfo({
+      roles: ['ADMIN', { roleName: 'Root', value: 'root' }],
+    } as any);
+
+    expect(store.userRoles).toEqual(['admin', 'root']);
   });
 });
