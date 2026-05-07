@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_SetRoleStatusRequest = {
-    id?: string;
-    status?: string;
+  id?: string;
+  status?: string;
 };
-

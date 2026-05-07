@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_IsUserExistsRequest = {
-    id?: string;
-    username?: string;
+  id?: string;
+  username?: string;
 };
-

@@ -2,6 +2,12 @@
 
 These rules describe `vben-admin/main`, paired with the monolithic backend. For the microservice frontend, use `vben-admin/monorepo` together with `base-server/monorepo` and read the root coordination docs.
 
+## Framework Conventions
+
+- Treat Vben Admin 5.0 components, composables, layout patterns, and documented route, menu, access, theme, locale, login, and request flows as the default implementation surface for app-layer work.
+- Use the official Vben skill reference at `https://github.com/vbenjs/skills` for framework-specific patterns and terminology.
+- Prefer shared framework primitives and existing app patterns before creating bespoke abstractions. If a deviation is necessary, document the reason in the task handoff.
+
 For feature additions, modifications, or refactors, treat `vben-admin/main` and `base-server/master` as one product. Inspect paired backend impact before frontend edits, and keep all contract/codegen/client updates inside this version line.
 
 ## Repository Areas

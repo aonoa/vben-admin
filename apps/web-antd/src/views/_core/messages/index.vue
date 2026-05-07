@@ -19,7 +19,6 @@ import { message } from 'ant-design-vue';
 
 import { GetUserList } from '#/api';
 import {
-  SITE_MESSAGE_REFRESH_EVENT,
   createSiteMessage,
   deletePendingSiteMessage,
   getMySiteMessageList,
@@ -29,6 +28,7 @@ import {
   markSiteMessageRead,
   markSiteMessageUnread,
   recallSiteMessage,
+  SITE_MESSAGE_REFRESH_EVENT,
 } from '#/api/system/site-message';
 
 defineOptions({
@@ -52,13 +52,14 @@ const inboxTabs: Array<{ key: SiteMessageReadFilter; label: string }> = [
   { key: 'read', label: '已读' },
 ];
 
-const manageTabs: Array<{ key: SiteMessageManageStatusFilter; label: string }> = [
-  { key: 'all', label: '全部' },
-  { key: 'draft', label: '草稿' },
-  { key: 'scheduled', label: '待发布' },
-  { key: 'published', label: '已发布' },
-  { key: 'recalled', label: '已撤回' },
-];
+const manageTabs: Array<{ key: SiteMessageManageStatusFilter; label: string }> =
+  [
+    { key: 'all', label: '全部' },
+    { key: 'draft', label: '草稿' },
+    { key: 'scheduled', label: '待发布' },
+    { key: 'published', label: '已发布' },
+    { key: 'recalled', label: '已撤回' },
+  ];
 
 const inboxState = reactive({
   currentPage: 1,
@@ -137,27 +138,35 @@ function getReceiverLabel(item: SiteMessageManageItem) {
 
 function getManageStatusLabel(status: SiteMessageManageStatus) {
   switch (status) {
-    case 'draft':
+    case 'draft': {
       return '草稿';
-    case 'scheduled':
-      return '待发布';
-    case 'recalled':
+    }
+    case 'recalled': {
       return '已撤回';
-    default:
+    }
+    case 'scheduled': {
+      return '待发布';
+    }
+    default: {
       return '已发布';
+    }
   }
 }
 
 function getManageStatusColor(status: SiteMessageManageStatus) {
   switch (status) {
-    case 'draft':
+    case 'draft': {
       return 'default';
-    case 'scheduled':
-      return 'gold';
-    case 'recalled':
+    }
+    case 'recalled': {
       return 'red';
-    default:
+    }
+    case 'scheduled': {
+      return 'gold';
+    }
+    default: {
       return 'blue';
+    }
   }
 }
 
@@ -384,7 +393,9 @@ async function handleMarkAllRead() {
     const updatedCount = await markAllSiteMessagesRead();
     window.dispatchEvent(new Event(SITE_MESSAGE_REFRESH_EVENT));
     message.success(
-      updatedCount > 0 ? `已标记 ${updatedCount} 条站内信为已读` : '暂无未读站内信',
+      updatedCount > 0
+        ? `已标记 ${updatedCount} 条站内信为已读`
+        : '暂无未读站内信',
     );
     await Promise.all([loadInbox(), refreshUnreadCount()]);
   } finally {
@@ -405,7 +416,11 @@ function validatePublishForm(action: SiteMessageComposeAction) {
     message.warning('请输入正文');
     return false;
   }
-  if (action !== 'draft' && publishForm.receiverType === 'user' && publishForm.receiverIds.length === 0) {
+  if (
+    action !== 'draft' &&
+    publishForm.receiverType === 'user' &&
+    publishForm.receiverIds.length === 0
+  ) {
     message.warning('请选择目标用户');
     return false;
   }
@@ -414,9 +429,7 @@ function validatePublishForm(action: SiteMessageComposeAction) {
       message.warning('请选择定时发布时间');
       return false;
     }
-    const parsed = new Date(
-      publishForm.scheduledPublishTime.replace(' ', 'T'),
-    );
+    const parsed = new Date(publishForm.scheduledPublishTime.replace(' ', 'T'));
     if (Number.isNaN(parsed.getTime())) {
       message.warning('定时发布时间格式无效');
       return false;
@@ -450,15 +463,17 @@ async function submitSiteMessage(action: SiteMessageComposeAction) {
     });
 
     switch (action) {
-      case 'draft':
+      case 'draft': {
         message.success(isEditing.value ? '草稿已更新' : '草稿已保存');
         break;
-      case 'schedule':
+      }
+      case 'schedule': {
         message.success(
           isEditing.value ? '定时发布任务已更新' : '定时发布任务已创建',
         );
         break;
-      default:
+      }
+      default: {
         message.success(
           reply.receiverCount > 0
             ? `发布成功，已投递 ${reply.receiverCount} 人`
@@ -466,6 +481,7 @@ async function submitSiteMessage(action: SiteMessageComposeAction) {
         );
         window.dispatchEvent(new Event(SITE_MESSAGE_REFRESH_EVENT));
         break;
+      }
     }
 
     resetPublishForm();
@@ -519,15 +535,12 @@ watch(
   },
 );
 
-watch(
-  manageActiveTab,
-  () => {
-    manageState.currentPage = 1;
-    manageState.items = [];
-    manageState.total = 0;
-    void loadManageList();
-  },
-);
+watch(manageActiveTab, () => {
+  manageState.currentPage = 1;
+  manageState.items = [];
+  manageState.total = 0;
+  void loadManageList();
+});
 
 onMounted(async () => {
   if (showManagePanel.value) {
@@ -561,10 +574,7 @@ watch(showManagePanel, (enabled, previousEnabled) => {
             <a-button size="small" @click="loadManageList">刷新</a-button>
           </template>
 
-          <a-tabs
-            v-model:activeKey="manageActiveTab"
-            class="-mt-2"
-          >
+          <a-tabs v-model:active-key="manageActiveTab" class="-mt-2">
             <a-tab-pane
               v-for="tab in manageTabs"
               :key="tab.key"
@@ -586,16 +596,24 @@ watch(showManagePanel, (enabled, previousEnabled) => {
                     class="message-card w-full"
                   >
                     <div class="flex flex-col gap-4">
-                      <div class="flex flex-wrap items-start justify-between gap-3">
+                      <div
+                        class="flex flex-wrap items-start justify-between gap-3"
+                      >
                         <div class="min-w-0 flex-1 space-y-2">
                           <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-base font-medium text-[var(--ant-color-text)]">
+                            <span
+                              class="text-base font-medium text-[var(--ant-color-text)]"
+                            >
                               {{ item.title }}
                             </span>
                             <a-tag :color="getManageStatusColor(item.status)">
                               {{ getManageStatusLabel(item.status) }}
                             </a-tag>
-                            <a-tag color="blue">{{ getReceiverLabel(item) }}</a-tag>
+                            <a-tag color="blue">
+{{
+                              getReceiverLabel(item)
+                            }}
+</a-tag>
                           </div>
 
                           <p
@@ -652,14 +670,27 @@ watch(showManagePanel, (enabled, previousEnabled) => {
                         {{ item.content || '暂无正文' }}
                       </div>
 
-                      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--ant-color-text-description)]">
-                        <span>发布人：{{ getPublisherLabel(item.senderName, item.senderId) }}</span>
+                      <div
+                        class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--ant-color-text-description)]"
+                      >
+                        <span>发布人：{{
+                            getPublisherLabel(item.senderName, item.senderId)
+                          }}</span>
                         <span>创建时间：{{ formatDate(item.createdTime) }}</span>
-                        <span>最后更新时间：{{ formatDate(item.updatedTime) }}</span>
+                        <span>最后更新时间：{{
+                            formatDate(item.updatedTime)
+                          }}</span>
                         <span v-if="item.status === 'scheduled'">
-                          计划发布时间：{{ formatDate(item.scheduledPublishTime) }}
+                          计划发布时间：{{
+                            formatDate(item.scheduledPublishTime)
+                          }}
                         </span>
-                        <span v-if="item.status === 'published' || item.status === 'recalled'">
+                        <span
+                          v-if="
+                            item.status === 'published' ||
+                            item.status === 'recalled'
+                          "
+                        >
                           发布时间：{{ formatDate(item.publishedTime) }}
                         </span>
                         <span v-if="item.status === 'recalled'">
@@ -831,7 +862,7 @@ watch(showManagePanel, (enabled, previousEnabled) => {
         </template>
 
         <a-tabs
-          v-model:activeKey="inboxState.readStatus"
+          v-model:active-key="inboxState.readStatus"
           class="-mt-2"
           @change="handleInboxTabChange"
         >
@@ -856,13 +887,19 @@ watch(showManagePanel, (enabled, previousEnabled) => {
                   class="message-card w-full"
                 >
                   <div class="flex flex-col gap-4">
-                    <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div
+                      class="flex flex-wrap items-start justify-between gap-3"
+                    >
                       <div class="min-w-0 flex-1 space-y-2">
                         <div class="flex flex-wrap items-center gap-2">
-                          <span class="text-base font-medium text-[var(--ant-color-text)]">
+                          <span
+                            class="text-base font-medium text-[var(--ant-color-text)]"
+                          >
                             {{ item.title }}
                           </span>
-                          <a-tag :color="item.isRead ? 'default' : 'processing'">
+                          <a-tag
+                            :color="item.isRead ? 'default' : 'processing'"
+                          >
                             {{ item.isRead ? '已读' : '未读' }}
                           </a-tag>
                         </div>
@@ -907,8 +944,12 @@ watch(showManagePanel, (enabled, previousEnabled) => {
                       {{ item.content || '暂无正文' }}
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--ant-color-text-description)]">
-                      <span>发送人：{{ getPublisherLabel(item.senderName, item.senderId) }}</span>
+                    <div
+                      class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--ant-color-text-description)]"
+                    >
+                      <span>发送人：{{
+                          getPublisherLabel(item.senderName, item.senderId)
+                        }}</span>
                       <span>发送时间：{{ formatDate(item.createdTime) }}</span>
                       <span v-if="item.isRead">已读时间：{{ formatDate(item.readTime) }}</span>
                     </div>

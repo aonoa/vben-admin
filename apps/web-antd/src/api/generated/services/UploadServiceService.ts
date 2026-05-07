@@ -7,21 +7,21 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class UploadServiceService {
-    /**
-     * 上传文件
-     * @returns api_base_api_v1_UploadResponse OK
-     * @throws ApiError
-     */
-    public static uploadServiceUploadFile({
-        requestBody,
-    }: {
-        requestBody: api_base_api_v1_File,
-    }): CancelablePromise<api_base_api_v1_UploadResponse> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/basic-api/v1/server/file/upload',
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
+  /**
+   * 上传文件
+   * @returns api_base_api_v1_UploadResponse OK
+   * @throws ApiError
+   */
+  public static uploadServiceUploadFile({
+    requestBody,
+  }: {
+    requestBody: api_base_api_v1_File;
+  }): CancelablePromise<api_base_api_v1_UploadResponse> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/basic-api/v1/server/file/upload',
+      body: requestBody,
+      mediaType: 'application/json',
+    });
+  }
 }

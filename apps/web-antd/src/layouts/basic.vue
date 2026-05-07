@@ -19,14 +19,14 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { formatDateTime, openWindow } from '@vben/utils';
 
 import FloatingAICopilotWrapper from '#/adapter/component/copilot/FloatingAICopilotWrapper.vue';
+import Live2D from '#/adapter/component/Live2D.vue';
 import {
-  SITE_MESSAGE_REFRESH_EVENT,
   getMySiteMessageList,
   getMySiteMessageUnreadCount,
   markAllSiteMessagesRead,
   markSiteMessageRead,
+  SITE_MESSAGE_REFRESH_EVENT,
 } from '#/api/system/site-message';
-import Live2D from '#/adapter/component/Live2D.vue';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
@@ -117,7 +117,9 @@ async function syncNotifications(silent = true) {
       getMySiteMessageUnreadCount(),
     ]);
 
-    notifications.value = listReply.items.map((item) => mapNotificationItem(item));
+    notifications.value = listReply.items.map((item) =>
+      mapNotificationItem(item),
+    );
     unreadCount.value = count;
   } catch {
     if (!silent) {

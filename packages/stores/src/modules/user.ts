@@ -43,8 +43,10 @@ interface AccessState {
   userRoles: string[];
 }
 
-function normalizeUserRoles(roles?: BasicUserInfo['roles'] | BasicUserRole | null) {
-  const roleList = Array.isArray(roles) ? roles : roles ? [roles] : [];
+function normalizeUserRoles(
+  roles?: BasicUserInfo['roles'] | BasicUserRole | null,
+) {
+  const roleList = Array.isArray(roles) ? roles : (roles ? [roles] : []);
 
   return roleList
     .map((role) =>

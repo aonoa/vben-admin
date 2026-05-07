@@ -5,6 +5,7 @@
 - This architecture describes the frontend `main` branch paired with the monolithic backend, not the `monorepo` microservice branch.
 - `apps/web-antd`, `apps/web-antdv-next`, `apps/web-naive`, `apps/web-ele`, `apps/web-tdesign`: independently runnable frontend apps
 - `apps/backend-mock`: local Nitro mock backend
+- App-layer work in these apps should compose Vben Admin 5.0 route, menu, access, theme, locale, login, request, and component primitives before bespoke code.
 - `packages/@core/*`: shared foundations, UI kit, preferences, composables, design primitives
 - `packages/effects/*`: reusable app behavior, layouts, hooks, access control, request layer, and feature widgets
 - `packages/{constants,icons,locales,preferences,stores,styles,types,utils}`: cross-app shared runtime packages

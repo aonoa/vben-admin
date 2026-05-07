@@ -40,6 +40,7 @@ Provide a reusable admin template with multiple UI-framework variants, shared pa
 
 - Run one app locally with `pnpm dev:<app>`
 - Change shared packages and reuse them across apps
+- Prefer Vben Admin 5.0 primitives and documented patterns for routes, menus, permissions, theme, locale, login, and request wiring before creating custom app abstractions
 - Regenerate API client code from `openapi.yaml`
 - Check paired backend API contracts, handlers, business logic, data schema, auth/RBAC, upload/SSE, and config whenever frontend behavior depends on them
 - Build docs and playground artifacts

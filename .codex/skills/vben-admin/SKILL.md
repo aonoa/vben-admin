@@ -9,6 +9,12 @@ description: Use when working on the Vben Admin monorepo (Vue 3 + Vite + pnpm + 
 
 This project uses document-driven iterative development. Repository docs are the source of truth; chat is temporary. Requirements, decisions, assumptions, open questions, task boundaries, verification commands, and iteration results must be written to project docs before they are treated as durable state.
 
+## Vben Framework First
+
+- Treat the official Vben Admin skill reference at `https://github.com/vbenjs/skills` as the framework guide for route, menu, access, theme, locale, login, API, and component conventions.
+- Prefer existing Vben framework primitives, shared packages, and established app patterns before introducing bespoke abstractions or custom UI.
+- If a task must deviate from framework conventions, record the reason and replacement pattern in the handoff.
+
 ## Full-Stack Product Rule
 
 Treat `vben-admin/main` + `/home/mini/OpenSource/framework/base-server/master` as one complete monolithic product line for feature work. When adding, modifying, or refactoring a feature, inspect the paired backend impact before editing and report both frontend and backend impact at handoff.

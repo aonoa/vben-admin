@@ -18,6 +18,7 @@
 - App code may depend on shared packages, but shared packages should not depend on app code.
 - `packages/@core/*` should remain framework-agnostic and low-level.
 - `packages/effects/*` can depend on `@core` and shared libs, but not on a specific app.
+- In app-layer code, prefer Vben Admin 5.0 components, composables, and documented route, menu, access, theme, locale, login, and request patterns before bespoke abstractions; record intentional deviations in the handoff.
 - Touch `internal/*` only when changing monorepo-wide tooling.
 - Treat `docs/src` as user-facing content and `docs/*.md` as project-state records.
 - Treat feature additions, modifications, and refactors as full-stack by default: inspect the paired `../base-server` branch for API/proto/OpenAPI contracts, service handlers, biz logic, data schema, auth/RBAC, upload/SSE behavior, config, and runtime behavior.

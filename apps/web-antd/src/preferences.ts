@@ -24,7 +24,7 @@ export const overridesPreferences = defineOverridesPreferences({
   },
   widget: {
     timezone: false,
-  }
+  },
 });
 
 export const preferencesExtension =

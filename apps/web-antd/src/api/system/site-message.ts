@@ -91,22 +91,24 @@ function toNumber(value?: number | string) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function normalizeReceiverType(
-  receiverType?: string,
-): SiteMessageReceiverType {
+function normalizeReceiverType(receiverType?: string): SiteMessageReceiverType {
   return receiverType === 'user' ? 'user' : 'all';
 }
 
 function normalizeManageStatus(status?: string): SiteMessageManageStatus {
   switch (status) {
-    case 'draft':
+    case 'draft': {
       return 'draft';
-    case 'scheduled':
-      return 'scheduled';
-    case 'recalled':
+    }
+    case 'recalled': {
       return 'recalled';
-    default:
+    }
+    case 'scheduled': {
+      return 'scheduled';
+    }
+    default: {
       return 'published';
+    }
   }
 }
 
@@ -152,18 +154,19 @@ function normalizeSiteMessageManageItem(
 
 function mapReadStatus(readStatus: SiteMessageReadFilter = 'all') {
   switch (readStatus) {
-    case 'read':
+    case 'read': {
       return 1;
-    case 'unread':
+    }
+    case 'unread': {
       return 2;
-    default:
+    }
+    default: {
       return 0;
+    }
   }
 }
 
-function mapManageStatusFilter(
-  status: SiteMessageManageStatusFilter = 'all',
-) {
+function mapManageStatusFilter(status: SiteMessageManageStatusFilter = 'all') {
   return status === 'all' ? undefined : status;
 }
 

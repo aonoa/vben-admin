@@ -3,6 +3,7 @@
 ## Source Of Truth
 
 - Read `docs/project_profile.md`, `docs/architecture/current_architecture.md`, `docs/architecture/tech_stack.md`, `docs/planning/module_boundaries.md`, `docs/planning/verification.md`, `docs/planning/risk_register.md`, `docs/progress.md`, and `docs/worklog.md` before planning or editing.
+- Read `.codex/skills/vben-admin/SKILL.md` and the official Vben Admin skill reference at `https://github.com/vbenjs/skills` for framework-specific route, menu, access, theme, locale, login, request, and component conventions.
 - Treat `docs/*.md` as durable project state.
 - Treat `docs/src` as the public VitePress docs site, not bootstrap state.
 
@@ -17,6 +18,7 @@
 - `docs/src`: public documentation site
 - `playground`: integration and e2e surface
 - `scripts/*`: repo automation and release helpers
+- Prefer Vben framework primitives and existing app patterns before introducing bespoke abstractions in app-layer code; record any intentional deviation in the handoff.
 
 ## High-Conflict Files
 
