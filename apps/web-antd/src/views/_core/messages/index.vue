@@ -610,10 +610,8 @@ watch(showManagePanel, (enabled, previousEnabled) => {
                               {{ getManageStatusLabel(item.status) }}
                             </a-tag>
                             <a-tag color="blue">
-{{
-                              getReceiverLabel(item)
-                            }}
-</a-tag>
+                              {{ getReceiverLabel(item) }}
+                            </a-tag>
                           </div>
 
                           <p
