@@ -1,94 +1,62 @@
-# PROJECT KNOWLEDGE BASE
+# vben-admin — Agent notes
 
-**Generated:** 2026-02-28 **Commit:** a12147095 **Branch:** (current)
+## What this repo is
 
-## OVERVIEW
+- Vue 3 + Vite + TypeScript workspace based on Vben Admin.
+- The active product app in this workspace is `apps/web-antd`.
+- On the active microservice version line, `apps/web-antd` talks to gateway `:8000` through the Vite `/api` proxy.
 
-Vue 3 + Vite + TypeScript monorepo admin template. Supports 5 UI frameworks (Antd, Naive UI, Element Plus, TDesign). pnpm workspaces + Turbo build.
+## Read first
 
-## STRUCTURE
+- `README.md`
+- `docs/project/README.md`
+- `docs/project/monorepo-overview.md`
+- `docs/project/module-map.md`
+- `docs/project/known-issues.md`
 
-```
-./
-├── apps/              # 6 web apps (@vben/web-*)
-├── packages/          # Shared packages
-│   ├── @core/         # Core framework (~12 packages)
-│   ├── effects/       # Side-effect packages (6)
-│   ├── constants/    # Constants
-│   ├── icons/        # Icon library
-│   ├── locales/      # i18n
-│   ├── preferences/  # Theme/preferences
-│   ├── stores/        # Pinia stores
-│   ├── styles/        # Global styles
-│   ├── types/         # TypeScript types
-│   └── utils/         # Utilities
-├── internal/          # Build tooling (lint, vite, tailwind configs)
-├── docs/              # Documentation (VitePress)
-├── playground/        # Testing playground
-└── scripts/           # Build/deploy scripts
-```
+## Where to change things
 
-## WHERE TO LOOK
+- `apps/web-antd/src/api/core/**` — auth, user, menu, upload
+- `apps/web-antd/src/api/system/**` — admin/common-facing management APIs
+- `apps/web-antd/src/api/generated/**` — generated OpenAPI client (**do not edit generated files casually**)
+- `apps/web-antd/src/router/**` — guards, dynamic menu generation, access handling
+- `apps/web-antd/src/views/**` — page views
+- `apps/web-antd/src/layouts/**` — app shell
+- `packages/**` — shared Vben framework packages
+- `internal/**` — build, lint, and vite config
 
-| Task | Location | Notes |
-| --- | --- | --- |
-| Add new app | `apps/` | Copy from existing web-\* app |
-| Add shared utility | `packages/utils/src/` | Follow barrel export pattern |
-| Add Pinia store | `packages/stores/src/modules/` | Follow `*.test.ts` pattern |
-| UI components | `packages/@core/ui-kit/` | Multiple UI framework support |
-| Router/Auth | `packages/effects/hooks/src/` | Composable functions |
-| Config change | `internal/` | @vben/\* config packages |
-| Tests | `__tests__/` | Co-located with source |
+## Runtime routing model
 
-## CODE MAP
+- Browser requests `/api/*`
+- Vite proxies `/api` to `http://localhost:8000`
+- Gateway routes by service prefix:
+  - `/auth-api/v1/*`
+  - `/user-api/v1/*`
+  - `/admin-api/v1/*`
+  - `/common-api/v1/*`
 
-| Symbol       | Type      | Location     | Notes          |
-| ------------ | --------- | ------------ | -------------- |
-| main.ts      | entry     | apps/\*/src/ | App bootstrap  |
-| bootstrap.ts | fn        | apps/\*/src/ | Vue init       |
-| app.vue      | component | apps/\*/src/ | Root component |
+Do not assume the old monolith `/basic-api/*` prefixes on the `monorepo` branch.
 
-## CONVENTIONS
+## Menu and access model
 
-- **2-space indent**, single quotes, max 100 chars
-- **ESM only**: `"type": "module"` in all packages
-- **Build**: `pnpm unbuild` for packages
-- **Naming**: `@vben/*` for packages, `@vben-core/*` for core
-- **Tests**: `*.test.ts` (unit), `*.spec.ts` (e2e)
-- **Barrel exports**: `*/index.ts` for public APIs
-- **pnpm catalog**: Centralized deps in `pnpm-workspace.yaml`
+- The app is not using a purely static menu.
+- Current-user menus come from `/admin-api/v1/menus/current`.
+- `src/router/access.ts` maps backend menu definitions to local `views/**/*.vue` files.
+- When adding a page, check both the frontend component path and the backend menu data/component mapping.
 
-## ANTI-PATTERNS (THIS PROJECT)
+## Generated code boundaries
 
-- **DO NOT cache HTML** — Prevents cache issues after updates
-- **DO NOT modify default config** — Use `overridesPreferences()` instead
-- **DO NOT mix business i18n** — Keep business translations separate from `@vben/locales`
-- **DO NOT set props/slots** with `connectedComponent` in modal/drawer
-- **Avoid `as any`** — Type errors must be fixed properly
+- `apps/web-antd/src/api/generated/**` — regenerated from `openapi.yaml`
+- `openapi.yaml` — synced from the paired backend repo via `make frontend-api`
 
-## UNIQUE STYLES
+## Common commands
 
-- Multi-UI framework support (antd, naive, ele, tdesign)
-- Connected component pattern for modal/drawer state sharing
-- Heavy barrel export usage (`*/index.ts`)
-- Preferences plugin for theme/config persistence
-- Dynamic router with permission system
+- App dev server: `pnpm dev:antd`
+- App typecheck: `pnpm --filter @vben/web-antd exec vue-tsc --noEmit`
+- API generation: `pnpm run generate:api`
 
-## COMMANDS
+## Repo-specific gotchas
 
-```bash
-pnpm dev              # Dev all apps
-pnpm dev:antd         # Specific app
-pnpm build            # Build all
-pnpm test:unit        # Vitest
-pnpm lint             # ESLint + Stylelint
-pnpm check            # Full check (types, deps, circular)
-pnpm commit           # Interactive commit (czg)
-```
-
-## NOTES
-
-- Node >=20.19.0, pnpm >=10.0.0 required
-- Apps proxy `/api` to `http://localhost:8000/basic-api`
-- Uses `happy-dom` for unit tests (not jsdom)
-- Changesets for versioning
+- `web-antd` is the project app; other UI apps are mostly upstream/demo variants.
+- The current `monorepo` line has documented pre-existing `vue-tsc` failures; see `docs/project/known-issues.md`.
+- If the backend contract changes, sync `openapi.yaml`, regenerate client code, then fix handwritten wrappers and call sites together.
