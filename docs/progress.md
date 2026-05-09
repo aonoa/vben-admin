@@ -13,8 +13,14 @@
 - Message-center page now assumes the route is supplied by backend menu data at `/messages`, not by a frontend-only supplemental route
 - The site-message page now supports dual route modes: hidden inbox-only `/messages` for ordinary users and visible `/system/site-message` management mode for `admin`/`root`
 - The management mode now renders publish records with draft/schedule/publish/recall/delete-pending actions instead of an inbox
+- Site-message inbox and manager now live in separate Vue files with independent routes and no shared compatibility page
 - User-role normalization now accepts backend role objects so access checks and route-mode gating stay stable after the backend role-contract fix
 - Inbox items can now be marked back to unread, and the unread badge refreshes from the backend count again
+- Site-message summary is no longer a user-visible field in compose, card display, or bell previews
+- Site-message management page code no longer checks frontend roles; access now depends on backend-provided menus and backend-enforced API permission only
+- Site-message management now only supports all-user compose; the targeted-user selection path has been removed from the frontend flow
+- The paired backend schema cleanup removed legacy audience columns, and the frontend remains compatible because the compose flow already no longer depends on them
+- The paired backend/frontend API layer no longer carries `receiverType` or `receiverIds` in generated or handwritten site-message management code
 
 ## Active Blockers
 

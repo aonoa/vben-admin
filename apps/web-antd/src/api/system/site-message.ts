@@ -3,7 +3,6 @@ import { BaseService } from '#/api/generated';
 export const SITE_MESSAGE_REFRESH_EVENT = 'site-message:refresh';
 
 export type SiteMessageReadFilter = 'all' | 'read' | 'unread';
-export type SiteMessageReceiverType = 'all' | 'user';
 export type SiteMessageManageStatus =
   | 'draft'
   | 'published'
@@ -15,7 +14,6 @@ export type SiteMessageComposeAction = 'draft' | 'publish' | 'schedule';
 export interface SiteMessageItem {
   id: string;
   title: string;
-  summary: string;
   content: string;
   isRead: boolean;
   link: string;
@@ -28,11 +26,8 @@ export interface SiteMessageItem {
 export interface SiteMessageManageItem {
   id: string;
   title: string;
-  summary: string;
   content: string;
   status: SiteMessageManageStatus;
-  receiverType: SiteMessageReceiverType;
-  receiverIds: string[];
   receiverCount: number;
   link: string;
   senderId: string;
@@ -69,10 +64,7 @@ export interface SiteMessageManageListReply {
 export interface CreateSiteMessagePayload {
   id?: string;
   title: string;
-  summary: string;
   content: string;
-  receiverType?: SiteMessageReceiverType;
-  receiverIds?: string[];
   link?: string;
   action?: SiteMessageComposeAction;
   scheduledPublishTime?: string;
@@ -89,10 +81,6 @@ export interface CreateSiteMessageResult {
 function toNumber(value?: number | string) {
   const parsed = Number(value ?? 0);
   return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function normalizeReceiverType(receiverType?: string): SiteMessageReceiverType {
-  return receiverType === 'user' ? 'user' : 'all';
 }
 
 function normalizeManageStatus(status?: string): SiteMessageManageStatus {
@@ -124,7 +112,6 @@ function normalizeSiteMessageItem(
     readTime: item.readTime ?? '',
     senderId: item.senderId ?? '',
     senderName: item.senderName ?? '',
-    summary: item.category ?? '',
     title: item.title ?? '',
   };
 }
@@ -139,14 +126,11 @@ function normalizeSiteMessageManageItem(
     link: item.link ?? '',
     publishedTime: item.publishedTime ?? '',
     receiverCount: toNumber(item.receiverCount),
-    receiverIds: Array.isArray(item.receiverIds) ? item.receiverIds : [],
-    receiverType: normalizeReceiverType(item.receiverType),
     recalledTime: item.recalledTime ?? '',
     scheduledPublishTime: item.scheduledPublishTime ?? '',
     senderId: item.senderId ?? '',
     senderName: item.senderName ?? '',
     status: normalizeManageStatus(item.status),
-    summary: item.category ?? '',
     title: item.title ?? '',
     updatedTime: item.updatedTime ?? '',
   };
@@ -237,20 +221,13 @@ export async function getSiteMessageManageList(
 export async function createSiteMessage(
   payload: CreateSiteMessagePayload,
 ): Promise<CreateSiteMessageResult> {
-  const receiverType =
-    payload.receiverType ?? (payload.receiverIds?.length ? 'user' : 'all');
-  const receiverIds =
-    receiverType === 'user' ? (payload.receiverIds ?? []) : [];
-
   const reply = await BaseService.baseCreateSiteMessage({
     requestBody: {
       action: payload.action ?? 'publish',
-      category: payload.summary.trim(),
+      category: 'system',
       content: payload.content.trim(),
       id: payload.id,
       link: payload.link?.trim(),
-      receiverIds,
-      receiverType,
       scheduledPublishTime: payload.scheduledPublishTime?.trim(),
       title: payload.title.trim(),
     },

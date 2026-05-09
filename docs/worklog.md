@@ -32,3 +32,16 @@
 - Restored a subtle hover state on message cards via color/border feedback only, without lift or shadow.
 - Normalized backend role objects into `userStore.userRoles` and updated the access guard/store typings so backend-menu mode still works with the repeated `roles` contract.
 - Added a site-message unread action in the inbox, wired to a new backend endpoint and unread-count refresh.
+- Split the shared site-message view into dedicated inbox and management page files, then removed the old compatibility wrapper so only the real inbox/manage pages remain.
+- Removed the frontend summary field from compose validation, card rendering, and bell preview text; the API wrapper now sends the backend default category directly.
+- Removed the remaining frontend role gate from the management page so route/menu visibility and management authority come from backend menu data and backend API authorization instead.
+
+## 2026-05-09
+
+- Recorded the product decision to remove the targeted-user compose path and kept the iteration sequential because both repos already had overlapping site-message WIP.
+- Removed the site-message manager's targeted-user controls, user-list loading, and legacy payload shaping so compose now always targets all users.
+- Kept publish-history cards readable for old targeted-user records by labeling them as historical targeted deliveries instead of preserving the compose path.
+- Simplified the handwritten site-message API wrapper so new compose requests always submit `receiverType=all` with an empty `receiverIds` list.
+- Recorded the follow-up backend schema cleanup that physically removed the legacy audience columns; no further frontend code change was required because the page already operates in all-user-only mode.
+- Synced the paired backend OpenAPI/client regeneration after removing `receiverType` and `receiverIds` from the site-message proto contract.
+- Removed the last handwritten wrapper and manager-page references to the deleted audience fields, so the frontend now treats site-message delivery as all-user-only end to end.

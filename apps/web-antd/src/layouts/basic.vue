@@ -95,7 +95,7 @@ function mapNotificationItem(item: Record<string, any>): NotificationItem {
     id: item.id ?? '',
     isRead: Boolean(item.isRead),
     link: item.link || undefined,
-    message: item.summary || item.content || '暂无内容',
+    message: item.content || '暂无内容',
     title: item.title || '站内信',
   };
 }

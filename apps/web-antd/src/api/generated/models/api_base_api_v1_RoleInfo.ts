@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_RoleInfo = {
-  roleName?: string;
-  value?: string;
+    roleName?: string;
+    value?: string;
 };
+

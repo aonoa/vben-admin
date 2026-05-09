@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_LoginRequest = {
-  username?: string;
-  password?: string;
+    username?: string;
+    password?: string;
 };
+

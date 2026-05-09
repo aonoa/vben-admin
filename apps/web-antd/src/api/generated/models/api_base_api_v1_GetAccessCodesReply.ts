@@ -2,5 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_GetAccessCodesReply = {
-  accessCodeList?: Array<string>;
+    accessCodeList?: Array<string>;
 };
+

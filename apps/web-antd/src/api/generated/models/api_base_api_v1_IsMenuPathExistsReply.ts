@@ -2,5 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_IsMenuPathExistsReply = {
-  data?: boolean;
+    data?: boolean;
 };
+
