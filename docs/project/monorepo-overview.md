@@ -56,6 +56,7 @@
 | `src/api/system/log.ts` | `/admin-api/v1/logs` | admin | 系统日志 |
 | `src/api/system/menu.ts` | `/admin-api/v1/menus*` | admin | 菜单管理 |
 | `src/api/system/platform.ts` | `/admin-api/v1/platform/*` | admin | 业务域、服务注册、投影源状态 |
+| `src/api/system/site-message.ts` | `/common-api/v1/site-messages/*` | common | 站内信收件箱、未读数、发布记录 |
 | `src/api/system/resource.ts` | `/admin-api/v1/resources` | admin | 资源 |
 | `src/api/system/role.ts` | `/admin-api/v1/roles` | admin | 角色 |
 | `src/api/system/user-role-binding.ts` | `/admin-api/v1/user-role-bindings` | admin | 用户角色绑定 |
@@ -68,6 +69,7 @@ OpenAPI 生成客户端路径：
 - `src/api/generated/services/AuthServiceService.ts`
 - `src/api/generated/services/UserServiceService.ts`
 - `src/api/generated/services/AdminServiceService.ts`
+- `src/api/generated/services/CommonServiceService.ts`
 - `src/api/generated/services/UploadServiceService.ts`
 - `src/api/generated/services/SseServiceService.ts`
 
@@ -124,8 +126,8 @@ make frontend-api
 - `views/log/**`
 - `views/_core/authentication/**`
 - `views/_core/profile/**`
-
-这条 `monorepo` 版本线当前没有站内信页面和配套 API。
+- `views/_core/messages/inbox.vue`
+- `views/_core/messages/manage.vue`
 
 ## 8. 当前状态
 
@@ -133,6 +135,6 @@ make frontend-api
 
 - 前端主工作应用是 `apps/web-antd`
 - 菜单、角色、平台治理等页面已接到 `admin` 服务
-- 上传和 Copilot 已接到 `common` 服务
+- 上传、Copilot、站内信已接到 `common` 服务
 - 动态菜单依赖后端下发
 - `vue-tsc --noEmit` 当前未通过，详见 [known-issues.md](./known-issues.md)

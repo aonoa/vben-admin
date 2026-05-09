@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { NotificationItem } from '@vben/layouts';
 
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
@@ -20,62 +20,19 @@ import { openWindow } from '@vben/utils';
 
 import FloatingAICopilotWrapper from '#/adapter/component/copilot/FloatingAICopilotWrapper.vue';
 import Live2D from '#/adapter/component/Live2D.vue';
+import {
+  getMySiteMessageList,
+  markAllSiteMessagesRead,
+  markSiteMessageRead,
+  SITE_MESSAGE_REFRESH_EVENT,
+} from '#/api/system';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-const notifications = ref<NotificationItem[]>([
-  {
-    id: 1,
-    avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
-    date: '3小时前',
-    isRead: true,
-    message: '描述信息描述信息描述信息',
-    title: '收到了 14 份新周报',
-  },
-  {
-    id: 2,
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '刚刚',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '朱偏右 回复了你',
-  },
-  {
-    id: 3,
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '2024-01-01',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '曲丽丽 评论了你',
-  },
-  {
-    id: 4,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '代办提醒',
-  },
-  {
-    id: 5,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '跳转Workspace示例',
-    link: '/workspace',
-  },
-  {
-    id: 6,
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '跳转外部链接示例',
-    link: 'https://doc.vben.pro',
-  },
-]);
+const SITE_MESSAGE_INBOX_PATH = '/messages';
+const notifications = ref<NotificationItem[]>([]);
+const siteMessageLoadToken = ref(0);
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -132,14 +89,14 @@ async function handleLogout() {
 }
 
 function handleNoticeClear() {
-  notifications.value = [];
+  void markAllNoticeRead();
 }
 
 function markRead(id: number | string) {
-  const item = notifications.value.find((item) => item.id === id);
-  if (item) {
-    item.isRead = true;
+  if (!id) {
+    return;
   }
+  void markSingleNoticeRead(String(id));
 }
 
 function remove(id: number | string) {
@@ -147,7 +104,69 @@ function remove(id: number | string) {
 }
 
 function handleMakeAll() {
-  notifications.value.forEach((item) => (item.isRead = true));
+  void markAllNoticeRead();
+}
+
+function handleNoticeViewAll() {
+  void router.push(SITE_MESSAGE_INBOX_PATH);
+}
+
+function getNoticeAvatar() {
+  return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
+}
+
+function formatNoticeDate(value?: string) {
+  return value || '--';
+}
+
+async function loadSiteMessageNotifications() {
+  const requestToken = ++siteMessageLoadToken.value;
+  try {
+    const listReply = await getMySiteMessageList({
+      currentPage: 1,
+      pageSize: 6,
+      readStatus: 'unread',
+    });
+
+    if (requestToken !== siteMessageLoadToken.value) {
+      return;
+    }
+
+    notifications.value = listReply.items.map((item) => ({
+      avatar: getNoticeAvatar(),
+      date: formatNoticeDate(item.createdTime),
+      id: item.id,
+      isRead: item.isRead,
+      link: SITE_MESSAGE_INBOX_PATH,
+      message: item.content || '暂无正文',
+      title: item.title,
+    }));
+  } catch {
+    if (requestToken !== siteMessageLoadToken.value) {
+      return;
+    }
+    notifications.value = [];
+  }
+}
+
+async function markSingleNoticeRead(id: string) {
+  try {
+    await markSiteMessageRead(id);
+    window.dispatchEvent(new Event(SITE_MESSAGE_REFRESH_EVENT));
+    await loadSiteMessageNotifications();
+  } catch {
+    // 交互入口保守降级，错误提示由请求拦截器处理
+  }
+}
+
+async function markAllNoticeRead() {
+  try {
+    await markAllSiteMessagesRead();
+    window.dispatchEvent(new Event(SITE_MESSAGE_REFRESH_EVENT));
+    await loadSiteMessageNotifications();
+  } catch {
+    // 交互入口保守降级，错误提示由请求拦截器处理
+  }
 }
 watch(
   () => ({
@@ -169,6 +188,22 @@ watch(
     immediate: true,
   },
 );
+
+function handleSiteMessageRefresh() {
+  void loadSiteMessageNotifications();
+}
+
+onMounted(() => {
+  window.addEventListener(SITE_MESSAGE_REFRESH_EVENT, handleSiteMessageRefresh);
+  void loadSiteMessageNotifications();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener(
+    SITE_MESSAGE_REFRESH_EVENT,
+    handleSiteMessageRefresh,
+  );
+});
 
 // ////////////////////////////
 // // 组件状态
@@ -238,6 +273,7 @@ watch(
         @read="(item) => item.id && markRead(item.id)"
         @remove="(item) => item.id && remove(item.id)"
         @make-all="handleMakeAll"
+        @view-all="handleNoticeViewAll"
       />
     </template>
     <template #extra>

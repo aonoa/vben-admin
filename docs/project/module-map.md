@@ -16,6 +16,8 @@
 | `views/system/platform/service/**` | `index.vue`、`add_modal.vue` | `src/api/system/platform.ts` | admin | 服务注册 |
 | `views/system/platform/projection-source/**` | `index.vue`、`add_modal.vue` | `src/api/system/platform.ts` | admin | 投影源状态治理 |
 | `views/log/**` | `system.vue`、`log_info.vue` | `src/api/system/log.ts` | admin | 系统日志 |
+| `views/_core/messages/inbox.vue` | `inbox.vue` | `src/api/system/site-message.ts` | common | 站内信收件箱、已读/未读切换 |
+| `views/_core/messages/manage.vue` | `manage.vue` | `src/api/system/site-message.ts` | common + admin 菜单 | 站内信发布记录、草稿、定时发布、撤回 |
 | `views/_core/profile/**` | `index.vue`、`base-setting.vue` | `src/api/core/user.ts` | user | 个人资料、密码设置 |
 | `views/_core/authentication/**` | `login.vue` 等 | `src/api/core/auth.ts` | auth | 登录、登出、刷新 token |
 | `views/dashboard/**` | `analytics/**`、`workspace/**` | 无稳定业务 API 依赖 | 本地示例 / 组合态 | 当前有类型问题，见 known-issues |
@@ -58,10 +60,14 @@
 
 ## 4. 当前未落地模块
 
-当前 `monorepo` 线没有这些模块：
+当前 `monorepo` 线已补齐这些消息能力：
 
-- 站内信收件箱
-- 站内信管理
-- 站内信铃铛提醒
+- 站内信收件箱：`views/_core/messages/inbox.vue`
+- 站内信管理：`views/_core/messages/manage.vue`
+- 顶部铃铛未读提醒：`src/layouts/basic.vue`
 
-如果后续迁移这类功能，应按“新增功能”评估前后端改动，不应假设单体线已有实现可直接复用。
+这组能力依赖：
+
+- `/common-api/v1/site-messages/my*`
+- `/common-api/v1/site-messages/manage*`
+- `/admin-api/v1/menus/current` 下发对应菜单

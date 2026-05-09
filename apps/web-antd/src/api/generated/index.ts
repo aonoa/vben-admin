@@ -38,9 +38,19 @@ export type { api_auth_service_v1_GetAccessCodesReply } from './models/api_auth_
 export type { api_auth_service_v1_LoginReply } from './models/api_auth_service_v1_LoginReply';
 export type { api_auth_service_v1_LoginRequest } from './models/api_auth_service_v1_LoginRequest';
 export type { api_common_service_v1_CopilotReply } from './models/api_common_service_v1_CopilotReply';
+export type { api_common_service_v1_CreateSiteMessageReply } from './models/api_common_service_v1_CreateSiteMessageReply';
+export type { api_common_service_v1_CreateSiteMessageRequest } from './models/api_common_service_v1_CreateSiteMessageRequest';
 export type { api_common_service_v1_File } from './models/api_common_service_v1_File';
+export type { api_common_service_v1_GetMySiteMessageListReply } from './models/api_common_service_v1_GetMySiteMessageListReply';
+export type { api_common_service_v1_GetMySiteMessageUnreadCountReply } from './models/api_common_service_v1_GetMySiteMessageUnreadCountReply';
+export type { api_common_service_v1_GetSiteMessageManageListReply } from './models/api_common_service_v1_GetSiteMessageManageListReply';
+export type { api_common_service_v1_MarkAllSiteMessagesReadReply } from './models/api_common_service_v1_MarkAllSiteMessagesReadReply';
+export type { api_common_service_v1_MarkSiteMessageReadRequest } from './models/api_common_service_v1_MarkSiteMessageReadRequest';
 export type { api_common_service_v1_Message } from './models/api_common_service_v1_Message';
 export type { api_common_service_v1_Msg } from './models/api_common_service_v1_Msg';
+export type { api_common_service_v1_RecallSiteMessageRequest } from './models/api_common_service_v1_RecallSiteMessageRequest';
+export type { api_common_service_v1_SiteMessageItem } from './models/api_common_service_v1_SiteMessageItem';
+export type { api_common_service_v1_SiteMessageManageItem } from './models/api_common_service_v1_SiteMessageManageItem';
 export type { api_common_service_v1_UploadResponse } from './models/api_common_service_v1_UploadResponse';
 export type { api_user_service_v1_ChangePasswordRequest } from './models/api_user_service_v1_ChangePasswordRequest';
 export type { api_user_service_v1_GetUserInfoReply } from './models/api_user_service_v1_GetUserInfoReply';
@@ -50,6 +60,7 @@ export type { api_user_service_v1_UserListItem } from './models/api_user_service
 
 export { AdminServiceService } from './services/AdminServiceService';
 export { AuthServiceService } from './services/AuthServiceService';
+export { CommonServiceService } from './services/CommonServiceService';
 export { SseServiceService } from './services/SseServiceService';
 export { UploadServiceService } from './services/UploadServiceService';
 export { UserServiceService } from './services/UserServiceService';
