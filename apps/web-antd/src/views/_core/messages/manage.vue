@@ -415,12 +415,12 @@ onMounted(async () => {
                         class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--ant-color-text-description)]"
                       >
                         <span>发布人：{{
-                          getPublisherLabel(item.senderName, item.senderId)
-                        }}</span>
+                            getPublisherLabel(item.senderName, item.senderId)
+                          }}</span>
                         <span>创建时间：{{ formatDate(item.createdTime) }}</span>
                         <span>最后更新时间：{{
-                          formatDate(item.updatedTime)
-                        }}</span>
+                            formatDate(item.updatedTime)
+                          }}</span>
                         <span v-if="item.status === 'scheduled'">
                           计划发布时间：{{
                             formatDate(item.scheduledPublishTime)
@@ -533,7 +533,6 @@ onMounted(async () => {
         </a-card>
       </section>
     </div>
-
   </Page>
 </template>
 

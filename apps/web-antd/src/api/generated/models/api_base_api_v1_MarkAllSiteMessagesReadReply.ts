@@ -2,6 +2,5 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_base_api_v1_MarkAllSiteMessagesReadReply = {
-    updatedCount?: string;
+  updatedCount?: string;
 };
-

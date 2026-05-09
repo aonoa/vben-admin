@@ -280,8 +280,8 @@ onMounted(async () => {
                       class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--ant-color-text-description)]"
                     >
                       <span>发送人：{{
-                        getPublisherLabel(item.senderName, item.senderId)
-                      }}</span>
+                          getPublisherLabel(item.senderName, item.senderId)
+                        }}</span>
                       <span>发送时间：{{ formatDate(item.createdTime) }}</span>
                       <span v-if="item.isRead">
                         已读时间：{{ formatDate(item.readTime) }}
