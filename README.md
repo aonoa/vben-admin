@@ -20,6 +20,13 @@
 
 仅修改 `web-antd` 效果
 
+## Project Docs
+
+- [docs/project/README.md](./docs/project/README.md)
+- [docs/project/monorepo-overview.md](./docs/project/monorepo-overview.md)
+- [docs/project/module-map.md](./docs/project/module-map.md)
+- [docs/project/known-issues.md](./docs/project/known-issues.md)
+
 ## Introduction
 
 Vue Vben Admin is a free and open source middle and back-end template. Using the latest `vue3`, `vite`, `TypeScript` and other mainstream technology development, the out-of-the-box middle and back-end front-end solutions can also be used for learning reference.
