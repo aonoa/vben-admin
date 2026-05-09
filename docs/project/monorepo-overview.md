@@ -26,15 +26,15 @@
 
 ## 3. 当前入口与关键目录
 
-| 路径 | 作用 |
-| --- | --- |
-| `apps/web-antd/src/api/core/**` | 认证、用户、菜单、上传等基础 API |
-| `apps/web-antd/src/api/system/**` | 管理面 API 模块 |
-| `apps/web-antd/src/api/generated/**` | OpenAPI 生成客户端 |
-| `apps/web-antd/src/router/**` | 路由守卫、动态菜单生成 |
-| `apps/web-antd/src/views/**` | 页面视图 |
-| `apps/web-antd/src/layouts/**` | 基础布局与全局壳层 |
-| `openapi.yaml` | 从后端同步过来的 OpenAPI 输入 |
+| 路径                                 | 作用                             |
+| ------------------------------------ | -------------------------------- |
+| `apps/web-antd/src/api/core/**`      | 认证、用户、菜单、上传等基础 API |
+| `apps/web-antd/src/api/system/**`    | 管理面 API 模块                  |
+| `apps/web-antd/src/api/generated/**` | OpenAPI 生成客户端               |
+| `apps/web-antd/src/router/**`        | 路由守卫、动态菜单生成           |
+| `apps/web-antd/src/views/**`         | 页面视图                         |
+| `apps/web-antd/src/layouts/**`       | 基础布局与全局壳层               |
+| `openapi.yaml`                       | 从后端同步过来的 OpenAPI 输入    |
 
 ## 4. API 模块分层
 
