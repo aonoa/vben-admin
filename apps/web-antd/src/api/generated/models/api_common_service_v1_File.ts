@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_common_service_v1_File = {
-  file?: string;
-  fileName?: string;
-  fileSize?: string;
+    file?: string;
+    fileName?: string;
+    fileSize?: string;
 };

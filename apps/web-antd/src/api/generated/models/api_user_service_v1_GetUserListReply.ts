@@ -3,6 +3,6 @@
 /* tslint:disable */
 import type { api_user_service_v1_UserListItem } from './api_user_service_v1_UserListItem';
 export type api_user_service_v1_GetUserListReply = {
-  items?: Array<api_user_service_v1_UserListItem>;
-  total?: string;
+    items?: Array<api_user_service_v1_UserListItem>;
+    total?: string;
 };

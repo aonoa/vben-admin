@@ -1143,6 +1143,103 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /sample-api/v1/admin/items:
+        get:
+            tags:
+                - SampleAdminService
+            operationId: SampleAdminService_GetSampleItemManageList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.sample.service.v1.GetSampleItemManageListReply'
+        post:
+            tags:
+                - SampleAdminService
+            operationId: SampleAdminService_CreateSampleItem
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.sample.service.v1.CreateSampleItemRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.sample.service.v1.SampleItem'
+    /sample-api/v1/admin/items/{id}:
+        put:
+            tags:
+                - SampleAdminService
+            operationId: SampleAdminService_UpdateSampleItem
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.sample.service.v1.UpdateSampleItemRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.sample.service.v1.SampleItem'
+        delete:
+            tags:
+                - SampleAdminService
+            operationId: SampleAdminService_DeleteSampleItem
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /sample-api/v1/items:
+        get:
+            tags:
+                - SampleAdminService
+            operationId: SampleAdminService_GetSampleItemList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.sample.service.v1.GetSampleItemListReply'
+    /sample-api/v1/items/{id}:
+        get:
+            tags:
+                - SampleAdminService
+            operationId: SampleAdminService_GetSampleItemInfo
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.sample.service.v1.SampleItem'
     /user-api/v1/users:
         get:
             tags:
@@ -1965,6 +2062,65 @@ components:
                     type: string
                 url:
                     type: string
+        api.sample.service.v1.CreateSampleItemRequest:
+            type: object
+            properties:
+                title:
+                    type: string
+                summary:
+                    type: string
+                content:
+                    type: string
+                status:
+                    type: string
+        api.sample.service.v1.GetSampleItemListReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.sample.service.v1.SampleItem'
+                total:
+                    type: string
+        api.sample.service.v1.GetSampleItemManageListReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.sample.service.v1.SampleItem'
+                total:
+                    type: string
+        api.sample.service.v1.SampleItem:
+            type: object
+            properties:
+                id:
+                    type: string
+                title:
+                    type: string
+                summary:
+                    type: string
+                content:
+                    type: string
+                status:
+                    type: string
+                createdTime:
+                    type: string
+                updatedTime:
+                    type: string
+        api.sample.service.v1.UpdateSampleItemRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                title:
+                    type: string
+                summary:
+                    type: string
+                content:
+                    type: string
+                status:
+                    type: string
         api.user.service.v1.ChangePasswordRequest:
             type: object
             properties:
@@ -2035,5 +2191,6 @@ tags:
     - name: AuthService
     - name: CommonService
     - name: SSEService
+    - name: SampleAdminService
     - name: UploadService
     - name: UserService

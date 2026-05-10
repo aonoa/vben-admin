@@ -3,5 +3,5 @@
 /* tslint:disable */
 import type { api_common_service_v1_Message } from './api_common_service_v1_Message';
 export type api_common_service_v1_Msg = {
-  items?: Array<api_common_service_v1_Message>;
+    items?: Array<api_common_service_v1_Message>;
 };

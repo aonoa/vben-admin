@@ -3,6 +3,6 @@
 /* tslint:disable */
 import type { api_common_service_v1_SiteMessageItem } from './api_common_service_v1_SiteMessageItem';
 export type api_common_service_v1_GetMySiteMessageListReply = {
-  items?: Array<api_common_service_v1_SiteMessageItem>;
-  total?: string;
+    items?: Array<api_common_service_v1_SiteMessageItem>;
+    total?: string;
 };

@@ -2,5 +2,5 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_user_service_v1_IsUserExistsReply = {
-  data?: boolean;
+    data?: boolean;
 };

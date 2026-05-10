@@ -2,6 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_admin_service_v1_WalkRouteItem = {
-  url?: string;
-  method?: string;
+    url?: string;
+    method?: string;
 };

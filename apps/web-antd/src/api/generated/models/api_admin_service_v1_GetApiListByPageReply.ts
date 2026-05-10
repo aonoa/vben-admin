@@ -3,6 +3,6 @@
 /* tslint:disable */
 import type { api_admin_service_v1_ApiListItem } from './api_admin_service_v1_ApiListItem';
 export type api_admin_service_v1_GetApiListByPageReply = {
-  items?: Array<api_admin_service_v1_ApiListItem>;
-  total?: string;
+    items?: Array<api_admin_service_v1_ApiListItem>;
+    total?: string;
 };

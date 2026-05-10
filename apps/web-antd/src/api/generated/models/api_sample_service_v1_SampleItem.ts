@@ -1,14 +1,12 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-export type api_common_service_v1_SiteMessageItem = {
+export type api_sample_service_v1_SampleItem = {
     id?: string;
     title?: string;
+    summary?: string;
     content?: string;
-    isRead?: boolean;
-    link?: string;
-    senderId?: string;
-    senderName?: string;
+    status?: string;
     createdTime?: string;
-    readTime?: string;
+    updatedTime?: string;
 };

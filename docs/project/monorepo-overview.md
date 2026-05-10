@@ -11,7 +11,7 @@
   -> apps/web-antd (Vite 5666)
   -> /api 代理
   -> gateway :8000
-  -> auth / user / admin / common
+  -> auth / user / admin / common / sample
 ```
 
 本地代理配置见：
@@ -70,6 +70,7 @@ OpenAPI 生成客户端路径：
 - `src/api/generated/services/UserServiceService.ts`
 - `src/api/generated/services/AdminServiceService.ts`
 - `src/api/generated/services/CommonServiceService.ts`
+- `src/api/generated/services/SampleAdminServiceService.ts`
 - `src/api/generated/services/UploadServiceService.ts`
 - `src/api/generated/services/SseServiceService.ts`
 
@@ -136,5 +137,6 @@ make frontend-api
 - 前端主工作应用是 `apps/web-antd`
 - 菜单、角色、平台治理等页面已接到 `admin` 服务
 - 上传、Copilot、站内信已接到 `common` 服务
+- `sample` 服务的 OpenAPI 客户端已纳入生成链路，但当前没有对应页面
 - 动态菜单依赖后端下发
 - `vue-tsc --noEmit` 当前未通过，详见 [known-issues.md](./known-issues.md)
