@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_sample_service_v1_CreateSampleItemRequest = {
-    title?: string;
-    summary?: string;
-    content?: string;
-    status?: string;
+  title?: string;
+  summary?: string;
+  content?: string;
+  status?: string;
 };

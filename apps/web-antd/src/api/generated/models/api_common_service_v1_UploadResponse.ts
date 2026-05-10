@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_common_service_v1_UploadResponse = {
-    fileInfoId?: string;
-    fullUrl?: string;
-    url?: string;
+  fileInfoId?: string;
+  fullUrl?: string;
+  url?: string;
 };

@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_auth_service_v1_LoginReply = {
-    userId?: string;
-    accessToken?: string;
-    refreshToken?: string;
-    sessionId?: string;
+  userId?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  sessionId?: string;
 };

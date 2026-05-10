@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_user_service_v1_GetUserInfoReply = {
-    userId?: string;
-    username?: string;
-    nickname?: string;
-    avatar?: string;
-    email?: string;
-    remark?: string;
-    status?: number;
+  userId?: string;
+  username?: string;
+  nickname?: string;
+  avatar?: string;
+  email?: string;
+  remark?: string;
+  status?: number;
 };

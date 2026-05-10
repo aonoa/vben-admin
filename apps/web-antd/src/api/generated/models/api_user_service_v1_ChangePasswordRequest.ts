@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_user_service_v1_ChangePasswordRequest = {
-    userId?: string;
-    passwordOld?: string;
-    passwordNew?: string;
+  userId?: string;
+  passwordOld?: string;
+  passwordNew?: string;
 };

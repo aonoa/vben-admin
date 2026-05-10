@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_admin_service_v1_UserRoleBindingItem = {
-    id?: string;
-    userId?: string;
-    roleId?: string;
-    createTime?: string;
-    updateTime?: string;
-    roleIds?: Array<string>;
+  id?: string;
+  userId?: string;
+  roleId?: string;
+  createTime?: string;
+  updateTime?: string;
+  roleIds?: Array<string>;
 };

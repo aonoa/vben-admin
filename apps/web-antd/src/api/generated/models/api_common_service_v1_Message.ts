@@ -2,6 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type api_common_service_v1_Message = {
-    role?: string;
-    content?: string;
+  role?: string;
+  content?: string;
 };
