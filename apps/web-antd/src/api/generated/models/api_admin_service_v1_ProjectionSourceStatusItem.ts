@@ -4,7 +4,6 @@
 export type api_admin_service_v1_ProjectionSourceStatusItem = {
   id?: string;
   sourceService?: string;
-  domainCode?: string;
   syncMode?: string;
   state?: string;
   lastSnapshotRevision?: string;

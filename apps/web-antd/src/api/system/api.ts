@@ -15,8 +15,6 @@ export interface GetApiParams {
   description?: string;
   method?: string;
   resourcesGroup?: string;
-  serviceCode?: string;
-  domainCode?: string;
 }
 
 export interface GetApiListReply {
@@ -54,22 +52,18 @@ function normalizeApiItem(item: api_admin_service_v1_ApiListItem): ApiListItem {
       'module_description',
     ),
     resourcesGroup: readString(record, 'resourcesGroup', 'resources_group'),
-    serviceCode: readString(record, 'serviceCode', 'service_code'),
-    domainCode: readString(record, 'domainCode', 'domain_code'),
   };
 }
 
 function toApiRequestBody(data: ApiListItem): api_admin_service_v1_ApiListItem {
   return {
     description: data.description,
-    domain_code: data.domainCode,
     id: data.id,
     method: data.method,
     module: data.module,
     module_description: data.moduleDescription,
     path: data.path,
     resources_group: data.resourcesGroup,
-    service_code: data.serviceCode,
   } as api_admin_service_v1_ApiListItem;
 }
 

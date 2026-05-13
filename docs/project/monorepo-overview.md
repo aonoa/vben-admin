@@ -55,7 +55,7 @@
 | `src/api/system/dept.ts` | `/admin-api/v1/depts` | admin | 部门 |
 | `src/api/system/log.ts` | `/admin-api/v1/logs` | admin | 系统日志 |
 | `src/api/system/menu.ts` | `/admin-api/v1/menus*` | admin | 菜单管理 |
-| `src/api/system/platform.ts` | `/admin-api/v1/platform/*` | admin | 业务域、服务注册、投影源状态 |
+| `src/api/system/platform.ts` | `/admin-api/v1/platform/*` | admin | 服务注册、投影源状态 |
 | `src/api/system/site-message.ts` | `/common-api/v1/site-messages/*` | common | 站内信收件箱、未读数、发布记录 |
 | `src/api/system/resource.ts` | `/admin-api/v1/resources` | admin | 资源 |
 | `src/api/system/role.ts` | `/admin-api/v1/roles` | admin | 角色 |
@@ -121,7 +121,6 @@ make frontend-api
 - `views/system/dept/**`
 - `views/system/resource/**`
 - `views/system/api/**`
-- `views/system/platform/domain/**`
 - `views/system/platform/service/**`
 - `views/system/platform/projection-source/**`
 - `views/log/**`

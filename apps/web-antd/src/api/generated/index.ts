@@ -7,11 +7,9 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { api_admin_service_v1_ApiListItem } from './models/api_admin_service_v1_ApiListItem';
-export type { api_admin_service_v1_BusinessDomainItem } from './models/api_admin_service_v1_BusinessDomainItem';
 export type { api_admin_service_v1_CurrentUserMenuItem } from './models/api_admin_service_v1_CurrentUserMenuItem';
 export type { api_admin_service_v1_DeptListItem } from './models/api_admin_service_v1_DeptListItem';
 export type { api_admin_service_v1_GetApiListByPageReply } from './models/api_admin_service_v1_GetApiListByPageReply';
-export type { api_admin_service_v1_GetBusinessDomainListReply } from './models/api_admin_service_v1_GetBusinessDomainListReply';
 export type { api_admin_service_v1_GetCurrentUserMenusReply } from './models/api_admin_service_v1_GetCurrentUserMenusReply';
 export type { api_admin_service_v1_GetDeptListReply } from './models/api_admin_service_v1_GetDeptListReply';
 export type { api_admin_service_v1_GetProjectionSourceStatusListReply } from './models/api_admin_service_v1_GetProjectionSourceStatusListReply';

@@ -5,7 +5,7 @@ import type { GetWalkRouteReply } from '#/api/system/api';
 import { GetWalkRoute } from '#/api/system/api';
 
 export const formOptions: VbenFormProps = {
-  wrapperClass: 'grid-cols-9',
+  wrapperClass: 'grid-cols-8',
   compact: true,
   // 默认展开
   collapsed: false,
@@ -87,26 +87,6 @@ export const formOptions: VbenFormProps = {
       fieldName: 'resourcesGroup',
       label: '资源组',
     },
-    {
-      component: 'Input',
-      componentProps: {
-        class: 'w-full',
-        allowClear: true,
-      },
-      formItemClass: 'col-span-2',
-      fieldName: 'serviceCode',
-      label: '服务编码',
-    },
-    {
-      component: 'Input',
-      componentProps: {
-        class: 'w-full',
-        allowClear: true,
-      },
-      formItemClass: 'col-span-2',
-      fieldName: 'domainCode',
-      label: '业务域编码',
-    },
   ],
 
   // 控制表单是否显示折叠按钮
@@ -141,8 +121,6 @@ export const gridSchemas: VxeGridProps<any> = {
     { field: 'path', title: '路径' },
     { field: 'method', title: '方法' },
     { field: 'resourcesGroup', title: '资源组' },
-    { field: 'serviceCode', title: '服务编码' },
-    { field: 'domainCode', title: '业务域编码' },
     {
       field: 'action',
       width: 200,
@@ -221,24 +199,6 @@ export const formSchemas: VbenFormProps = {
       fieldName: 'resourcesGroup',
       label: '资源组',
       rules: 'required',
-    },
-    {
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入',
-      },
-      formItemClass: 'col-span-5',
-      fieldName: 'serviceCode',
-      label: '服务编码',
-    },
-    {
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入',
-      },
-      formItemClass: 'col-span-5',
-      fieldName: 'domainCode',
-      label: '业务域编码',
     },
   ],
   showDefaultActions: false,

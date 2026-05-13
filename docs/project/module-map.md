@@ -12,7 +12,6 @@
 | `views/system/dept/**` | `list.vue`、`modules/form.vue` | `src/api/system/dept.ts` | admin | 部门树 |
 | `views/system/resource/**` | `index.vue`、`add_modal.vue` | `src/api/system/resource.ts` | admin | 资源管理 |
 | `views/system/api/**` | `index.vue`、`add_modal.vue` | `src/api/system/api.ts` | admin | API 目录、walk-routes |
-| `views/system/platform/domain/**` | `index.vue`、`add_modal.vue` | `src/api/system/platform.ts` | admin | 业务域注册 |
 | `views/system/platform/service/**` | `index.vue`、`add_modal.vue` | `src/api/system/platform.ts` | admin | 服务注册 |
 | `views/system/platform/projection-source/**` | `index.vue`、`add_modal.vue` | `src/api/system/platform.ts` | admin | 投影源状态治理 |
 | `views/log/**` | `system.vue`、`log_info.vue` | `src/api/system/log.ts` | admin | 系统日志 |

@@ -2,10 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 import type { api_admin_service_v1_ApiListItem } from '../models/api_admin_service_v1_ApiListItem';
-import type { api_admin_service_v1_BusinessDomainItem } from '../models/api_admin_service_v1_BusinessDomainItem';
 import type { api_admin_service_v1_DeptListItem } from '../models/api_admin_service_v1_DeptListItem';
 import type { api_admin_service_v1_GetApiListByPageReply } from '../models/api_admin_service_v1_GetApiListByPageReply';
-import type { api_admin_service_v1_GetBusinessDomainListReply } from '../models/api_admin_service_v1_GetBusinessDomainListReply';
 import type { api_admin_service_v1_GetCurrentUserMenusReply } from '../models/api_admin_service_v1_GetCurrentUserMenusReply';
 import type { api_admin_service_v1_GetDeptListReply } from '../models/api_admin_service_v1_GetDeptListReply';
 import type { api_admin_service_v1_GetProjectionSourceStatusListReply } from '../models/api_admin_service_v1_GetProjectionSourceStatusListReply';
@@ -19,10 +17,8 @@ import type { api_admin_service_v1_GetWalkRouteReply } from '../models/api_admin
 import type { api_admin_service_v1_IsMenuNameExistsReply } from '../models/api_admin_service_v1_IsMenuNameExistsReply';
 import type { api_admin_service_v1_IsMenuPathExistsReply } from '../models/api_admin_service_v1_IsMenuPathExistsReply';
 import type { api_admin_service_v1_ListUserRoleBindingsReply } from '../models/api_admin_service_v1_ListUserRoleBindingsReply';
-import type { api_admin_service_v1_ProjectionSourceStatusItem } from '../models/api_admin_service_v1_ProjectionSourceStatusItem';
 import type { api_admin_service_v1_ResourceListItem } from '../models/api_admin_service_v1_ResourceListItem';
 import type { api_admin_service_v1_RoleListItem } from '../models/api_admin_service_v1_RoleListItem';
-import type { api_admin_service_v1_ServiceRegistryItem } from '../models/api_admin_service_v1_ServiceRegistryItem';
 import type { api_admin_service_v1_SysMenuListItem } from '../models/api_admin_service_v1_SysMenuListItem';
 import type { api_admin_service_v1_UserRoleBindingItem } from '../models/api_admin_service_v1_UserRoleBindingItem';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -40,8 +36,6 @@ export class AdminServiceService {
     description,
     method,
     resourcesGroup,
-    serviceCode,
-    domainCode,
   }: {
     currentPage?: string;
     pageSize?: string;
@@ -49,8 +43,6 @@ export class AdminServiceService {
     description?: string;
     method?: string;
     resourcesGroup?: string;
-    serviceCode?: string;
-    domainCode?: string;
   }): CancelablePromise<api_admin_service_v1_GetApiListByPageReply> {
     return __request(OpenAPI, {
       method: 'GET',
@@ -62,8 +54,6 @@ export class AdminServiceService {
         description: description,
         method: method,
         resourcesGroup: resourcesGroup,
-        serviceCode: serviceCode,
-        domainCode: domainCode,
       },
     });
   }
@@ -383,70 +373,6 @@ export class AdminServiceService {
     });
   }
   /**
-   * @returns api_admin_service_v1_GetBusinessDomainListReply OK
-   * @throws ApiError
-   */
-  public static adminServiceGetBusinessDomainList(): CancelablePromise<api_admin_service_v1_GetBusinessDomainListReply> {
-    return __request(OpenAPI, {
-      method: 'GET',
-      url: '/admin-api/v1/platform/domains',
-    });
-  }
-  /**
-   * @returns api_admin_service_v1_BusinessDomainItem OK
-   * @throws ApiError
-   */
-  public static adminServiceAddBusinessDomain({
-    requestBody,
-  }: {
-    requestBody: api_admin_service_v1_BusinessDomainItem;
-  }): CancelablePromise<api_admin_service_v1_BusinessDomainItem> {
-    return __request(OpenAPI, {
-      method: 'POST',
-      url: '/admin-api/v1/platform/domains',
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
-  /**
-   * @returns api_admin_service_v1_BusinessDomainItem OK
-   * @throws ApiError
-   */
-  public static adminServiceUpdateBusinessDomain({
-    id,
-    requestBody,
-  }: {
-    id: string;
-    requestBody: api_admin_service_v1_BusinessDomainItem;
-  }): CancelablePromise<api_admin_service_v1_BusinessDomainItem> {
-    return __request(OpenAPI, {
-      method: 'PUT',
-      url: '/admin-api/v1/platform/domains/{id}',
-      path: {
-        id: id,
-      },
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
-  /**
-   * @returns any OK
-   * @throws ApiError
-   */
-  public static adminServiceDeleteBusinessDomain({
-    id,
-  }: {
-    id: string;
-  }): CancelablePromise<any> {
-    return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/admin-api/v1/platform/domains/{id}',
-      path: {
-        id: id,
-      },
-    });
-  }
-  /**
    * @returns api_admin_service_v1_GetProjectionSourceStatusListReply OK
    * @throws ApiError
    */
@@ -457,81 +383,6 @@ export class AdminServiceService {
     });
   }
   /**
-   * @returns api_admin_service_v1_ProjectionSourceStatusItem OK
-   * @throws ApiError
-   */
-  public static adminServiceAddProjectionSourceStatus({
-    requestBody,
-  }: {
-    requestBody: api_admin_service_v1_ProjectionSourceStatusItem;
-  }): CancelablePromise<api_admin_service_v1_ProjectionSourceStatusItem> {
-    return __request(OpenAPI, {
-      method: 'POST',
-      url: '/admin-api/v1/platform/projection-sources',
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
-  /**
-   * @returns api_admin_service_v1_ProjectionSourceStatusItem OK
-   * @throws ApiError
-   */
-  public static adminServiceReportProjectionSourceStatus({
-    sourceService,
-    requestBody,
-  }: {
-    sourceService: string;
-    requestBody: api_admin_service_v1_ProjectionSourceStatusItem;
-  }): CancelablePromise<api_admin_service_v1_ProjectionSourceStatusItem> {
-    return __request(OpenAPI, {
-      method: 'PUT',
-      url: '/admin-api/v1/platform/projection-sources/report/{sourceService}',
-      path: {
-        sourceService: sourceService,
-      },
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
-  /**
-   * @returns api_admin_service_v1_ProjectionSourceStatusItem OK
-   * @throws ApiError
-   */
-  public static adminServiceUpdateProjectionSourceStatus({
-    id,
-    requestBody,
-  }: {
-    id: string;
-    requestBody: api_admin_service_v1_ProjectionSourceStatusItem;
-  }): CancelablePromise<api_admin_service_v1_ProjectionSourceStatusItem> {
-    return __request(OpenAPI, {
-      method: 'PUT',
-      url: '/admin-api/v1/platform/projection-sources/{id}',
-      path: {
-        id: id,
-      },
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
-  /**
-   * @returns any OK
-   * @throws ApiError
-   */
-  public static adminServiceDeleteProjectionSourceStatus({
-    id,
-  }: {
-    id: string;
-  }): CancelablePromise<any> {
-    return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/admin-api/v1/platform/projection-sources/{id}',
-      path: {
-        id: id,
-      },
-    });
-  }
-  /**
    * @returns api_admin_service_v1_GetServiceRegistryListReply OK
    * @throws ApiError
    */
@@ -539,60 +390,6 @@ export class AdminServiceService {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/admin-api/v1/platform/services',
-    });
-  }
-  /**
-   * @returns api_admin_service_v1_ServiceRegistryItem OK
-   * @throws ApiError
-   */
-  public static adminServiceAddServiceRegistry({
-    requestBody,
-  }: {
-    requestBody: api_admin_service_v1_ServiceRegistryItem;
-  }): CancelablePromise<api_admin_service_v1_ServiceRegistryItem> {
-    return __request(OpenAPI, {
-      method: 'POST',
-      url: '/admin-api/v1/platform/services',
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
-  /**
-   * @returns api_admin_service_v1_ServiceRegistryItem OK
-   * @throws ApiError
-   */
-  public static adminServiceUpdateServiceRegistry({
-    id,
-    requestBody,
-  }: {
-    id: string;
-    requestBody: api_admin_service_v1_ServiceRegistryItem;
-  }): CancelablePromise<api_admin_service_v1_ServiceRegistryItem> {
-    return __request(OpenAPI, {
-      method: 'PUT',
-      url: '/admin-api/v1/platform/services/{id}',
-      path: {
-        id: id,
-      },
-      body: requestBody,
-      mediaType: 'application/json',
-    });
-  }
-  /**
-   * @returns any OK
-   * @throws ApiError
-   */
-  public static adminServiceDeleteServiceRegistry({
-    id,
-  }: {
-    id: string;
-  }): CancelablePromise<any> {
-    return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/admin-api/v1/platform/services/{id}',
-      path: {
-        id: id,
-      },
     });
   }
   /**

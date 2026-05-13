@@ -9,6 +9,4 @@ export type api_admin_service_v1_ApiListItem = {
   module?: string;
   moduleDescription?: string;
   resourcesGroup?: string;
-  serviceCode?: string;
-  domainCode?: string;
 };
