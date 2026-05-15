@@ -19,13 +19,18 @@ describe('menu mutation payload', () => {
     expect(
       toMenuFormValues({
         authCode: 'legacy',
-        meta: { authority: ['admin', 'operator'], link: 'https://example.com' },
+        meta: {
+          activePath: '',
+          authority: ['admin', 'operator'],
+          link: 'https://example.com',
+        },
         type: 'link',
       }),
     ).toMatchObject({
       authorityText: 'admin,operator',
       linkSrc: 'https://example.com',
       meta: {
+        activePath: undefined,
         affixTabOrder: 0,
         fullPathKey: true,
         maxNumOfOpenTab: -1,

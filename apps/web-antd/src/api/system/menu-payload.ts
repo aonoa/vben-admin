@@ -19,6 +19,11 @@ function normalizeBoolean(value: unknown, defaultValue = false): boolean {
   return defaultValue;
 }
 
+function normalizeOptionalString(value: unknown): string | undefined {
+  const result = String(value ?? '').trim();
+  return result.length > 0 ? result : undefined;
+}
+
 export function normalizeAuthorityText(value: unknown): string[] {
   if (Array.isArray(value)) {
     return [
@@ -57,6 +62,7 @@ export function toMenuFormValues(
     linkSrc,
     meta: {
       ...meta,
+      activePath: normalizeOptionalString(meta.activePath),
       affixTabOrder: toNumber(meta.affixTabOrder),
       fullPathKey: meta.fullPathKey ?? true,
       maxNumOfOpenTab: toNumber(meta.maxNumOfOpenTab, -1),

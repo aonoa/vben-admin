@@ -1,5 +1,6 @@
 import type { Recordable } from '@vben/types';
 
+import { AdminServiceService } from '#/api/generated';
 import { requestClient } from '#/api/request';
 
 export namespace SystemMenuApi {
@@ -120,18 +121,22 @@ async function isMenuNameExists(
   name: string,
   id?: SystemMenuApi.SystemMenu['id'],
 ) {
-  return requestClient.get<boolean>('/admin-api/v1/menus/name-exists', {
-    params: { id, name },
+  const reply = await AdminServiceService.adminServiceIsMenuNameExists({
+    id: id === undefined ? undefined : String(id),
+    name,
   });
+  return Boolean(reply.data);
 }
 
 async function isMenuPathExists(
   path: string,
   id?: SystemMenuApi.SystemMenu['id'],
 ) {
-  return requestClient.get<boolean>('/admin-api/v1/menus/path-exists', {
-    params: { id, path },
+  const reply = await AdminServiceService.adminServiceIsMenuPathExists({
+    id: id === undefined ? undefined : String(id),
+    path,
   });
+  return Boolean(reply.data);
 }
 
 /**
