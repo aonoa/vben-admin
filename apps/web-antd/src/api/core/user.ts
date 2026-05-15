@@ -31,10 +31,13 @@ export interface UserListItem {
   role?: number | number[]; // 角色绑定由 admin 服务维护
   roleIds?: number[];
   roleNames?: string[];
+  createTime?: string; // 创建时间
   create_time: string; // 创建时间
   remark: string; // 备注
   status: number; // 状态
   dept?: string; // 部门
+  deptId?: string; // 当前组织部门 ID
+  avatar?: string; // 头像
 }
 
 export interface GetUserListReply {
@@ -47,11 +50,11 @@ export async function GetUserList(params: GetUserParams) {
 }
 
 export async function AddUser(data: Omit<UserListItem, 'id'>) {
-  return requestClient.post('/user-api/v1/users', data);
+  return requestClient.post<UserListItem>('/user-api/v1/users', data);
 }
 
 export async function UpdateUser(id: string, data: Omit<UserListItem, 'id'>) {
-  return requestClient.put(`/user-api/v1/users/${id}`, data);
+  return requestClient.put<UserListItem>(`/user-api/v1/users/${id}`, data);
 }
 
 export async function DelUser(id: string) {

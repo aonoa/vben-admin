@@ -12,4 +12,7 @@ export type api_admin_service_v1_RoleListItem = {
   permissions?: Array<number>;
   dept?: string;
   apiPermissions?: Array<string>;
+  organizationId?: string;
+  dataScope?: string;
+  dataScopeDeptIds?: Array<string>;
 };

@@ -5,6 +5,8 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
+import { computed, onMounted } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
@@ -13,9 +15,15 @@ import { Button, message } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
+import { useOrganizationStore } from '#/store';
 
 import { useColumns } from './data';
 import Form from './modules/form.vue';
+
+const organizationStore = useOrganizationStore();
+const selectedOrganizationId = computed(
+  () => organizationStore.currentOrganizationId,
+);
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -27,7 +35,12 @@ const [FormModal, formModalApi] = useVbenModal({
  * @param row
  */
 function onEdit(row: SystemDeptApi.SystemDept) {
-  formModalApi.setData(row).open();
+  formModalApi
+    .setData({
+      ...row,
+      organizationId: row.organizationId || selectedOrganizationId.value,
+    })
+    .open();
 }
 
 /**
@@ -35,14 +48,19 @@ function onEdit(row: SystemDeptApi.SystemDept) {
  * @param row
  */
 function onAppend(row: SystemDeptApi.SystemDept) {
-  formModalApi.setData({ pid: row.id }).open();
+  formModalApi
+    .setData({
+      organizationId: row.organizationId || selectedOrganizationId.value,
+      pid: row.id,
+    })
+    .open();
 }
 
 /**
  * 创建新部门
  */
 function onCreate() {
-  formModalApi.setData(null).open();
+  formModalApi.setData({ organizationId: selectedOrganizationId.value }).open();
 }
 
 /**
@@ -94,6 +112,7 @@ function onActionClick({
 const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents: {},
   gridOptions: {
+    autoLoad: false,
     columns: useColumns(onActionClick),
     height: 'auto',
     keepSource: true,
@@ -103,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async (_params) => {
-          return await getDeptList();
+          return await getDeptList(selectedOrganizationId.value);
         },
       },
     },
@@ -127,6 +146,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 function refreshGrid() {
   gridApi.query();
 }
+
+onMounted(() => {
+  void organizationStore.loadMyOrganizations().finally(refreshGrid);
+});
 </script>
 <template>
   <Page auto-content-height>

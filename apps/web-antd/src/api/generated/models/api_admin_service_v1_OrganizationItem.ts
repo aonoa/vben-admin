@@ -1,14 +1,15 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-export type api_admin_service_v1_DeptListItem = {
+export type api_admin_service_v1_OrganizationItem = {
   id?: string;
-  pid?: string;
   name?: string;
+  code?: string;
   orderNo?: number;
   remark?: string;
   status?: number;
   createTime?: string;
-  children?: Array<api_admin_service_v1_DeptListItem>;
-  organizationId?: string;
+  updateTime?: string;
+  memberCount?: string;
+  deptCount?: string;
 };

@@ -3,12 +3,17 @@ import type { Router } from 'vue-router';
 import { LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
-import { startProgress, stopProgress } from '@vben/utils';
+import { resetStaticRoutes, startProgress, stopProgress } from '@vben/utils';
 
-import { accessRoutes, coreRouteNames } from '#/router/routes';
-import { useAuthStore } from '#/store';
+import { message } from 'ant-design-vue';
+
+import { $t } from '#/locales';
+import { accessRoutes, coreRouteNames, routes } from '#/router/routes';
+import { useAuthStore, useOrganizationStore } from '#/store';
 
 import { generateAccess } from './access';
+
+let accessRouter: Router | undefined;
 
 /**
  * 通用守卫配置
@@ -48,7 +53,6 @@ function setupAccessGuard(router: Router) {
   router.beforeEach(async (to, from) => {
     const accessStore = useAccessStore();
     const userStore = useUserStore();
-    const authStore = useAuthStore();
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
@@ -85,28 +89,13 @@ function setupAccessGuard(router: Router) {
       return to;
     }
 
-    // 是否已经生成过动态路由
-    if (accessStore.isAccessChecked) {
+    // 是否已经生成过动态路由。刷新/组织切换后如果路由表和状态不一致，
+    // 需要重新拉菜单，否则会直接落到 404 兜底页。
+    if (accessStore.isAccessChecked && to.name !== 'FallbackNotFound') {
       return true;
     }
 
-    // 生成路由表
-    // 当前登录用户拥有的角色标识列表
-    const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
-    const userRoles = userInfo.roles ?? [];
-
-    // 生成菜单和路由
-    const { accessibleMenus, accessibleRoutes } = await generateAccess({
-      roles: userRoles,
-      router,
-      // 则会在菜单中显示，但是访问会被重定向到403
-      routes: accessRoutes,
-    });
-
-    // 保存菜单信息和路由信息
-    accessStore.setAccessMenus(accessibleMenus);
-    accessStore.setAccessRoutes(accessibleRoutes);
-    accessStore.setIsAccessChecked(true);
+    const userInfo = await generateAndApplyAccessRoutes(router);
     const redirectPath = (from.query.redirect ??
       (to.path === preferences.app.defaultHomePath
         ? userInfo.homePath || preferences.app.defaultHomePath
@@ -124,10 +113,69 @@ function setupAccessGuard(router: Router) {
  * @param router
  */
 function createRouterGuard(router: Router) {
+  accessRouter = router;
   /** 通用 */
   setupCommonGuard(router);
   /** 权限访问 */
   setupAccessGuard(router);
 }
 
-export { createRouterGuard };
+function invalidateAccessRoutes() {
+  const accessStore = useAccessStore();
+  accessStore.setAccessMenus([]);
+  accessStore.setAccessRoutes([]);
+  accessStore.setIsAccessChecked(false);
+  if (accessRouter) {
+    resetStaticRoutes(accessRouter, routes);
+  }
+}
+
+async function generateAndApplyAccessRoutes(router: Router) {
+  const accessStore = useAccessStore();
+  const userStore = useUserStore();
+  const authStore = useAuthStore();
+  const organizationStore = useOrganizationStore();
+
+  if (organizationStore.organizations.length === 0) {
+    try {
+      await organizationStore.loadMyOrganizations();
+    } catch (error) {
+      message.error('获取组织失败，无法加载菜单');
+      throw error;
+    }
+  }
+
+  // 生成路由表
+  // 当前登录用户拥有的角色标识列表
+  const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
+  const userRoles = userInfo.roles ?? [];
+
+  try {
+    const { accessibleMenus, accessibleRoutes } = await generateAccess({
+      roles: userRoles,
+      router,
+      // 则会在菜单中显示，但是访问会被重定向到403
+      routes: accessRoutes,
+    });
+
+    // 保存菜单信息和路由信息
+    accessStore.setAccessMenus(accessibleMenus);
+    accessStore.setAccessRoutes(accessibleRoutes);
+    accessStore.setIsAccessChecked(true);
+  } catch (error) {
+    message.error(`${$t('common.loadingMenu')}失败`);
+    throw error;
+  }
+
+  return userInfo;
+}
+
+async function rebuildAccessRoutes() {
+  if (!accessRouter) {
+    return;
+  }
+  invalidateAccessRoutes();
+  await generateAndApplyAccessRoutes(accessRouter);
+}
+
+export { createRouterGuard, invalidateAccessRoutes, rebuildAccessRoutes };

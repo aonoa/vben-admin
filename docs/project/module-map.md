@@ -6,10 +6,11 @@
 
 | 页面目录 | 主要文件 | 对应 API 模块 | 后端服务 | 备注 |
 | --- | --- | --- | --- | --- |
-| `views/system/user/**` | `index.vue`、`add_modal.vue` | `src/api/core/user.ts` | user | 用户列表、用户详情、增删改 |
-| `views/system/role/**` | `list.vue`、`modules/form.vue` | `src/api/system/role.ts`、`src/api/system/menu.ts` | admin | 角色管理依赖菜单树 |
+| `views/system/user/**` | `index.vue`、`add_modal.vue` | `src/api/core/user.ts`、`src/api/system/organization.ts`、`src/api/system/user-role-binding.ts`、`src/api/system/user-dept-binding.ts`、`src/api/system/dept.ts` | user + admin | 用户资料增删改归 user；列表可见性、默认组织/当前组织成员关系、角色绑定和部门绑定归 admin |
+| `views/system/role/**` | `list.vue`、`modules/form.vue` | `src/api/system/role.ts`、`src/api/system/menu.ts`、`src/store/organization.ts` | admin | 角色管理依赖菜单树，并按当前组织筛选和维护 |
 | `views/system/menu/**` | `list.vue`、`modules/form.vue` | `src/api/system/menu.ts` | admin | 菜单 CRUD、名称/路径校验 |
-| `views/system/dept/**` | `list.vue`、`modules/form.vue` | `src/api/system/dept.ts` | admin | 部门树 |
+| `views/system/organization/**` | `index.vue`、`modules/form.vue` | `src/api/system/organization.ts` | admin | 组织 CRUD、组织成员维护 |
+| `views/system/dept/**` | `list.vue`、`modules/form.vue` | `src/api/system/dept.ts`、`src/store/organization.ts` | admin | 部门树跟随当前组织筛选和维护 |
 | `views/system/resource/**` | `index.vue`、`add_modal.vue` | `src/api/system/resource.ts` | admin | 资源管理 |
 | `views/system/api/**` | `index.vue`、`add_modal.vue` | `src/api/system/api.ts` | admin | API 目录、walk-routes |
 | `views/system/platform/service/**` | `index.vue`、`add_modal.vue` | `src/api/system/platform.ts` | admin | 服务注册 |
@@ -21,13 +22,20 @@
 | `views/_core/authentication/**` | `login.vue` 等 | `src/api/core/auth.ts` | auth | 登录、登出、刷新 token |
 | `views/dashboard/**` | `analytics/**`、`workspace/**` | 无稳定业务 API 依赖 | 本地示例 / 组合态 | 当前有类型问题，见 known-issues |
 
+全局壳层补充：
+
+| 位置 | 主要文件 | 对应 API / Store | 后端服务 | 备注 |
+| --- | --- | --- | --- | --- |
+| 头部组织切换 | `layouts/basic.vue` | `src/store/organization.ts`、`src/api/system/organization.ts`、`src/router/guard.ts`、`src/api/request.ts` | admin + auth/gateway | 调用 `/admin-api/v1/my/organizations` 和 `/admin-api/v1/my/current-organization`；当前组织经校验后作为 `x-organization-id` 参与 gateway/auth 授权；切换后重建动态菜单/路由并刷新当前页面 |
+
 ## 2. 菜单与路由生成链路
 
 | 环节 | 文件 | 作用 |
 | --- | --- | --- |
-| 拉取当前用户菜单 | `src/api/core/menu.ts` | 调 `/admin-api/v1/menus/current` |
+| 当前组织请求头 | `src/api/request.ts` | 当前组织经 `src/store/organization.ts` 校验后附加 `x-organization-id` |
+| 拉取当前用户菜单 | `src/api/core/menu.ts` | 调 `/admin-api/v1/menus/current`，返回当前组织 scope 下的菜单 |
 | 动态菜单生成 | `src/router/access.ts` | 把后端菜单映射成本地可访问路由 |
-| 守卫触发点 | `src/router/guard.ts` | 登录后拉用户信息、生成动态路由 |
+| 守卫触发点 | `src/router/guard.ts` | 登录后拉用户信息和组织列表、生成动态路由；组织切换后可主动重建菜单/路由 |
 | 组件查找 | `import.meta.glob('../views/**/*.vue')` | 根据后端 `component` 字段匹配页面 |
 
 ## 3. API 改动时前端应该动哪里

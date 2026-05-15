@@ -13,19 +13,21 @@ import { IconifyIcon } from '@vben/icons';
 import { Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
-import { GetResourceList } from '#/api/system/resource';
+import { getCurrentPermissionCatalog } from '#/api/system/organization';
 import { createRole, updateRole } from '#/api/system/role';
+import { normalizeRoleFormValues } from '#/api/system/role-payload';
 import { $t } from '#/locales';
+import { useOrganizationStore } from '#/store';
 
 import { useFormSchema } from '../data';
 
 const emits = defineEmits(['success']);
 
 const formData = ref<SystemRoleApi.SystemRole>();
+const organizationStore = useOrganizationStore();
 
 const [Form, formApi] = useVbenForm({
-  schema: useFormSchema(),
+  schema: useFormSchema(() => organizationStore.currentOrganizationId),
   showDefaultActions: false,
 });
 
@@ -33,7 +35,6 @@ const permissions = ref<DataNode[]>([]);
 const loadingPermissions = ref(false);
 
 const api_permissions = ref<DataNode[]>([]);
-const api_loadingPermissions = ref(false);
 
 const id = ref();
 const [Drawer, drawerApi] = useVbenDrawer({
@@ -60,19 +61,21 @@ const [Drawer, drawerApi] = useVbenDrawer({
         formData.value = data;
         id.value = data.id;
       } else {
+        formData.value = undefined;
         id.value = undefined;
       }
 
-      if (permissions.value.length === 0) {
-        await loadPermissions();
-      }
-      if (api_permissions.value.length === 0) {
-        await api_loadPermissions();
-      }
+      await loadPermissionCatalog();
 
       await nextTick();
       if (data) {
-        formApi.setValues(data);
+        formApi.setValues(normalizeRoleFormValues(data));
+      } else {
+        formApi.setValues({
+          data_scope: 'self',
+          organization_id: organizationStore.currentOrganizationId,
+          status: 1,
+        });
       }
 
       // if (data) {
@@ -89,23 +92,14 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 });
 
-async function loadPermissions() {
+async function loadPermissionCatalog() {
   loadingPermissions.value = true;
   try {
-    const res = await getMenuList();
-    permissions.value = res?.items as unknown as DataNode[];
+    const res = await getCurrentPermissionCatalog();
+    permissions.value = (res.menus ?? []) as unknown as DataNode[];
+    api_permissions.value = (res.resources ?? []) as unknown as DataNode[];
   } finally {
     loadingPermissions.value = false;
-  }
-}
-
-async function api_loadPermissions() {
-  api_loadingPermissions.value = true;
-  try {
-    const res = await GetResourceList({});
-    api_permissions.value = res?.items as unknown as DataNode[];
-  } finally {
-    api_loadingPermissions.value = false;
   }
 }
 
@@ -151,7 +145,7 @@ function getNodeClass(node: Recordable<any>) {
         </Spin>
       </template>
       <template #api_permissions="slotProps">
-        <Spin :spinning="api_loadingPermissions" wrapper-class-name="w-full">
+        <Spin :spinning="loadingPermissions" wrapper-class-name="w-full">
           <Tree
             :tree-data="api_permissions"
             multiple

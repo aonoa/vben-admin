@@ -6,6 +6,9 @@ export namespace SystemDeptApi {
     children?: SystemDept[];
     id: string;
     name: string;
+    orderNo?: number;
+    organizationId?: string;
+    pid?: string;
     remark?: string;
     status: 0 | 1;
   }
@@ -14,9 +17,12 @@ export namespace SystemDeptApi {
 /**
  * 获取部门列表数据
  */
-async function getDeptList() {
-  return requestClient.get<Array<SystemDeptApi.SystemDept>>(
+async function getDeptList(organizationId?: string) {
+  return requestClient.get<{ items?: SystemDeptApi.SystemDept[] }>(
     '/admin-api/v1/depts',
+    {
+      params: { organizationId },
+    },
   );
 }
 

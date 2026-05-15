@@ -6,8 +6,13 @@ import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
-import { useWatermark } from '@vben/hooks';
-import { BookOpenText, CircleHelp, SvgGithubIcon } from '@vben/icons';
+import { useRefresh, useWatermark } from '@vben/hooks';
+import {
+  BookOpenText,
+  CircleHelp,
+  IconifyIcon,
+  SvgGithubIcon,
+} from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -18,6 +23,8 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
+import { Select } from 'ant-design-vue';
+
 import FloatingAICopilotWrapper from '#/adapter/component/copilot/FloatingAICopilotWrapper.vue';
 import Live2D from '#/adapter/component/Live2D.vue';
 import {
@@ -27,7 +34,8 @@ import {
   SITE_MESSAGE_REFRESH_EVENT,
 } from '#/api/system';
 import { $t } from '#/locales';
-import { useAuthStore } from '#/store';
+import { rebuildAccessRoutes } from '#/router/guard';
+import { useAuthStore, useOrganizationStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
 const SITE_MESSAGE_INBOX_PATH = '/messages';
@@ -37,10 +45,21 @@ const siteMessageLoadToken = ref(0);
 const router = useRouter();
 const userStore = useUserStore();
 const authStore = useAuthStore();
+const organizationStore = useOrganizationStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
+const { refresh } = useRefresh();
 const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
+);
+const organizationOptions = computed(() =>
+  organizationStore.organizations.map((item) => ({
+    label: item.name || item.code || item.id,
+    value: item.id,
+  })),
+);
+const showOrganizationSwitcher = computed(
+  () => organizationOptions.value.length > 0,
 );
 
 const menus = computed(() => [
@@ -109,6 +128,15 @@ function handleMakeAll() {
 
 function handleNoticeViewAll() {
   void router.push(SITE_MESSAGE_INBOX_PATH);
+}
+
+async function handleOrganizationChange(value: unknown) {
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    return;
+  }
+  await organizationStore.switchOrganization(String(value));
+  await rebuildAccessRoutes();
+  await refresh();
 }
 
 function getNoticeAvatar() {
@@ -195,6 +223,7 @@ function handleSiteMessageRefresh() {
 
 onMounted(() => {
   window.addEventListener(SITE_MESSAGE_REFRESH_EVENT, handleSiteMessageRefresh);
+  void organizationStore.loadMyOrganizations();
   void loadSiteMessageNotifications();
 });
 
@@ -275,6 +304,26 @@ onBeforeUnmount(() => {
         @make-all="handleMakeAll"
         @view-all="handleNoticeViewAll"
       />
+    </template>
+    <template #header-right-55>
+      <div
+        v-if="showOrganizationSwitcher"
+        class="mr-1 hidden h-full min-w-40 items-center gap-1 px-1 md:flex"
+      >
+        <IconifyIcon
+          class="text-muted-foreground size-4 shrink-0"
+          icon="lucide:building-2"
+        />
+        <Select
+          class="w-36"
+          :bordered="false"
+          :loading="organizationStore.loading"
+          :options="organizationOptions"
+          :value="organizationStore.currentOrganizationId || undefined"
+          size="small"
+          @change="handleOrganizationChange"
+        />
+      </div>
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal

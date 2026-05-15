@@ -2,10 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 import type { api_admin_service_v1_ApiListItem } from '../models/api_admin_service_v1_ApiListItem';
+import type { api_admin_service_v1_CurrentOrganizationReply } from '../models/api_admin_service_v1_CurrentOrganizationReply';
 import type { api_admin_service_v1_DeptListItem } from '../models/api_admin_service_v1_DeptListItem';
 import type { api_admin_service_v1_GetApiListByPageReply } from '../models/api_admin_service_v1_GetApiListByPageReply';
 import type { api_admin_service_v1_GetCurrentUserMenusReply } from '../models/api_admin_service_v1_GetCurrentUserMenusReply';
 import type { api_admin_service_v1_GetDeptListReply } from '../models/api_admin_service_v1_GetDeptListReply';
+import type { api_admin_service_v1_GetMyOrganizationsReply } from '../models/api_admin_service_v1_GetMyOrganizationsReply';
+import type { api_admin_service_v1_GetOrganizationListReply } from '../models/api_admin_service_v1_GetOrganizationListReply';
+import type { api_admin_service_v1_GetOrganizationMembersReply } from '../models/api_admin_service_v1_GetOrganizationMembersReply';
 import type { api_admin_service_v1_GetProjectionSourceStatusListReply } from '../models/api_admin_service_v1_GetProjectionSourceStatusListReply';
 import type { api_admin_service_v1_GetResourceListByPageReply } from '../models/api_admin_service_v1_GetResourceListByPageReply';
 import type { api_admin_service_v1_GetRoleListByPageReply } from '../models/api_admin_service_v1_GetRoleListByPageReply';
@@ -17,9 +21,16 @@ import type { api_admin_service_v1_GetWalkRouteReply } from '../models/api_admin
 import type { api_admin_service_v1_IsMenuNameExistsReply } from '../models/api_admin_service_v1_IsMenuNameExistsReply';
 import type { api_admin_service_v1_IsMenuPathExistsReply } from '../models/api_admin_service_v1_IsMenuPathExistsReply';
 import type { api_admin_service_v1_ListUserRoleBindingsReply } from '../models/api_admin_service_v1_ListUserRoleBindingsReply';
+import type { api_admin_service_v1_OrganizationItem } from '../models/api_admin_service_v1_OrganizationItem';
+import type { api_admin_service_v1_OrganizationPermissionCatalogReply } from '../models/api_admin_service_v1_OrganizationPermissionCatalogReply';
+import type { api_admin_service_v1_OrganizationPermissionScopeReply } from '../models/api_admin_service_v1_OrganizationPermissionScopeReply';
 import type { api_admin_service_v1_ResourceListItem } from '../models/api_admin_service_v1_ResourceListItem';
 import type { api_admin_service_v1_RoleListItem } from '../models/api_admin_service_v1_RoleListItem';
+import type { api_admin_service_v1_SaveOrganizationMembersRequest } from '../models/api_admin_service_v1_SaveOrganizationMembersRequest';
+import type { api_admin_service_v1_SaveOrganizationPermissionScopeRequest } from '../models/api_admin_service_v1_SaveOrganizationPermissionScopeRequest';
+import type { api_admin_service_v1_SwitchCurrentOrganizationRequest } from '../models/api_admin_service_v1_SwitchCurrentOrganizationRequest';
 import type { api_admin_service_v1_SysMenuListItem } from '../models/api_admin_service_v1_SysMenuListItem';
+import type { api_admin_service_v1_UserDeptBindingItem } from '../models/api_admin_service_v1_UserDeptBindingItem';
 import type { api_admin_service_v1_UserRoleBindingItem } from '../models/api_admin_service_v1_UserRoleBindingItem';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -115,10 +126,17 @@ export class AdminServiceService {
    * @returns api_admin_service_v1_GetDeptListReply OK
    * @throws ApiError
    */
-  public static adminServiceGetDeptList(): CancelablePromise<api_admin_service_v1_GetDeptListReply> {
+  public static adminServiceGetDeptList({
+    organizationId,
+  }: {
+    organizationId?: string;
+  }): CancelablePromise<api_admin_service_v1_GetDeptListReply> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/admin-api/v1/depts',
+      query: {
+        organizationId: organizationId,
+      },
     });
   }
   /**
@@ -373,6 +391,218 @@ export class AdminServiceService {
     });
   }
   /**
+   * @returns api_admin_service_v1_CurrentOrganizationReply OK
+   * @throws ApiError
+   */
+  public static adminServiceSwitchCurrentOrganization({
+    requestBody,
+  }: {
+    requestBody: api_admin_service_v1_SwitchCurrentOrganizationRequest;
+  }): CancelablePromise<api_admin_service_v1_CurrentOrganizationReply> {
+    return __request(OpenAPI, {
+      method: 'PUT',
+      url: '/admin-api/v1/my/current-organization',
+      body: requestBody,
+      mediaType: 'application/json',
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_GetMyOrganizationsReply OK
+   * @throws ApiError
+   */
+  public static adminServiceGetMyOrganizations(): CancelablePromise<api_admin_service_v1_GetMyOrganizationsReply> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/admin-api/v1/my/organizations',
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_GetOrganizationListReply OK
+   * @throws ApiError
+   */
+  public static adminServiceGetOrganizationList({
+    currentPage,
+    pageSize,
+    name,
+    code,
+    status,
+  }: {
+    currentPage?: string;
+    pageSize?: string;
+    name?: string;
+    code?: string;
+    status?: number;
+  }): CancelablePromise<api_admin_service_v1_GetOrganizationListReply> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/admin-api/v1/organizations',
+      query: {
+        currentPage: currentPage,
+        pageSize: pageSize,
+        name: name,
+        code: code,
+        status: status,
+      },
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_OrganizationItem OK
+   * @throws ApiError
+   */
+  public static adminServiceAddOrganization({
+    requestBody,
+  }: {
+    requestBody: api_admin_service_v1_OrganizationItem;
+  }): CancelablePromise<api_admin_service_v1_OrganizationItem> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/admin-api/v1/organizations',
+      body: requestBody,
+      mediaType: 'application/json',
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_OrganizationItem OK
+   * @throws ApiError
+   */
+  public static adminServiceUpdateOrganization({
+    id,
+    requestBody,
+  }: {
+    id: string;
+    requestBody: api_admin_service_v1_OrganizationItem;
+  }): CancelablePromise<api_admin_service_v1_OrganizationItem> {
+    return __request(OpenAPI, {
+      method: 'PUT',
+      url: '/admin-api/v1/organizations/{id}',
+      path: {
+        id: id,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+    });
+  }
+  /**
+   * @returns any OK
+   * @throws ApiError
+   */
+  public static adminServiceDelOrganization({
+    id,
+  }: {
+    id: string;
+  }): CancelablePromise<any> {
+    return __request(OpenAPI, {
+      method: 'DELETE',
+      url: '/admin-api/v1/organizations/{id}',
+      path: {
+        id: id,
+      },
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_GetOrganizationMembersReply OK
+   * @throws ApiError
+   */
+  public static adminServiceGetOrganizationMembers({
+    organizationId,
+  }: {
+    organizationId: string;
+  }): CancelablePromise<api_admin_service_v1_GetOrganizationMembersReply> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/admin-api/v1/organizations/{organizationId}/members',
+      path: {
+        organizationId: organizationId,
+      },
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_GetOrganizationMembersReply OK
+   * @throws ApiError
+   */
+  public static adminServiceSaveOrganizationMembers({
+    organizationId,
+    requestBody,
+  }: {
+    organizationId: string;
+    requestBody: api_admin_service_v1_SaveOrganizationMembersRequest;
+  }): CancelablePromise<api_admin_service_v1_GetOrganizationMembersReply> {
+    return __request(OpenAPI, {
+      method: 'PUT',
+      url: '/admin-api/v1/organizations/{organizationId}/members',
+      path: {
+        organizationId: organizationId,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_OrganizationPermissionCatalogReply OK
+   * @throws ApiError
+   */
+  public static adminServiceGetOrganizationPermissionCatalog({
+    organizationId,
+  }: {
+    organizationId: string;
+  }): CancelablePromise<api_admin_service_v1_OrganizationPermissionCatalogReply> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/admin-api/v1/organizations/{organizationId}/permission-catalog',
+      path: {
+        organizationId: organizationId,
+      },
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_OrganizationPermissionScopeReply OK
+   * @throws ApiError
+   */
+  public static adminServiceGetOrganizationPermissionScope({
+    organizationId,
+  }: {
+    organizationId: string;
+  }): CancelablePromise<api_admin_service_v1_OrganizationPermissionScopeReply> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/admin-api/v1/organizations/{organizationId}/permission-scope',
+      path: {
+        organizationId: organizationId,
+      },
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_OrganizationPermissionScopeReply OK
+   * @throws ApiError
+   */
+  public static adminServiceSaveOrganizationPermissionScope({
+    organizationId,
+    requestBody,
+  }: {
+    organizationId: string;
+    requestBody: api_admin_service_v1_SaveOrganizationPermissionScopeRequest;
+  }): CancelablePromise<api_admin_service_v1_OrganizationPermissionScopeReply> {
+    return __request(OpenAPI, {
+      method: 'PUT',
+      url: '/admin-api/v1/organizations/{organizationId}/permission-scope',
+      path: {
+        organizationId: organizationId,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_OrganizationPermissionCatalogReply OK
+   * @throws ApiError
+   */
+  public static adminServiceGetCurrentPermissionCatalog(): CancelablePromise<api_admin_service_v1_OrganizationPermissionCatalogReply> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/admin-api/v1/permission-catalog/current',
+    });
+  }
+  /**
    * @returns api_admin_service_v1_GetProjectionSourceStatusListReply OK
    * @throws ApiError
    */
@@ -491,12 +721,14 @@ export class AdminServiceService {
     name,
     status,
     deptId,
+    organizationId,
   }: {
     currentPage?: string;
     pageSize?: string;
     name?: string;
     status?: string;
     deptId?: string;
+    organizationId?: string;
   }): CancelablePromise<api_admin_service_v1_GetRoleListByPageReply> {
     return __request(OpenAPI, {
       method: 'GET',
@@ -507,6 +739,7 @@ export class AdminServiceService {
         name: name,
         status: status,
         deptId: deptId,
+        organizationId: organizationId,
       },
     });
   }
@@ -565,6 +798,71 @@ export class AdminServiceService {
     });
   }
   /**
+   * @returns api_admin_service_v1_UserDeptBindingItem OK
+   * @throws ApiError
+   */
+  public static adminServiceGetUserDeptBinding({
+    userId,
+    organizationId,
+  }: {
+    userId: string;
+    organizationId?: string;
+  }): CancelablePromise<api_admin_service_v1_UserDeptBindingItem> {
+    return __request(OpenAPI, {
+      method: 'GET',
+      url: '/admin-api/v1/user-dept-bindings/{userId}',
+      path: {
+        userId: userId,
+      },
+      query: {
+        organizationId: organizationId,
+      },
+    });
+  }
+  /**
+   * @returns api_admin_service_v1_UserDeptBindingItem OK
+   * @throws ApiError
+   */
+  public static adminServiceUpsertUserDeptBinding({
+    userId,
+    requestBody,
+  }: {
+    userId: string;
+    requestBody: api_admin_service_v1_UserDeptBindingItem;
+  }): CancelablePromise<api_admin_service_v1_UserDeptBindingItem> {
+    return __request(OpenAPI, {
+      method: 'PUT',
+      url: '/admin-api/v1/user-dept-bindings/{userId}',
+      path: {
+        userId: userId,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+    });
+  }
+  /**
+   * @returns any OK
+   * @throws ApiError
+   */
+  public static adminServiceDeleteUserDeptBinding({
+    userId,
+    organizationId,
+  }: {
+    userId: string;
+    organizationId?: string;
+  }): CancelablePromise<any> {
+    return __request(OpenAPI, {
+      method: 'DELETE',
+      url: '/admin-api/v1/user-dept-bindings/{userId}',
+      path: {
+        userId: userId,
+      },
+      query: {
+        organizationId: organizationId,
+      },
+    });
+  }
+  /**
    * @returns api_admin_service_v1_ListUserRoleBindingsReply OK
    * @throws ApiError
    */
@@ -580,14 +878,19 @@ export class AdminServiceService {
    */
   public static adminServiceGetUserRoleBinding({
     userId,
+    organizationId,
   }: {
     userId: string;
+    organizationId?: string;
   }): CancelablePromise<api_admin_service_v1_UserRoleBindingItem> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/admin-api/v1/user-role-bindings/{userId}',
       path: {
         userId: userId,
+      },
+      query: {
+        organizationId: organizationId,
       },
     });
   }
@@ -618,14 +921,19 @@ export class AdminServiceService {
    */
   public static adminServiceDeleteUserRoleBinding({
     userId,
+    organizationId,
   }: {
     userId: string;
+    organizationId?: string;
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'DELETE',
       url: '/admin-api/v1/user-role-bindings/{userId}',
       path: {
         userId: userId,
+      },
+      query: {
+        organizationId: organizationId,
       },
     });
   }

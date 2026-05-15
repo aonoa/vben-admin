@@ -16,6 +16,7 @@ import { useAccessStore } from '@vben/stores';
 import { message } from 'ant-design-vue';
 
 import { useAuthStore } from '#/store';
+import { useOrganizationStore } from '#/store';
 
 import { refreshTokenApi } from './core';
 
@@ -65,8 +66,20 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
+      const organizationStore = useOrganizationStore();
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+      const hasValidatedCurrentOrganization =
+        !!organizationStore.currentOrganizationId &&
+        organizationStore.organizations.some(
+          (item) => item.id === organizationStore.currentOrganizationId,
+        );
+      if (hasValidatedCurrentOrganization) {
+        config.headers['x-organization-id'] =
+          organizationStore.currentOrganizationId;
+      } else {
+        delete config.headers['x-organization-id'];
+      }
       // 根据自定义http请求头判断是否使用refreshToken
       if (config.headers['X-Action'] === 'refreshToken') {
         config.headers.Authorization = formatToken(accessStore.refreshToken);

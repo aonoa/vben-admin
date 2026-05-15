@@ -11,7 +11,7 @@ import { $t } from '#/locales';
 /**
  * 获取编辑表单的字段配置。如果没有使用多语言，可以直接export一个数组常量
  */
-export function useSchema(): VbenFormSchema[] {
+export function useSchema(organizationId?: () => string): VbenFormSchema[] {
   return [
     {
       component: 'Input',
@@ -27,14 +27,17 @@ export function useSchema(): VbenFormSchema[] {
     },
     {
       component: 'ApiTreeSelect',
-      componentProps: {
-        allowClear: true,
-        api: getDeptList,
-        resultField: 'items',
-        class: 'w-full',
-        labelField: 'name',
-        valueField: 'id',
-        childrenField: 'children',
+      componentProps: () => {
+        const currentOrganizationId = organizationId?.();
+        return {
+          allowClear: true,
+          api: () => getDeptList(currentOrganizationId),
+          resultField: 'items',
+          class: 'w-full',
+          labelField: 'name',
+          valueField: 'id',
+          childrenField: 'children',
+        };
       },
       fieldName: 'pid',
       label: $t('system.dept.parentDept'),

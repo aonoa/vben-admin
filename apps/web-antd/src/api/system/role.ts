@@ -2,14 +2,25 @@ import type { Recordable } from '@vben/types';
 
 import { requestClient } from '#/api/request';
 
+import { pickRoleMutationPayload } from './role-payload';
+
 export namespace SystemRoleApi {
   export interface SystemRole {
     [key: string]: any;
+    api_permissions?: string[];
+    apiPermissions?: string[];
+    data_scope?: string;
+    data_scope_dept_ids?: string[];
+    dataScope?: string;
+    dataScopeDeptIds?: string[];
     id: string;
     name: string;
+    organization_id?: string;
+    organizationId?: string;
     permissions: string[];
     remark?: string;
     status: 0 | 1;
+    value?: string;
   }
   export interface GetRoleListByPageReply {
     items: SystemRole[];
@@ -32,7 +43,10 @@ async function getRoleList(params: Recordable<any>) {
  * @param data 角色数据
  */
 async function createRole(data: Omit<SystemRoleApi.SystemRole, 'id'>) {
-  return requestClient.post('/admin-api/v1/roles', data);
+  return requestClient.post(
+    '/admin-api/v1/roles',
+    pickRoleMutationPayload(data),
+  );
 }
 
 /**
@@ -45,7 +59,10 @@ async function updateRole(
   id: string,
   data: Omit<SystemRoleApi.SystemRole, 'id'>,
 ) {
-  return requestClient.put(`/admin-api/v1/roles/${id}`, data);
+  return requestClient.put(
+    `/admin-api/v1/roles/${id}`,
+    pickRoleMutationPayload(data),
+  );
 }
 
 /**

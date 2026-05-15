@@ -14,6 +14,7 @@ import { $t } from '#/locales';
 import { useSchema } from '../data';
 
 const emit = defineEmits(['success']);
+const currentOrganizationId = ref('');
 const formData = ref<SystemDeptApi.SystemDept>();
 const getTitle = computed(() => {
   return formData.value?.id
@@ -23,7 +24,7 @@ const getTitle = computed(() => {
 
 const [Form, formApi] = useVbenForm({
   layout: 'vertical',
-  schema: useSchema(),
+  schema: useSchema(() => currentOrganizationId.value),
   showDefaultActions: false,
 });
 
@@ -38,6 +39,7 @@ const [Modal, modalApi] = useVbenModal({
     if (valid) {
       modalApi.lock();
       const data = await formApi.getValues();
+      data.organizationId = currentOrganizationId.value;
       try {
         await (formData.value?.id
           ? updateDept(formData.value.id, data)
@@ -52,8 +54,10 @@ const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
     if (isOpen) {
       const data = modalApi.getData<SystemDeptApi.SystemDept>();
+      currentOrganizationId.value = data?.organizationId || '';
+      formApi.resetForm();
       if (data) {
-        if (data.pid === 0) {
+        if (data.pid === '0') {
           data.pid = undefined;
         }
         formData.value = data;
