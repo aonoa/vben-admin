@@ -5,6 +5,7 @@ import {
   pickOrganizationMutationPayload,
   pickOrganizationPermissionScopePayload,
 } from './organization-payload';
+import { normalizeListReply } from './organization';
 
 describe('organization mutation payload', () => {
   it('keeps only editable camelCase fields for requests', () => {
@@ -54,5 +55,29 @@ describe('organization mutation payload', () => {
       organizationId: 'org-a',
       resourceIds: ['resource-a', 'resource-b'],
     });
+  });
+
+  it('normalizes organization list management capability', () => {
+    expect(
+      normalizeListReply({
+        can_manage_organizations: true,
+        items: [{ id: 'org-a', order_no: 1 }],
+        total: '1',
+      }),
+    ).toEqual({
+      canManageOrganizations: true,
+      items: [{ id: 'org-a', orderNo: 1, order_no: 1 }],
+      total: 1,
+    });
+  });
+
+  it('normalizes string organization list management capability', () => {
+    expect(
+      normalizeListReply({
+        canManageOrganizations: 'true',
+        items: [],
+        total: '0',
+      }).canManageOrganizations,
+    ).toBe(true);
   });
 });

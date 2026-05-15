@@ -25,7 +25,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  getOrganizationList,
+  getMyOrganizations,
   getOrganizationMembers,
   saveOrganizationMembers,
 } from '#/api/system/organization';
@@ -242,11 +242,8 @@ async function loadMembers(row: OrganizationItem) {
   currentMemberIds.value = [];
   defaultOrganizationId.value = '';
   try {
-    const organizationsReply = await getOrganizationList({
-      currentPage: 1,
-      pageSize: 200,
-    });
-    const defaultOrganization = organizationsReply.items.find(
+    const myOrganizationsReply = await getMyOrganizations();
+    const defaultOrganization = myOrganizationsReply.items.find(
       (item) => item.code === DEFAULT_ORGANIZATION_CODE,
     );
     if (!defaultOrganization?.id) {

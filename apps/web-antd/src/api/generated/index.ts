@@ -63,11 +63,6 @@ export type { api_common_service_v1_RecallSiteMessageRequest } from './models/ap
 export type { api_common_service_v1_SiteMessageItem } from './models/api_common_service_v1_SiteMessageItem';
 export type { api_common_service_v1_SiteMessageManageItem } from './models/api_common_service_v1_SiteMessageManageItem';
 export type { api_common_service_v1_UploadResponse } from './models/api_common_service_v1_UploadResponse';
-export type { api_sample_service_v1_CreateSampleItemRequest } from './models/api_sample_service_v1_CreateSampleItemRequest';
-export type { api_sample_service_v1_GetSampleItemListReply } from './models/api_sample_service_v1_GetSampleItemListReply';
-export type { api_sample_service_v1_GetSampleItemManageListReply } from './models/api_sample_service_v1_GetSampleItemManageListReply';
-export type { api_sample_service_v1_SampleItem } from './models/api_sample_service_v1_SampleItem';
-export type { api_sample_service_v1_UpdateSampleItemRequest } from './models/api_sample_service_v1_UpdateSampleItemRequest';
 export type { api_user_service_v1_ChangePasswordRequest } from './models/api_user_service_v1_ChangePasswordRequest';
 export type { api_user_service_v1_GetUserInfoReply } from './models/api_user_service_v1_GetUserInfoReply';
 export type { api_user_service_v1_GetUserListReply } from './models/api_user_service_v1_GetUserListReply';
@@ -77,7 +72,6 @@ export type { api_user_service_v1_UserListItem } from './models/api_user_service
 export { AdminServiceService } from './services/AdminServiceService';
 export { AuthServiceService } from './services/AuthServiceService';
 export { CommonServiceService } from './services/CommonServiceService';
-export { SampleAdminServiceService } from './services/SampleAdminServiceService';
 export { SseServiceService } from './services/SseServiceService';
 export { UploadServiceService } from './services/UploadServiceService';
 export { UserServiceService } from './services/UserServiceService';

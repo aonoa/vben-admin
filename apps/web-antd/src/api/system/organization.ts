@@ -42,20 +42,42 @@ export interface OrganizationListParams {
 }
 
 export interface OrganizationListReply<T> {
+  canManageOrganizations: boolean;
   items: T[];
   total: number;
 }
 
-function normalizeListReply<T>(
-  reply:
-    | api_admin_service_v1_GetOrganizationListReply
-    | api_admin_service_v1_GetOrganizationMembersReply
-    | undefined,
+type OrganizationListLikeReply = {
+  can_manage_organizations?: unknown;
+  canManageOrganizations?: unknown;
+  items?: unknown[];
+  total?: unknown;
+};
+
+export function normalizeListReply<T>(
+  reply: OrganizationListLikeReply | undefined,
 ) {
+  const record = reply as Record<string, unknown> | undefined;
   return {
+    canManageOrganizations:
+      normalizeBooleanFlag(record?.canManageOrganizations) ||
+      normalizeBooleanFlag(record?.can_manage_organizations),
     items: ((reply?.items ?? []) as T[]).map((item) => normalizeKeys(item)),
     total: Number(reply?.total ?? 0),
   };
+}
+
+function normalizeBooleanFlag(value: unknown) {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'number') {
+    return value !== 0;
+  }
+  if (typeof value === 'string') {
+    return ['1', 'true', 'yes'].includes(value.trim().toLowerCase());
+  }
+  return false;
 }
 
 function normalizeKeys<T>(item: T): T {

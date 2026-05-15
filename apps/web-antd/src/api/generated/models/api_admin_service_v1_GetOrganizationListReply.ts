@@ -5,4 +5,5 @@ import type { api_admin_service_v1_OrganizationItem } from './api_admin_service_
 export type api_admin_service_v1_GetOrganizationListReply = {
   items?: Array<api_admin_service_v1_OrganizationItem>;
   total?: string;
+  canManageOrganizations?: boolean;
 };

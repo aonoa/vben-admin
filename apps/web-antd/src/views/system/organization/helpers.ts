@@ -23,6 +23,10 @@ export interface OrganizationMemberPage {
   pageSize: number;
 }
 
+export function canManageOrganizationButtons(backendCapability: boolean) {
+  return backendCapability;
+}
+
 export function normalizeOrganizationMember(
   member: OrganizationMemberItem,
 ): null | OrganizationMemberRow {

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   appendOrganizationMemberId,
+  canManageOrganizationButtons,
   collectOrganizationMemberIds,
   filterOrganizationMembers,
   markCurrentOrganizationMembers,
@@ -11,6 +12,11 @@ import {
 } from './helpers';
 
 describe('organization member helpers', () => {
+  it('shows organization management buttons only from backend capability', () => {
+    expect(canManageOrganizationButtons(true)).toBe(true);
+    expect(canManageOrganizationButtons(false)).toBe(false);
+  });
+
   it('normalizes organization member rows', () => {
     expect(
       normalizeOrganizationMembers([

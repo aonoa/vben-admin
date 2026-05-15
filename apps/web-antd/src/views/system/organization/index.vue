@@ -2,10 +2,9 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { OrganizationItem } from '#/api/system/organization';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
-import { useUserStore } from '@vben/stores';
 
 import { Button, Tag } from 'ant-design-vue';
 
@@ -16,15 +15,15 @@ import {
   getOrganizationList,
 } from '#/api/system/organization';
 
+import { canManageOrganizationButtons } from './helpers';
 import OrganizationModal from './modules/form.vue';
 import MemberDrawer from './modules/member-drawer.vue';
 import PermissionScopeDrawer from './modules/permission-scope-drawer.vue';
 import { formOptions, gridSchemas } from './schemas';
 
-const BOOTSTRAP_ROOT_USER_ID = 'f4f9e258-fa13-4467-95fb-c86019a377f9';
-const userStore = useUserStore();
-const isPlatformRoot = computed(
-  () => userStore.userInfo?.userId === BOOTSTRAP_ROOT_USER_ID,
+const organizationManagementCapability = ref(false);
+const canManageOrganizations = computed(() =>
+  canManageOrganizationButtons(organizationManagementCapability.value),
 );
 
 const gridOptions: VxeGridProps<OrganizationItem> = {
@@ -41,11 +40,13 @@ const gridOptions: VxeGridProps<OrganizationItem> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await getOrganizationList({
+        const reply = await getOrganizationList({
           currentPage: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
         });
+        organizationManagementCapability.value = reply.canManageOrganizations;
+        return reply;
       },
     },
   },
@@ -106,7 +107,7 @@ function handleSaved() {
     <Grid table-title="组织列表">
       <template #toolbar-tools>
         <Button
-          v-if="isPlatformRoot"
+          v-show="canManageOrganizations"
           class="mr-2"
           type="primary"
           @click="handleAdd"
@@ -128,24 +129,29 @@ function handleSaved() {
         <div class="flex items-center justify-center whitespace-nowrap">
           <Button type="link" @click="openMemberDrawer(row)">成员</Button>
           <Button
-            v-if="isPlatformRoot"
+            v-show="canManageOrganizations"
             type="link"
             @click="openPermissionScopeDrawer(row)"
           >
             权限范围
           </Button>
-          <Button v-if="isPlatformRoot" type="link" @click="handleUpdate(row)">
+          <Button
+            v-show="canManageOrganizations"
+            type="link"
+            @click="handleUpdate(row)"
+          >
             编辑
           </Button>
-          <a-popconfirm
-            v-if="isPlatformRoot"
-            title="确定删除吗？"
-            ok-text="确定"
-            cancel-text="取消"
-            @confirm="handleDelete(row)"
-          >
-            <Button danger type="link">删除</Button>
-          </a-popconfirm>
+          <span v-show="canManageOrganizations">
+            <a-popconfirm
+              title="确定删除吗？"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="handleDelete(row)"
+            >
+              <Button danger type="link">删除</Button>
+            </a-popconfirm>
+          </span>
         </div>
       </template>
     </Grid>

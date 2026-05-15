@@ -8,6 +8,8 @@ window.PIXI = PIXI; // 用于 pixi-live2d-display 内部调用
 
 let pixiCanvas; // 放置 live2d 模型的画布
 let live2DModel;
+let idleTimer;
+let unmounted = false;
 
 const live2DCanvas = ref();
 
@@ -56,23 +58,24 @@ const handleKeydown = (event) => {
 
 // 扩展版本，包含更多控制选项
 const playMotion = (motionGroup, index = 0) => {
-  if (!live2DModel || !live2DModel.motion) return;
+  if (!canPlayMotion()) return;
 
   // 设置 Live2D 模型的表情。使用方法取决于你的模型是否有表情功能。查看模型配置文件（.model3.json）中是否有 "Expressions" 部分
   // live2DModel.expression(expression)
   // 播放指定动作组的特定索引动画
-  live2DModel.motion(motionGroup, index);
+  live2DModel.motion(motionGroup, index).catch(() => {});
   // console.log(`播放动作: ${motionGroup}`);
 };
 
 // 自动循环播放 Idle 动画
 const autoPlayIdleMotions = () => {
-  if (!live2DModel) return;
+  if (!canPlayMotion()) return;
 
   // 每隔一段时间随机播放一个 Idle 动画
-  setInterval(() => {
+  idleTimer = window.setInterval(() => {
+    if (!canPlayMotion()) return;
     // 从 Idle 动画组中随机选择一个
-    const idleMotions = live2DModel.internalModel.settings.motions.Idle;
+    const idleMotions = live2DModel.internalModel?.settings?.motions?.Idle;
     if (idleMotions && idleMotions.length > 0) {
       const randomIndex = Math.floor(Math.random() * idleMotions.length);
       playMotion('Idle', randomIndex);
@@ -82,22 +85,33 @@ const autoPlayIdleMotions = () => {
 
 // 停止所有动作
 const stopMotion = () => {
-  if (!live2DModel) return;
+  if (!canPlayMotion()) return;
 
   // 停止当前播放的动作
-  live2DModel.motion(null);
+  live2DModel.internalModel.motionManager.stopAllMotions();
   // console.log('停止动作');
 };
 
 // 点击交互处理函数
 const handleModelClick = () => {
-  if (!live2DModel) return;
+  if (!canPlayMotion()) return;
 
   // 随机播放一个 Idle 动画
   playMotion('Idle');
 };
 
+const canPlayMotion = () => {
+  const motionManager = live2DModel?.internalModel?.motionManager;
+  return (
+    !unmounted &&
+    !!live2DModel?.motion &&
+    !!motionManager &&
+    !motionManager.destroyed
+  );
+};
+
 onMounted(async () => {
+  unmounted = false;
   pixiCanvas = new PIXI.Application({
     view: live2DCanvas.value,
     autoStart: true,
@@ -113,6 +127,11 @@ onMounted(async () => {
   live2DModel = await Live2DModel.from(
     '/hiyori_free_zh/hiyori_free_t08.model3.json',
   );
+  if (unmounted) {
+    live2DModel.destroy();
+    live2DModel = undefined;
+    return;
+  }
 
   pixiCanvas.stage.addChild(live2DModel); // 将模型添加到画布上
   live2DModel.scale.set(0.14); // 设置合适的缩放比例
@@ -131,11 +150,19 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+  unmounted = true;
+  if (idleTimer) {
+    window.clearInterval(idleTimer);
+    idleTimer = undefined;
+  }
   // 清理事件监听
   window.removeEventListener('keydown', handleKeydown);
+  live2DModel?.off?.('pointerdown', handleModelClick);
   // 清理 Pixi.js 资源
-  pixiCanvas?.destroy();
   live2DModel?.destroy();
+  pixiCanvas?.destroy();
+  live2DModel = undefined;
+  pixiCanvas = undefined;
 });
 </script>
 
