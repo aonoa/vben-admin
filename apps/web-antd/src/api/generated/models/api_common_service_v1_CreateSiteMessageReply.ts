@@ -7,4 +7,5 @@ export type api_common_service_v1_CreateSiteMessageReply = {
   status?: string;
   scheduledPublishTime?: string;
   publishedTime?: string;
+  organizationId?: string;
 };

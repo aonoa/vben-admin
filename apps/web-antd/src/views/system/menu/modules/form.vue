@@ -23,6 +23,11 @@ import {
   SystemMenuApi,
   updateMenu,
 } from '#/api/system/menu';
+import {
+  type MenuFormValues,
+  pickMenuMutationPayload,
+  toMenuFormValues,
+} from '#/api/system/menu-payload';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
 
@@ -119,6 +124,16 @@ const schema: VbenFormSchema[] = [
     fieldName: 'meta.title',
     label: $t('system.menu.menuTitle'),
     rules: 'required',
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: 'w-full',
+      min: -9999,
+    },
+    defaultValue: 0,
+    fieldName: 'meta.order',
+    label: $t('system.menu.order'),
   },
   {
     component: 'Input',
@@ -242,16 +257,20 @@ const schema: VbenFormSchema[] = [
   },
   {
     component: 'Input',
+    componentProps: {
+      allowClear: true,
+      placeholder: $t('system.menu.authCodePlaceholder'),
+    },
     dependencies: {
       rules: (values) => {
-        return values.type === 'action' ? 'required' : null;
+        return values.type === 'button' ? 'required' : null;
       },
       show: (values) => {
-        return ['action', 'catalog', 'embedded', 'menu'].includes(values.type);
+        return ['button', 'catalog', 'embedded', 'menu'].includes(values.type);
       },
       triggerFields: ['type'],
     },
-    fieldName: 'authCode',
+    fieldName: 'authorityText',
     label: $t('system.menu.authCode'),
   },
   {
@@ -280,7 +299,7 @@ const schema: VbenFormSchema[] = [
     },
     dependencies: {
       show: (values) => {
-        return values.type !== 'action';
+        return values.type !== 'button';
       },
       triggerFields: ['type'],
     },
@@ -298,7 +317,7 @@ const schema: VbenFormSchema[] = [
     },
     dependencies: {
       show: (values) => {
-        return values.type !== 'action';
+        return values.type !== 'button';
       },
       triggerFields: ['type'],
     },
@@ -317,7 +336,7 @@ const schema: VbenFormSchema[] = [
     },
     dependencies: {
       show: (values) => {
-        return values.type !== 'action';
+        return values.type !== 'button';
       },
       triggerFields: ['type'],
     },
@@ -328,7 +347,7 @@ const schema: VbenFormSchema[] = [
     component: 'Divider',
     dependencies: {
       show: (values) => {
-        return !['action', 'link'].includes(values.type);
+        return !['button', 'link'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -340,6 +359,22 @@ const schema: VbenFormSchema[] = [
         default: () => $t('system.menu.advancedSettings'),
       };
     },
+  },
+  {
+    component: 'InputNumber',
+    componentProps: {
+      class: 'w-full',
+      min: -1,
+    },
+    defaultValue: -1,
+    dependencies: {
+      show: (values) => {
+        return ['menu'].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
+    fieldName: 'meta.maxNumOfOpenTab',
+    label: $t('system.menu.maxNumOfOpenTab'),
   },
   {
     component: 'Checkbox',
@@ -372,10 +407,26 @@ const schema: VbenFormSchema[] = [
     },
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      class: 'w-full',
+      min: 0,
+    },
+    defaultValue: 0,
+    dependencies: {
+      show: (values) => {
+        return ['embedded', 'menu'].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
+    fieldName: 'meta.affixTabOrder',
+    label: $t('system.menu.affixTabOrder'),
+  },
+  {
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return !['action'].includes(values.type);
+        return !['button'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -405,7 +456,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return !['action', 'link'].includes(values.type);
+        return !['button', 'link'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -420,7 +471,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return !['action', 'link'].includes(values.type);
+        return !['button', 'link'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -428,6 +479,81 @@ const schema: VbenFormSchema[] = [
     renderComponentContent() {
       return {
         default: () => $t('system.menu.hideInTab'),
+      };
+    },
+  },
+  {
+    component: 'Checkbox',
+    dependencies: {
+      show: (values) => {
+        return !['button'].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
+    fieldName: 'meta.ignoreAccess',
+    renderComponentContent() {
+      return {
+        default: () => $t('system.menu.ignoreAccess'),
+      };
+    },
+  },
+  {
+    component: 'Checkbox',
+    dependencies: {
+      show: (values) => {
+        return !['button', 'link'].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
+    fieldName: 'meta.fullPathKey',
+    renderComponentContent() {
+      return {
+        default: () => $t('system.menu.fullPathKey'),
+      };
+    },
+  },
+  {
+    component: 'Checkbox',
+    dependencies: {
+      show: (values) => {
+        return !['button', 'link'].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
+    fieldName: 'meta.menuVisibleWithForbidden',
+    renderComponentContent() {
+      return {
+        default: () => $t('system.menu.menuVisibleWithForbidden'),
+      };
+    },
+  },
+  {
+    component: 'Checkbox',
+    dependencies: {
+      show: (values) => {
+        return ['catalog', 'embedded', 'menu'].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
+    fieldName: 'meta.openInNewWindow',
+    renderComponentContent() {
+      return {
+        default: () => $t('system.menu.openInNewWindow'),
+      };
+    },
+  },
+  {
+    component: 'Checkbox',
+    dependencies: {
+      show: (values) => {
+        return ['catalog', 'embedded', 'menu'].includes(values.type);
+      },
+      triggerFields: ['type'],
+    },
+    fieldName: 'meta.noBasicLayout',
+    renderComponentContent() {
+      return {
+        default: () => $t('system.menu.noBasicLayout'),
       };
     },
   },
@@ -451,19 +577,16 @@ const [Drawer, drawerApi] = useVbenDrawer({
   onOpenChange(isOpen) {
     if (isOpen) {
       const data = drawerApi.getData<SystemMenuApi.SystemMenu>();
-      if (data?.type === 'link') {
-        data.linkSrc = data.meta?.link;
-      } else if (data?.type === 'embedded') {
-        data.linkSrc = data.meta?.iframeSrc;
-      }
+      formApi.resetForm();
       if (data) {
         formData.value = data;
-        formApi.setValues(formData.value);
-        titleSuffix.value = formData.value.meta?.title
-          ? $t(formData.value.meta.title)
+        const formValues = toMenuFormValues(data);
+        formApi.setValues(formValues);
+        titleSuffix.value = formValues.meta?.title
+          ? $t(formValues.meta.title)
           : '';
       } else {
-        formApi.resetForm();
+        formData.value = undefined;
         titleSuffix.value = '';
       }
     }
@@ -474,20 +597,12 @@ async function onSubmit() {
   const { valid } = await formApi.validate();
   if (valid) {
     drawerApi.lock();
-    const data =
-      await formApi.getValues<
-        Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>
-      >();
-    if (data.type === 'link') {
-      data.meta = { ...data.meta, link: data.linkSrc };
-    } else if (data.type === 'embedded') {
-      data.meta = { ...data.meta, iframeSrc: data.linkSrc };
-    }
-    delete data.linkSrc;
+    const data = await formApi.getValues<MenuFormValues>();
+    const payload = pickMenuMutationPayload(data);
     try {
       await (formData.value?.id
-        ? updateMenu(formData.value.id, data)
-        : createMenu(data));
+        ? updateMenu(String(formData.value.id), payload)
+        : createMenu(payload));
       drawerApi.close();
       emit('success');
     } finally {

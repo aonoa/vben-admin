@@ -19,6 +19,7 @@ import {
   recallSiteMessage,
   SITE_MESSAGE_REFRESH_EVENT,
 } from '#/api/system/site-message';
+import { useOrganizationStore } from '#/store';
 
 defineOptions({
   name: 'SiteMessageManagePage',
@@ -55,10 +56,17 @@ const expandedMessageIds = ref<string[]>([]);
 const manageActiveTab = ref<SiteMessageManageStatusFilter>('all');
 const manageLoadToken = ref(0);
 const messageCardBodyStyle = { padding: '16px 18px' } as const;
+const organizationStore = useOrganizationStore();
 
 const isEditing = computed(() => Boolean(publishForm.id));
 const composeCardTitle = computed(() =>
   isEditing.value ? '编辑站内信' : '发布站内信',
+);
+const currentOrganizationName = computed(
+  () => organizationStore.currentOrganization?.name || '当前组织',
+);
+const currentOrganizationTargetLabel = computed(
+  () => `${currentOrganizationName.value}全员`,
 );
 
 function formatDate(value?: string) {
@@ -71,9 +79,9 @@ function getPublisherLabel(name?: string, id?: string) {
 
 function getReceiverLabel(item: SiteMessageManageItem) {
   if (item.receiverCount > 0) {
-    return `全员 ${item.receiverCount} 人`;
+    return `${currentOrganizationTargetLabel.value} ${item.receiverCount} 人`;
   }
-  return '全员';
+  return currentOrganizationTargetLabel.value;
 }
 
 function getManageStatusLabel(status: SiteMessageManageStatus) {
@@ -323,7 +331,21 @@ watch(manageActiveTab, () => {
   void loadManageList();
 });
 
+watch(
+  () => organizationStore.currentOrganizationId,
+  () => {
+    resetPublishForm();
+    manageState.currentPage = 1;
+    manageState.items = [];
+    manageState.total = 0;
+    void loadManageList(true);
+  },
+);
+
 onMounted(async () => {
+  if (organizationStore.organizations.length === 0) {
+    await organizationStore.loadMyOrganizations();
+  }
   await loadManageList(true);
 });
 </script>
@@ -507,7 +529,7 @@ onMounted(async () => {
             </a-form-item>
 
             <a-form-item label="目标范围">
-              <a-tag color="blue">全员</a-tag>
+              <a-tag color="blue">{{ currentOrganizationTargetLabel }}</a-tag>
             </a-form-item>
 
             <a-form-item label="计划发布时间">

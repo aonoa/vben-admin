@@ -24,4 +24,6 @@ export type api_admin_service_v1_Meta = {
   openInNewWindow?: boolean;
   ignoreAccess?: boolean;
   authority?: Array<string>;
+  fullPathKey?: boolean;
+  menuVisibleWithForbidden?: boolean;
 };

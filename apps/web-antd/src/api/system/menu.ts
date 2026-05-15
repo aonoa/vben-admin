@@ -27,13 +27,15 @@ export namespace SystemMenuApi {
     /** 菜单状态 */
     status: number;
     /** 后端权限标识 */
-    authCode: string;
+    authCode?: string;
     /** 子级 */
     children?: SystemMenu[];
     /** 组件 */
     component?: string;
     /** 菜单ID */
     id: number;
+    /** 外链或内嵌地址表单字段 */
+    linkSrc?: string;
     /** 菜单元数据 */
     meta?: {
       /** 激活时显示的图标 */
@@ -44,12 +46,16 @@ export namespace SystemMenuApi {
       affixTab?: boolean;
       /** 在标签栏固定的顺序 */
       affixTabOrder?: number;
+      /** 需要特定的角色标识才可以访问 */
+      authority?: string[];
       /** 徽标内容(当徽标类型为normal时有效) */
       badge?: string;
       /** 徽标类型 */
       badgeType?: (typeof BadgeTypes)[number];
       /** 徽标颜色 */
       badgeVariants?: (typeof BadgeVariants)[number];
+      /** 使用完整路径作为标签页 key */
+      fullPathKey?: boolean;
       /** 在菜单中隐藏下级 */
       hideChildrenInMenu?: boolean;
       /** 在面包屑中隐藏 */
@@ -62,12 +68,16 @@ export namespace SystemMenuApi {
       icon?: string;
       /** 内嵌Iframe的URL */
       iframeSrc?: string;
+      /** 访问时忽略权限 */
+      ignoreAccess?: boolean;
       /** 是否缓存页面 */
       keepAlive?: boolean;
       /** 外链页面的URL */
       link?: string;
       /** 同一个路由最大打开的标签数 */
       maxNumOfOpenTab?: number;
+      /** 无权限时菜单仍可见，访问时跳转 403 */
+      menuVisibleWithForbidden?: boolean;
       /** 无需基础布局 */
       noBasicLayout?: boolean;
       /** 是否在新窗口打开 */
@@ -84,11 +94,16 @@ export namespace SystemMenuApi {
     /** 路由路径 */
     path: string;
     /** 父级ID */
-    pid: string;
+    pid: number | string;
     /** 重定向 */
     redirect?: string;
     /** 菜单类型 */
     type: (typeof MenuTypes)[number];
+  }
+
+  export interface SystemMenuListReply {
+    items?: SystemMenu[];
+    total?: number | string;
   }
 }
 
@@ -96,7 +111,7 @@ export namespace SystemMenuApi {
  * 获取菜单数据列表
  */
 async function getMenuList() {
-  return requestClient.get<Array<SystemMenuApi.SystemMenu>>(
+  return requestClient.get<SystemMenuApi.SystemMenuListReply>(
     '/admin-api/v1/menus',
   );
 }
@@ -136,7 +151,7 @@ async function createMenu(
  * @param data 菜单数据
  */
 async function updateMenu(
-  id: string,
+  id: string | SystemMenuApi.SystemMenu['id'],
   data: Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>,
 ) {
   return requestClient.put(`/admin-api/v1/menus/${id}`, data);
@@ -146,7 +161,7 @@ async function updateMenu(
  * 删除菜单
  * @param id 菜单 ID
  */
-async function deleteMenu(id: string) {
+async function deleteMenu(id: string | SystemMenuApi.SystemMenu['id']) {
   return requestClient.delete(`/admin-api/v1/menus/${id}`);
 }
 

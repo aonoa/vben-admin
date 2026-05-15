@@ -4,7 +4,7 @@ import type {
   SiteMessageReadFilter,
 } from '#/api/system/site-message';
 
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -18,6 +18,7 @@ import {
   markSiteMessageUnread,
   SITE_MESSAGE_REFRESH_EVENT,
 } from '#/api/system/site-message';
+import { useOrganizationStore } from '#/store';
 
 defineOptions({
   name: 'SiteMessageInboxPage',
@@ -43,6 +44,7 @@ const markingAll = ref(false);
 const expandedMessageIds = ref<string[]>([]);
 const inboxLoadToken = ref(0);
 const messageCardBodyStyle = { padding: '16px 18px' } as const;
+const organizationStore = useOrganizationStore();
 
 function formatDate(value?: string) {
   return value || '--';
@@ -176,8 +178,19 @@ async function handleMarkAllRead() {
 }
 
 onMounted(async () => {
+  if (organizationStore.organizations.length === 0) {
+    await organizationStore.loadMyOrganizations();
+  }
   await Promise.all([loadInbox(true), refreshUnreadCount(true)]);
 });
+
+watch(
+  () => organizationStore.currentOrganizationId,
+  () => {
+    inboxState.currentPage = 1;
+    void Promise.all([loadInbox(true), refreshUnreadCount(true)]);
+  },
+);
 </script>
 
 <template>

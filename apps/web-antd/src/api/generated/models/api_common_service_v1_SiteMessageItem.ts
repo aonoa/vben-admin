@@ -11,4 +11,5 @@ export type api_common_service_v1_SiteMessageItem = {
   senderName?: string;
   createdTime?: string;
   readTime?: string;
+  organizationId?: string;
 };

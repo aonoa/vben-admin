@@ -32,6 +32,7 @@ export interface SiteMessageItem {
   senderName: string;
   createdTime: string;
   readTime: string;
+  organizationId: string;
 }
 
 export interface SiteMessageManageItem {
@@ -48,6 +49,7 @@ export interface SiteMessageManageItem {
   scheduledPublishTime: string;
   publishedTime: string;
   recalledTime: string;
+  organizationId: string;
 }
 
 export interface SiteMessageListParams {
@@ -87,6 +89,7 @@ export interface CreateSiteMessageResult {
   status: string;
   scheduledPublishTime: string;
   publishedTime: string;
+  organizationId: string;
 }
 
 type RawRecord = Record<string, unknown>;
@@ -162,6 +165,7 @@ function normalizeSiteMessageItem(item: unknown): SiteMessageItem {
     readTime: readString(record, 'readTime', 'read_time'),
     senderId: readString(record, 'senderId', 'sender_id'),
     senderName: readString(record, 'senderName', 'sender_name'),
+    organizationId: readString(record, 'organizationId', 'organization_id'),
     title: readString(record, 'title'),
   };
 }
@@ -176,6 +180,7 @@ function normalizeSiteMessageManageItem(item: unknown): SiteMessageManageItem {
     publishedTime: readString(record, 'publishedTime', 'published_time'),
     receiverCount: toNumber(record.receiverCount as number | string),
     recalledTime: readString(record, 'recalledTime', 'recalled_time'),
+    organizationId: readString(record, 'organizationId', 'organization_id'),
     scheduledPublishTime: readString(
       record,
       'scheduledPublishTime',
@@ -301,6 +306,7 @@ export async function createSiteMessage(
     id: readString(record, 'id'),
     publishedTime: readString(record, 'publishedTime', 'published_time'),
     receiverCount: toNumber(record.receiverCount as number | string),
+    organizationId: readString(record, 'organizationId', 'organization_id'),
     scheduledPublishTime: readString(
       record,
       'scheduledPublishTime',

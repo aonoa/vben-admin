@@ -15,4 +15,5 @@ export type api_common_service_v1_SiteMessageManageItem = {
   scheduledPublishTime?: string;
   publishedTime?: string;
   recalledTime?: string;
+  organizationId?: string;
 };
