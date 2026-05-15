@@ -4,6 +4,7 @@ import type { ChangeEvent } from 'ant-design-vue/es/_util/EventInterface';
 import type { Recordable } from '@vben/types';
 
 import type { VbenFormSchema } from '#/adapter/form';
+import type { MenuFormValues } from '#/api/system/menu-payload';
 
 import { computed, h, ref } from 'vue';
 
@@ -23,11 +24,7 @@ import {
   SystemMenuApi,
   updateMenu,
 } from '#/api/system/menu';
-import {
-  type MenuFormValues,
-  pickMenuMutationPayload,
-  toMenuFormValues,
-} from '#/api/system/menu-payload';
+import { pickMenuMutationPayload, toMenuFormValues } from '#/api/system/menu-payload';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
 
