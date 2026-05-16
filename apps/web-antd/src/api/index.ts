@@ -1,10 +1,12 @@
 export * from './core';
 export * from './system';
 
-export function urlToRestful(url: string, params: object): string {
+export function urlToRestful(
+  url: string,
+  params: Record<string, number | string>,
+): string {
   let newstr: string = url;
-  let key: keyof object;
-  for (key in params) {
+  for (const key in params) {
     if (String(params[key]) === '') {
       return '';
     }

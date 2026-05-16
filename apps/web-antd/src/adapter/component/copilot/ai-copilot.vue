@@ -109,16 +109,21 @@ const handleTouchMove = (e: TouchEvent) => {
 
   e.preventDefault();
 
+  const touch = e.touches[0];
+  if (!touch) {
+    return;
+  }
+  const clientX = touch.clientX;
+  const clientY = touch.clientY;
+
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId);
   }
 
   animationFrameId = requestAnimationFrame(() => {
-    const touch = e.touches[0];
-
     // 计算新位置
-    const x = touch.clientX - offset.x;
-    const y = touch.clientY - offset.y;
+    const x = clientX - offset.x;
+    const y = clientY - offset.y;
 
     // 获取视口尺寸
     const viewportWidth = window.innerWidth;
@@ -174,6 +179,9 @@ const startDrag = (e: MouseEvent | TouchEvent) => {
     e.preventDefault();
   } else {
     const touch = e.touches[0];
+    if (!touch) {
+      return;
+    }
     clientX = touch.clientX;
     clientY = touch.clientY;
     e.preventDefault();

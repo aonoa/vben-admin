@@ -41,7 +41,7 @@ export const formOptions: VbenFormProps = {
         placeholder: '请选择',
         // 菜单接口转options格式
         afterFetch: (data: GetWalkRouteReply) => {
-          return data?.items.map((item: any) => ({
+          return (data?.items ?? []).map((item: any) => ({
             label: item.url,
             value: item.url,
           }));

@@ -15,7 +15,7 @@ defineOptions({
 });
 
 const emit = defineEmits(['success']);
-const id = ref();
+const id = ref<string>();
 
 const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
@@ -31,6 +31,18 @@ function isPlainEmptyObject(obj: unknown): obj is Record<string, never> {
   );
 }
 
+function toResourcePayload(
+  values: Partial<ResourceListItem>,
+): Omit<ResourceListItem, 'id'> {
+  return {
+    description: values.description ?? '',
+    method: values.method ?? '',
+    name: values.name ?? '',
+    type: values.type ?? '',
+    value: values.value ?? '',
+  };
+}
+
 const [Modal, modalApi] = useVbenModal({
   fullscreenButton: false,
   destroyOnClose: true,
@@ -41,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
     const { valid } = await formApi.validate();
     if (valid) {
       modalApi.lock();
-      const data = await formApi.getValues();
+      const data = toResourcePayload(await formApi.getValues());
       try {
         await (id.value ? UpdateResource(id.value, data) : AddResource(data));
         modalApi.close();
@@ -53,8 +65,9 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      const data = modalApi.getData<ResourceListItem>();
-      if (isPlainEmptyObject(data)) {
+      const data = modalApi.getData<Record<string, never> | ResourceListItem>();
+      if (!data || isPlainEmptyObject(data)) {
+        id.value = undefined;
         modalApi.setState({ title: '添加资源' });
       } else {
         modalApi.setState({ title: '编辑资源' });

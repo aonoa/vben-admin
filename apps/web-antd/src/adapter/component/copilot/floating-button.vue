@@ -99,6 +99,9 @@ const handleTouchMove = (e: TouchEvent) => {
   e.preventDefault();
 
   const touch = e.touches[0];
+  if (!touch) {
+    return;
+  }
 
   // 计算新位置
   const x = touch.clientX - offset.x;
@@ -194,6 +197,9 @@ const startDrag = (e: MouseEvent | TouchEvent) => {
     e.preventDefault();
   } else {
     const touch = e.touches[0];
+    if (!touch) {
+      return;
+    }
     clientX = touch.clientX;
     clientY = touch.clientY;
     e.preventDefault();

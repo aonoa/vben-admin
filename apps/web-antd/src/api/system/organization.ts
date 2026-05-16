@@ -1,7 +1,6 @@
 import type {
   api_admin_service_v1_CurrentOrganizationReply,
   api_admin_service_v1_GetMyOrganizationsReply,
-  api_admin_service_v1_GetOrganizationListReply,
   api_admin_service_v1_GetOrganizationMembersReply,
   api_admin_service_v1_MyOrganizationItem,
   api_admin_service_v1_OrganizationItem,

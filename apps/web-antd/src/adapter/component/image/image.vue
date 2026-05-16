@@ -24,8 +24,11 @@ const mValue = useVModel(props, 'value', emits, {
   passive: true,
 });
 const customRequest = (e: any) => {
+  if (typeof props.uploadApi !== 'function') {
+    return;
+  }
   props
-    ?.uploadApi({
+    .uploadApi({
       file: e.file,
     })
     .then((data: any) => {

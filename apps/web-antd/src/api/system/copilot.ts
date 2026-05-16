@@ -16,9 +16,9 @@ export async function CopilotSSE(
 }
 
 export interface Message {
-  role: string;
   content: string;
-  timestamp: string;
+  role: string;
+  timestamp?: number | string;
 }
 
 export interface Msg {
